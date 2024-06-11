@@ -1,0 +1,3 @@
+/mnt/c/Users/670264231/CLionProjects/dominion-setup-counter/cmake-build-debug/CMakeFiles/dominion_start_deck_counter.dir
+/mnt/c/Users/670264231/CLionProjects/dominion-setup-counter/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/c/Users/670264231/CLionProjects/dominion-setup-counter/cmake-build-debug/CMakeFiles/rebuild_cache.dir
