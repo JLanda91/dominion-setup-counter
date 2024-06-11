@@ -1,1 +1,0 @@
-/usr/bin/g++-14 -g CMakeFiles/dominion_start_deck_counter.dir/main.cpp.o -o dominion_start_deck_counter 
