@@ -34,6 +34,8 @@ namespace tuple_utils{
     concept GenericRepeatedTuple = RepeatedTuple<T, typename std::tuple_element<0, T>::type>;
 }
 
+#ifndef __cpp_lib_format_ranges
+
 template<typename ... Args>
 struct std::formatter<std::tuple<Args...>> : std::formatter<std::string> {
     auto format(const std::tuple<Args...>& obj, std::format_context& ctx) const {
@@ -54,3 +56,5 @@ struct std::formatter<std::pair<T1, T2>> : std::formatter<std::string> {
         return std::format_to(ctx.out(), "({}, {})", std::get<0>(obj), std::get<1>(obj));
     }
 };
+
+#endif

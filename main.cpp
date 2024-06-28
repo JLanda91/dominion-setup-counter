@@ -4,19 +4,6 @@
 #include "config.hpp"
 #include "constrained_product_generator.hpp"
 
-template<>
-struct std::formatter<result_t> : std::formatter<std::string> {
-    constexpr auto parse(std::format_parse_context& ctx) const {
-        return ctx.begin();
-    }
-
-    auto format(const result_t& obj, std::format_context& ctx) const {
-        std::ostringstream oss{};
-        oss << obj;
-        return std::format_to(ctx.out(), "{}", oss.str());
-    }
-};
-
 auto identity_with_map(auto&& mapper) {
     return [&mapper](const auto& elem) {
         return std::make_pair(elem, mapper(elem));

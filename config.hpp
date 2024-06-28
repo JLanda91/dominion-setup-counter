@@ -6,6 +6,20 @@
 #include "math_utils.hpp"
 
 using result_t = boost::multiprecision::uint256_t;
+
+template<>
+struct std::formatter<result_t> : std::formatter<std::string> {
+    constexpr auto parse(std::format_parse_context& ctx) const {
+        return ctx.begin();
+    }
+
+    auto format(const result_t& obj, std::format_context& ctx) const {
+        std::ostringstream oss{};
+        oss << obj;
+        return std::format_to(ctx.out(), "{}", oss.str());
+    }
+};
+
 using result_pair_t = std::pair<result_t, result_t>;
 using coefficient_t = uint32_t;
 
