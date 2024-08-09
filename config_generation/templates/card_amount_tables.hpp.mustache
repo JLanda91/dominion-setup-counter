@@ -1,0 +1,39 @@
+#pragma once
+
+#include <cstdint>
+#include <array>
+#include <utility>
+
+#include "sized_enum.hpp"
+#include "enum_mask.hpp"
+
+namespace config {
+    {{#enums}}
+    {{> enum_class}}
+    {{/enums}}
+
+    {{#tables}}
+    {{#kingdom}}
+    {{> kingdom_table}}
+    {{/kingdom}}
+
+    {{#landscapes}}
+    {{> landscapes_table}}
+    {{/landscapes}}
+    {{/tables}}
+
+    {{#specials}}
+    {{#kingdom}}
+    {{> kingdom_special}}
+    {{/kingdom}}
+
+    {{#landscapes}}
+    {{> landscapes_special}}
+    {{/landscapes}}
+    {{/specials}}
+
+    {{#amount_indices}}
+    {{> amount_index}}
+    {{/amount_indices}}
+
+}

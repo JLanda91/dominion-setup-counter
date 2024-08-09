@@ -1,0 +1,15 @@
+namespace landscapes {
+    using special_tests_t = std::array<typename ExpansionFilter::enum_t, {{num_specials}}uz>;
+
+    static constexpr auto& special_tests() noexcept {
+        {{=<% %>=}}
+        static constexpr special_tests_t singleton {{
+            <%#data%>
+            Expansion::<%expansion%>,   // <%name%>
+            <%/data%>
+        }};
+        <%={{ }}=%>
+        return singleton;
+    }
+}
+

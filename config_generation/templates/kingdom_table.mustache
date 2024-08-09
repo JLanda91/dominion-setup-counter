@@ -1,0 +1,51 @@
+namespace kingdom {
+    struct row_t {
+        std::pair<Expansion, EditionModifier> expansion_edition_;
+        PrimaryType primary_type_;
+        SecondaryType secondary_type_;
+        Cost cost_;
+        int8_t amount_;
+
+        constexpr bool operator==(const row_t& other) const noexcept = default;
+    };
+
+    using table_t = std::array<row_t, {{size}}uz>;
+
+    static constexpr auto& table() noexcept {
+        {{=<% %>=}}
+        static constexpr table_t singleton {{
+            <%#data%>
+            { { Expansion::<%expansion%>, EditionModifier::<%edition_modifier%> }, PrimaryType::<%primary_type%>, SecondaryType::<%secondary_type%>, Cost::<%cost%>, <%amount%> },
+            <%/data%>
+        }};
+        <%={{ }}=%>
+        return singleton;
+    }
+
+    using ExpansionEditionFilter = utils::table::EnumMask<SizedExpansion, SizedEditionModifier>;
+    using PrimaryTypeFilter = utils::table::EnumMask<SizedPrimaryType>;
+    using SecondaryTypeFilter = utils::table::EnumMask<SizedSecondaryType>;
+    using CostFilter = utils::table::EnumMask<SizedCost>;
+
+    struct TableQuery {
+        PrimaryTypeFilter primary_type_{};
+        SecondaryTypeFilter secondary_type_{};
+        CostFilter cost_{};
+    };
+
+    using queries_t = std::array<TableQuery, {{num_queries}}uz>;
+
+    static constexpr auto& amount_queries() noexcept {
+        {{=<% %>=}}
+        static constexpr queries_t singleton {{
+            <%#queries%>
+            <%#query%>
+            { {<%#primary_type%>PrimaryType::<%.%>, <%/primary_type%>}, {<%#secondary_type%>SecondaryType::<%.%>, <%/secondary_type%>}, {<%#cost%>Cost::<%.%>, <%/cost%>} },    // <%name%>
+            <%/query%>
+            <%/queries%>
+        }};
+        <%={{ }}=%>
+        return singleton;
+    }
+}
+

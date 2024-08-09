@@ -1,0 +1,21 @@
+{{#namespace}}
+namespace {{namespace}} {
+    enum class {{name}} : uint8_t {
+        {{#values}}
+        {{{.}}},
+        {{/values}}
+    };
+
+    using Sized{{name}} = utils::enums::SizedEnum<{{name}}, {{size}}uz>;
+}
+{{/namespace}}
+{{^namespace}}
+enum class {{name}} : uint8_t {
+{{#values}}
+    {{{.}}},
+{{/values}}
+};
+
+using Sized{{name}} = utils::enums::SizedEnum<{{name}}, {{size}}uz>;
+{{/namespace}}
+

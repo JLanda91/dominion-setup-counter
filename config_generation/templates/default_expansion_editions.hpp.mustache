@@ -1,0 +1,16 @@
+#pragma once
+
+#include "card_amount_tables.hpp"
+#include "enum_mask.hpp"
+
+namespace config {
+{{=<% %>=}}
+    inline constexpr kingdom::ExpansionEditionFilter kDefaultExpansionEditions{
+        <%#default_editions%>
+        { Expansion::<%expansion%>, kingdom::EditionModifier::<%edition_modifier%> },
+        <%/default_editions%>
+    };
+<%={{ }}=%>
+
+    inline constexpr kingdom::ExpansionEditionFilter kAllExpansionEditions{};
+}

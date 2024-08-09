@@ -2,32 +2,19 @@
 
 #include <boost/multiprecision/integer.hpp>
 
-#include "tuple_utils.hpp"
-#include "math_utils.hpp"
+#include "tuple.hpp"
+#include "math.hpp"
 
 using result_t = boost::multiprecision::uint256_t;
-
-template<>
-struct std::formatter<result_t> : std::formatter<std::string> {
-    constexpr auto parse(std::format_parse_context& ctx) const {
-        return ctx.begin();
-    }
-
-    auto format(const result_t& obj, std::format_context& ctx) const {
-        std::ostringstream oss{};
-        oss << obj;
-        return std::format_to(ctx.out(), "{}", oss.str());
-    }
-};
 
 using result_pair_t = std::pair<result_t, result_t>;
 using coefficient_t = uint32_t;
 
 template<size_t N>
-using coefficient_tuple_t = typename tuple_utils::repeated_tuple<coefficient_t, N>::type;
+using coefficient_tuple_t = typename utils::tuple::repeated_tuple<coefficient_t, N>::type;
 
 template<typename T>
-concept CoefficientTuple = tuple_utils::RepeatedTuple<T, coefficient_t>;
+concept CoefficientTuple = utils::tuple::RepeatedTuple<T, coefficient_t>;
 
 /*
  * KINGDOM CARD TYPES
@@ -55,15 +42,15 @@ inline constexpr coefficient_t kKingdomCardTypes = 16;
 
 using kingdom_card_type_amounts_t = coefficient_tuple_t<kKingdomCardTypes>;
 inline constexpr kingdom_card_type_amounts_t kKingdomCardAmounts{
-        kActionLow,
-        kOtherLow,
+        kActionLow,//
+        kOtherLow,//
         kActionLiaisonLow,
         kOtherLiaisonLow,
         kActionFateLow,
         kActionDoomLow,
         kDruid,
-        kActionHigh,
-        kOtherHigh,
+        kActionHigh,//
+        kOtherHigh,//
         kActionLiaisonHigh,
         kActionLooterHigh,
         kActionFateHigh,
@@ -113,7 +100,7 @@ inline constexpr non_card_type_amounts_t kNonCardAmounts{
         kWayOfTheMouse,
 };
 
-inline constexpr coefficient_t kNonCardsFactor = (1 << kNumSpecialLandscapes) + (1u + kNumSpecialLandscapes)*(kNumStarterLandscapes - kNumSpecialLandscapes) + math_utils::binomial<coefficient_t>(kNumStarterLandscapes - kNumSpecialLandscapes, 2u);
+inline constexpr coefficient_t kNonCardsFactor = (1 << kNumSpecialLandscapes) + (1u + kNumSpecialLandscapes)*(kNumStarterLandscapes - kNumSpecialLandscapes) + utils::math::binomial<coefficient_t>(kNumStarterLandscapes - kNumSpecialLandscapes, 2u);
 
 /*
  * Other
@@ -129,11 +116,11 @@ inline constexpr coefficient_t kDruidBoonPicks  = 3;
  * Combinations and factorials
  * =====================================================================================================================
  */
-inline constexpr auto kBoonShufflesNoDruid = math_utils::factorial<result_t>(kBoons);
-inline constexpr auto kBoonShufflesDruid = math_utils::factorial<result_t>(kBoons - kDruidBoonPicks);
-inline constexpr auto kHexShuffles = math_utils::factorial<result_t>(kHexes);
-inline constexpr auto kKnightShuffles = math_utils::factorial<result_t>(kKnights);
-inline constexpr auto kDruidBoonCombinations = math_utils::binomial<result_t>(kBoons, kDruidBoonPicks);
+inline constexpr auto kBoonShufflesNoDruid = utils::math::factorial<result_t>(kBoons);
+inline constexpr auto kBoonShufflesDruid = utils::math::factorial<result_t>(kBoons - kDruidBoonPicks);
+inline constexpr auto kHexShuffles = utils::math::factorial<result_t>(kHexes);
+inline constexpr auto kKnightShuffles = utils::math::factorial<result_t>(kKnights);
+inline constexpr auto kDruidBoonCombinations = utils::math::binomial<result_t>(kBoons, kDruidBoonPicks);
 inline constexpr auto kLiaisonAllyCombinations = (result_t)kAllies;
 inline constexpr coefficient_t kPlayers = 2u;
 inline constexpr coefficient_t kNumRuinsPerExtraPlayer = 10u;
@@ -147,7 +134,7 @@ auto ruin_combinations(coefficient_t num_ruin_types, coefficient_t remainder) ->
 
     auto result = (result_t)0u;
     for(auto i = (coefficient_t)0u; i <= std::min(remainder, kRuinsPerType); ++i){
-        result += math_utils::binomial<result_t>(remainder, i) * ruin_combinations(num_ruin_types - 1U, remainder - i);
+        result += utils::math::binomial<result_t>(remainder, i) * ruin_combinations(num_ruin_types - 1U, remainder - i);
     }
     return result;
 }
@@ -155,4 +142,4 @@ auto ruin_combinations(coefficient_t num_ruin_types, coefficient_t remainder) ->
 inline auto kRuinsCombinations = ruin_combinations(kRuinsTypes, (kPlayers - 1)*kNumRuinsPerExtraPlayer);
 
 inline constexpr coefficient_t kFactorSpecialLandscapeActive = 1 + kNumSpecialLandscapes;
-inline constexpr coefficient_t kFactorSpecialLandscapeInactive = 2 + kNumSpecialLandscapes + math_utils::binomial<coefficient_t>(kNumSpecialLandscapes, 2u);
+inline constexpr coefficient_t kFactorSpecialLandscapeInactive = 2 + kNumSpecialLandscapes + utils::math::binomial<coefficient_t>(kNumSpecialLandscapes, 2u);

@@ -2,18 +2,17 @@
 
 #include <generator>
 
-#include "tuple_utils.hpp"
+#include "tuple.hpp"
 
-namespace generators {
+namespace utils::generators {
 
     enum class Constraint : uint8_t {
         EQ,
         LE,
     };
 
-    template<Constraint C, tuple_utils::GenericRepeatedTuple Tuple, size_t I, typename U = std::tuple_element<0, Tuple>::type>
-    std::generator<Tuple>
-    constrained_product_impl(const Tuple& boundary, U s, Tuple& current_elements, U current_sum, U max_added_sum) {
+    template<Constraint C, utils::tuple::GenericRepeatedTuple Tuple, size_t I, typename U = std::tuple_element<0, Tuple>::type>
+    std::generator<Tuple> constrained_product_impl(const Tuple& boundary, U s, Tuple& current_elements, U current_sum, U max_added_sum) {
         if constexpr (I == std::tuple_size_v<Tuple> - 1) {
             if constexpr (C == Constraint::EQ) {
                 std::get<I>(current_elements) = s - current_sum;
@@ -49,11 +48,11 @@ namespace generators {
         }
     }
 
-    template<Constraint C, tuple_utils::GenericRepeatedTuple Tuple, typename U = std::tuple_element<0, Tuple>::type>
+    template<Constraint C, utils::tuple::GenericRepeatedTuple Tuple, typename U = std::tuple_element<0, Tuple>::type>
     std::generator<Tuple> constrained_product(const Tuple& boundary, U s) {
         Tuple arr{};
         for (const auto& elem : constrained_product_impl<C, Tuple, 0uz, U>(boundary, s, arr, 0,
-                                                                           tuple_utils::reverse_partial_sum<
+                                                                           utils::tuple::reverse_partial_sum<
                                                                                    std::tuple_size_v<Tuple> - 1>(
                                                                                    boundary))) {
             co_yield elem;

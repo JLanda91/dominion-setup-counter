@@ -2,7 +2,7 @@
 #include <chrono>
 
 #include "config.hpp"
-#include "constrained_product_generator.hpp"
+#include "utils/constrained_product_generator.hpp"
 
 auto identity_with_map(auto&& mapper) {
     return [&mapper](const auto& elem) {
@@ -11,15 +11,18 @@ auto identity_with_map(auto&& mapper) {
 }
 
 result_t non_card_factor(const non_card_type_amounts_t& non_card_combination) {
-    return math_utils::binomial<result_t>(std::get<0>(kNonCardAmounts), std::get<0>(non_card_combination));
+    return utils::math::binomial<result_t>(std::get<0>(kNonCardAmounts), std::get<0>(non_card_combination));
 }
 
 using non_card_amount_factor_t = std::pair<non_card_type_amounts_t, result_t>;
 
 const auto& non_card_factor_vector() {
     static const auto result = []() {
+        using utils::generators::constrained_product;
+        using utils::generators::Constraint::LE;
+
         std::vector<non_card_amount_factor_t> result{};
-        for (const auto& [tup, f] : generators::constrained_product<generators::Constraint::LE>(kNonCardAmounts, 2u) |
+        for (const auto& [tup, f] : constrained_product<LE>(kNonCardAmounts, 2u) |
                                     std::views::transform(identity_with_map(non_card_factor))) {
             result.emplace_back(std::piecewise_construct, std::forward_as_tuple(tup), std::forward_as_tuple(f));
         }
@@ -29,6 +32,8 @@ const auto& non_card_factor_vector() {
 }
 
 result_pair_t kingdom_card_factor(const kingdom_card_type_amounts_t& kingdom_card_combination) {
+    using utils::math::binomial_product;
+
     const auto& [
             action_low,
             other_low,
@@ -48,7 +53,7 @@ result_pair_t kingdom_card_factor(const kingdom_card_type_amounts_t& kingdom_car
             knights
     ] = kingdom_card_combination;
 
-    const auto binomial_product = math_utils::binomial_product<result_t>(kKingdomCardAmounts, kingdom_card_combination);
+    const auto binomial_factors = binomial_product<result_t>(kKingdomCardAmounts, kingdom_card_combination);
 
     const auto liaison_total = (result_t) action_liaison_low +
                                other_liaison_low +
@@ -62,7 +67,7 @@ result_pair_t kingdom_card_factor(const kingdom_card_type_amounts_t& kingdom_car
                             action_doom_high +
                             other_doom_high;
 
-    const auto result_unordered = binomial_product *
+    const auto result_unordered = binomial_factors *
             (druid ? kDruidBoonCombinations : 1u) *
             (liaison_total ? kLiaisonAllyCombinations : 1u);
 
@@ -140,12 +145,16 @@ result_t joint_factor(const kingdom_card_type_amounts_t& kingdom_card_combinatio
 }
 
 void calculate_total(){
-    const auto t1 = std::chrono::steady_clock::now();
+    using utils::generators::constrained_product;
+    using utils::generators::Constraint::EQ;
+    using std::chrono::steady_clock;
+
+    const auto t1 = steady_clock::now();
     auto unordered_total = (result_t) 0u;
     auto ordered_total = (result_t) 0u;
 
-    for(const auto& kingdom_card_amounts : generators::constrained_product<generators::Constraint::EQ>(kKingdomCardAmounts, 10u)){
-        auto incr = (result_t) 0u;
+    for(const auto& kingdom_card_amounts : constrained_product<EQ>(kKingdomCardAmounts, 10u)){
+//        auto incr = (result_t) 0u;
         auto incr2 = std::ranges::fold_left(non_card_factor_vector() | std::views::transform([&kingdom_card_amounts](const auto& pair) -> result_t {
             const auto& [non_card_amounts, non_card_multiplier] = pair;
             return non_card_multiplier * joint_factor(kingdom_card_amounts, non_card_amounts);}
@@ -156,7 +165,7 @@ void calculate_total(){
         ordered_total += incr2 * kingdom_card_multiplier_ordered;
     }
 
-    const auto t2 = std::chrono::steady_clock::now();
+    const auto t2 = steady_clock::now();
     std::println("Total unique kingdoms:");
     std::println("Not considering deck orderings: {}", unordered_total);
     std::println("    Considering deck orderings: {}", ordered_total);
@@ -165,5 +174,4 @@ void calculate_total(){
 
 int main() {
     calculate_total();
-
 }

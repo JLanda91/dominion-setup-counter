@@ -4,7 +4,7 @@
 #include <iostream>
 #include <format>
 
-namespace tuple_utils{
+namespace utils::tuple {
     template<size_t I, typename ... Args>
     constexpr auto reverse_partial_sum(const std::tuple<Args...>& t){
         static_assert(I <= sizeof...(Args));

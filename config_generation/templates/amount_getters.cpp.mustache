@@ -1,0 +1,15 @@
+#include "amount_getters.hpp"
+
+namespace config{
+    {{#amount_indices}}
+    namespace {{namespace}} {
+        {{#data}}
+        coefficient_t {{lower}}(const {{namespace}}_amounts_t& t) noexcept{
+            return tuple_enum_get<AmountIndex::{{upper}}>(t);
+        }
+
+        {{/data}}
+    }
+
+    {{/amount_indices}}
+}

@@ -1,0 +1,19 @@
+#pragma once
+
+#include "typedefs.hpp"
+
+namespace config {
+    {{#amount_indices}}
+    namespace {{namespace}} {
+        template<AmountIndex ... E>
+        coefficient_t tuple_enum_get(const {{namespace}}_amounts_t& t){
+            return (... + (std::get<std::to_underlying(E)>(t)));
+        }
+
+        {{#data}}
+        coefficient_t {{lower}}(const {{namespace}}_amounts_t& t) noexcept;
+        {{/data}}
+    }
+
+    {{/amount_indices}}
+}

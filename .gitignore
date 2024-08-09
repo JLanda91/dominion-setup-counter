@@ -1,2 +1,4 @@
-.idea/
-cmake-build-*/
+/.idea/
+/cmake-build-*/
+/vcpkg_installed/
+**/__pycache__/
