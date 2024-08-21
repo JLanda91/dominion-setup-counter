@@ -4,11 +4,11 @@ add_custom_command(
         "${PROJECT_SOURCE_DIR}/config/generator_bounds.hpp"
         "${PROJECT_SOURCE_DIR}/config/default_expansion_editions.hpp"
     BYPRODUCTS
-        "${PROJECT_SOURCE_DIR}/config/template_vars.json"
+        "${PROJECT_SOURCE_DIR}/config/template_vars_old.json"
     COMMAND
         "${Python_EXECUTABLE}"
     ARGS
-        "${PROJECT_SOURCE_DIR}/config_generation/generate_config.py"
+        "${PROJECT_SOURCE_DIR}/config_generation/generate_config_old.py"
         "${PROJECT_SOURCE_DIR}"
     DEPENDS
         "${PROJECT_SOURCE_DIR}/config_generation/*.py"

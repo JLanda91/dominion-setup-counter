@@ -3,17 +3,17 @@
 #include "typedefs.hpp"
 
 namespace config {
-    {{#amount_indices}}
-    namespace {{namespace}} {
+    {{#tuple_indices}}
+    namespace {{ns}} {
         template<AmountIndex ... E>
-        coefficient_t tuple_enum_get(const {{namespace}}_amounts_t& t){
+        auto tuple_enum_get(const {{ns}}_amounts_t& t) noexcept -> coefficient_t {
             return (... + (std::get<std::to_underlying(E)>(t)));
         }
 
-        {{#data}}
-        coefficient_t {{lower}}(const {{namespace}}_amounts_t& t) noexcept;
-        {{/data}}
+        {{#names}}
+        auto {{function}}(const {{ns}}_amounts_t& t) noexcept -> coefficient_t;
+        {{/names}}
     }
 
-    {{/amount_indices}}
+    {{/tuple_indices}}
 }

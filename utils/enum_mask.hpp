@@ -49,6 +49,8 @@ namespace utils::table{
             return std::views::iota(0uz, size) | std::views::transform([this](const auto i){return mask_.test(i);});
         }
 
+        constexpr bool operator==(const EnumMask& other) const noexcept = default;
+
     private:
         constexpr EnumMask(const mask_t& mask) noexcept : mask_(mask) {}
 

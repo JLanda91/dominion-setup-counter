@@ -2,147 +2,280 @@
 
 namespace config{
     namespace kingdom {
-        coefficient_t action_regular_two(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_REGULAR_TWO>(t);
+        auto none_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::NONE_TWO>(t);
         }
 
-        coefficient_t action_regular_three(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_REGULAR_THREE>(t);
+        auto none_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::NONE_THREE>(t);
         }
 
-        coefficient_t action_regular_four(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_REGULAR_FOUR>(t);
+        auto none_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::NONE_FOUR>(t);
         }
 
-        coefficient_t action_regular_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_REGULAR_OTHER>(t);
+        auto none_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::NONE_FIVE>(t);
         }
 
-        coefficient_t action_looter_four(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_LOOTER_FOUR>(t);
+        auto none_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::NONE_OTHER>(t);
         }
 
-        coefficient_t action_looter_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_LOOTER_OTHER>(t);
+        auto action_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_TWO>(t);
         }
 
-        coefficient_t action_fate_two(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_FATE_TWO>(t);
+        auto action_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_THREE>(t);
         }
 
-        coefficient_t action_fate_three(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_FATE_THREE>(t);
+        auto action_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_FOUR>(t);
         }
 
-        coefficient_t action_fate_four(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_FATE_FOUR>(t);
+        auto action_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_FIVE>(t);
         }
 
-        coefficient_t action_fate_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_FATE_OTHER>(t);
+        auto action_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_OTHER>(t);
         }
 
-        coefficient_t action_doom_three(const kingdom_amounts_t& t) noexcept{
+        auto action_attack_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_TWO>(t);
+        }
+
+        auto action_attack_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_THREE>(t);
+        }
+
+        auto action_attack_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_FOUR>(t);
+        }
+
+        auto action_attack_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_FIVE>(t);
+        }
+
+        auto action_attack_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_OTHER>(t);
+        }
+
+        auto action_attack_doom_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DOOM_FOUR>(t);
+        }
+
+        auto action_attack_doom_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DOOM_FIVE>(t);
+        }
+
+        auto action_attack_duration_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DURATION_THREE>(t);
+        }
+
+        auto action_attack_duration_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DURATION_FOUR>(t);
+        }
+
+        auto action_attack_duration_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DURATION_FIVE>(t);
+        }
+
+        auto action_attack_duration_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DURATION_OTHER>(t);
+        }
+
+        auto action_attack_duration_loot_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE>(t);
+        }
+
+        auto action_attack_looter_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_LOOTER_FOUR>(t);
+        }
+
+        auto action_attack_looter_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_LOOTER_FIVE>(t);
+        }
+
+        auto action_attack_omen_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_ATTACK_OMEN_FIVE>(t);
+        }
+
+        auto action_doom_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
             return tuple_enum_get<AmountIndex::ACTION_DOOM_THREE>(t);
         }
 
-        coefficient_t action_doom_four(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_DOOM_FOUR>(t);
+        auto action_doom_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DOOM_FIVE>(t);
         }
 
-        coefficient_t action_doom_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_DOOM_OTHER>(t);
+        auto action_duration_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_TWO>(t);
         }
 
-        coefficient_t action_liaison_two(const kingdom_amounts_t& t) noexcept{
+        auto action_duration_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_THREE>(t);
+        }
+
+        auto action_duration_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_FOUR>(t);
+        }
+
+        auto action_duration_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_FIVE>(t);
+        }
+
+        auto action_duration_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_OTHER>(t);
+        }
+
+        auto action_duration_liaison_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_LIAISON_THREE>(t);
+        }
+
+        auto action_duration_loot_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_DURATION_LOOT_TWO>(t);
+        }
+
+        auto action_fate_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_FATE_TWO>(t);
+        }
+
+        auto action_fate_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_FATE_THREE>(t);
+        }
+
+        auto action_fate_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_FATE_FOUR>(t);
+        }
+
+        auto action_fate_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_FATE_FIVE>(t);
+        }
+
+        auto action_liaison_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
             return tuple_enum_get<AmountIndex::ACTION_LIAISON_TWO>(t);
         }
 
-        coefficient_t action_liaison_three(const kingdom_amounts_t& t) noexcept{
+        auto action_liaison_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
             return tuple_enum_get<AmountIndex::ACTION_LIAISON_THREE>(t);
         }
 
-        coefficient_t action_liaison_four(const kingdom_amounts_t& t) noexcept{
+        auto action_liaison_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
             return tuple_enum_get<AmountIndex::ACTION_LIAISON_FOUR>(t);
         }
 
-        coefficient_t action_liaison_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::ACTION_LIAISON_OTHER>(t);
+        auto action_liaison_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_LIAISON_FIVE>(t);
         }
 
-        coefficient_t treasure_regular_two(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_REGULAR_TWO>(t);
+        auto action_loot_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_LOOT_FIVE>(t);
         }
 
-        coefficient_t treasure_regular_three(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_REGULAR_THREE>(t);
+        auto action_looter_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_LOOTER_FOUR>(t);
         }
 
-        coefficient_t treasure_regular_four(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_REGULAR_FOUR>(t);
+        auto action_omen_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_OMEN_FOUR>(t);
         }
 
-        coefficient_t treasure_regular_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_REGULAR_OTHER>(t);
+        auto action_omen_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_OMEN_FIVE>(t);
         }
 
-        coefficient_t treasure_fate_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_FATE_OTHER>(t);
+        auto action_omen_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_OMEN_OTHER>(t);
         }
 
-        coefficient_t treasure_liaison_two(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_LIAISON_TWO>(t);
+        auto action_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ACTION_TREASURE_FIVE>(t);
         }
 
-        coefficient_t treasure_liaison_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::TREASURE_LIAISON_OTHER>(t);
+        auto attack_doom_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ATTACK_DOOM_FIVE>(t);
         }
 
-        coefficient_t other_regular_two(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::OTHER_REGULAR_TWO>(t);
+        auto attack_duration_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ATTACK_DURATION_OTHER>(t);
         }
 
-        coefficient_t other_regular_three(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::OTHER_REGULAR_THREE>(t);
+        auto attack_fate_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ATTACK_FATE_TREASURE_FIVE>(t);
         }
 
-        coefficient_t other_regular_four(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::OTHER_REGULAR_FOUR>(t);
+        auto attack_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::ATTACK_TREASURE_FIVE>(t);
         }
 
-        coefficient_t other_regular_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::OTHER_REGULAR_OTHER>(t);
+        auto duration_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_TWO>(t);
         }
 
-        coefficient_t other_doom_other(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::OTHER_DOOM_OTHER>(t);
+        auto duration_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_THREE>(t);
         }
 
-        coefficient_t knights(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::KNIGHTS>(t);
+        auto duration_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_FIVE>(t);
         }
 
-        coefficient_t ferryman(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::FERRYMAN>(t);
+        auto duration_liaison_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_LIAISON_TREASURE_FIVE>(t);
         }
 
-        coefficient_t druid(const kingdom_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::DRUID>(t);
+        auto duration_treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_TREASURE_TWO>(t);
         }
 
-    }
-
-    namespace landscapes {
-        coefficient_t setup(const landscapes_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::SETUP>(t);
+        auto duration_treasure_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_TREASURE_THREE>(t);
         }
 
-        coefficient_t obelisk(const landscapes_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::OBELISK>(t);
+        auto duration_treasure_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_TREASURE_FOUR>(t);
         }
 
-        coefficient_t way_of_the_mouse(const landscapes_amounts_t& t) noexcept{
-            return tuple_enum_get<AmountIndex::WAY_OF_THE_MOUSE>(t);
+        auto duration_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::DURATION_TREASURE_FIVE>(t);
+        }
+
+        auto liaison_treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::LIAISON_TREASURE_TWO>(t);
+        }
+
+        auto loot_treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::LOOT_TREASURE_TWO>(t);
+        }
+
+        auto loot_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::LOOT_TREASURE_FIVE>(t);
+        }
+
+        auto loot_treasure_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::LOOT_TREASURE_OTHER>(t);
+        }
+
+        auto treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::TREASURE_TWO>(t);
+        }
+
+        auto treasure_three(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::TREASURE_THREE>(t);
+        }
+
+        auto treasure_four(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::TREASURE_FOUR>(t);
+        }
+
+        auto treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::TREASURE_FIVE>(t);
+        }
+
+        auto treasure_other(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+            return tuple_enum_get<AmountIndex::TREASURE_OTHER>(t);
         }
 
     }

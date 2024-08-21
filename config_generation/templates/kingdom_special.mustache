@@ -1,7 +1,7 @@
 namespace kingdom {
-    using special_tests_t = std::array<typename ExpansionEditionFilter::enum_t, {{num_specials}}uz>;
+    using special_tests_t = std::array<typename ExpansionEditionFilter::enum_t, {{size}}uz>;
 
-    static constexpr auto& special_tests() noexcept {
+    static constexpr auto special_tests() noexcept -> const special_tests_t& {
         {{=<% %>=}}
         static constexpr special_tests_t singleton {{
             <%#data%>

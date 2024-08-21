@@ -1,0 +1,57 @@
+{
+  "tracked_kingdom_card_types": [
+      "ACTION",
+      "ATTACK",
+      "DURATION",
+      "TREASURE",
+      "LOOTER",
+      "FATE",
+      "DOOM",
+      "LIAISON",
+      "LOOT",
+      "OMEN"
+  ],
+  "supported_expansions": [
+    "DOMINION",
+    "INTRIGUE",
+    "SEASIDE",
+    "ALCHEMY",
+    "PROSPERITY",
+    "CORNUCOPIA",
+    "GUILDS",
+    "CORNUCOPIA_GUILDS",
+    "HINTERLANDS",
+    "DARK_AGES",
+    "ADVENTURES",
+    "EMPIRES",
+    "NOCTURNE",
+    "RENAISSANCE",
+    "MENAGERIE",
+    "ALLIES",
+    "PLUNDER",
+    "RISING_SUN",
+    "PROMOS"
+  ],
+  "cost_groups": [
+    {
+      "name": "TWO",
+      "strings": ["2"]
+    },
+    {
+      "name": "THREE",
+      "strings": ["3"]
+    },
+    {
+      "name": "FOUR",
+      "strings": ["4"]
+    },
+    {
+      "name": "FIVE",
+      "strings": ["5"]
+    },
+    {
+      "name": "OTHER",
+      "strings": ["1", "6", "7", "8", "P", "D"]
+    }
+  ]
+}

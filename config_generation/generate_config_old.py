@@ -2,8 +2,8 @@ from os import chdir
 from pathlib import Path
 from argparse import ArgumentParser
 
-from config_io import load_excel_config, load_header_templates, render_config_files
-from template_vars import TemplateVars
+from config_io_old import load_excel_config, load_header_templates, render_config_files
+from template_vars_old import TemplateVars
 
 
 def main():

@@ -9,7 +9,7 @@ namespace landscapes {
 
     using table_t = std::array<row_t, {{size}}uz>;
 
-    static constexpr auto& table() noexcept {
+    static constexpr auto table() noexcept -> const table_t& {
         {{=<% %>=}}
         static constexpr table_t singleton {{
             <%#data%>
@@ -29,7 +29,7 @@ namespace landscapes {
 
     using queries_t = std::array<TableQuery, {{num_queries}}uz>;
 
-    static constexpr auto& amount_queries() noexcept {
+    static constexpr auto amount_queries() noexcept -> const queries_t& {
         {{=<% %>=}}
         static constexpr queries_t singleton {{
             <%#queries%>
