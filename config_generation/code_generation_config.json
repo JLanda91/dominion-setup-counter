@@ -18,11 +18,11 @@
     "ALCHEMY",
     "PROSPERITY",
     "CORNUCOPIA",
-    "GUILDS",
-    "CORNUCOPIA_GUILDS",
     "HINTERLANDS",
     "DARK_AGES",
+    "GUILDS",
     "ADVENTURES",
+    "CORNUCOPIA_GUILDS",
     "EMPIRES",
     "NOCTURNE",
     "RENAISSANCE",
@@ -53,5 +53,12 @@
       "name": "OTHER",
       "strings": ["1", "6", "7", "8", "P", "D"]
     }
+  ],
+  "supply_landscape_types": [
+    "EVENT",
+    "LANDMARK",
+    "PROJECT",
+    "WAY",
+    "TRAIT"
   ]
 }

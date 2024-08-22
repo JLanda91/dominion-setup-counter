@@ -1,19 +1,26 @@
+
 #pragma once
 
 #include "typedefs.hpp"
 
-namespace config {
-    {{#tuple_indices}}
-    namespace {{ns}} {
-        template<AmountIndex ... E>
-        auto tuple_enum_get(const {{ns}}_amounts_t& t) noexcept -> coefficient_t {
-            return (... + (std::get<std::to_underlying(E)>(t)));
-        }
+namespace config::kingdom {
 
-        {{#names}}
-        auto {{function}}(const {{ns}}_amounts_t& t) noexcept -> coefficient_t;
-        {{/names}}
+    template<AmountIndex ... E>
+    auto sum_tuple_on_enum_index(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+        return (... + (std::get<std::to_underlying(E)>(t)));
     }
 
-    {{/tuple_indices}}
+    template<AmountIndex ... E>
+    auto diff_tuple_on_enum_index(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t {
+        return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
+    }
+
+    {{#amount_getters}}
+    {{#count_unused}}
+    auto {{name}}_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t;
+    {{/count_unused}}
+    {{^count_unused}}
+    auto {{name}}_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    {{/count_unused}}
+    {{/amount_getters}}
 }

@@ -1,15 +1,22 @@
 #include "amount_getters.hpp"
 
-namespace config{
-    {{#tuple_indices}}
-    namespace {{ns}} {
-        {{#names}}
-        auto {{function}}(const {{ns}}_amounts_t& t) noexcept -> coefficient_t {
-            return tuple_enum_get<AmountIndex::{{macro}}>(t);
-        }
-
-        {{/names}}
+namespace config::kingdom {
+    {{#amount_getters}}
+    {{#count_unused}}
+    auto {{name}}_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t {
+        return diff_tuple_on_enum_index<
+            {{tuple_indices}}
+        >(t, max);
     }
 
-    {{/tuple_indices}}
+    {{/count_unused}}
+    {{^count_unused}}
+    auto {{name}}_total(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+        return sum_tuple_on_enum_index<
+            {{tuple_indices}}
+        >(t);
+    }
+
+    {{/count_unused}}
+    {{/amount_getters}}
 }

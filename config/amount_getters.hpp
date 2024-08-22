@@ -1,83 +1,29 @@
+
 #pragma once
 
 #include "typedefs.hpp"
 
-namespace config {
-    namespace kingdom {
-        template<AmountIndex ... E>
-        auto tuple_enum_get(const kingdom_amounts_t& t) noexcept -> coefficient_t {
-            return (... + (std::get<std::to_underlying(E)>(t)));
-        }
+namespace config::kingdom {
 
-        auto none_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto none_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto none_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto none_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto none_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_doom_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_doom_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_duration_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_duration_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_duration_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_duration_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_duration_loot_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_looter_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_looter_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_attack_omen_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_doom_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_doom_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_liaison_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_duration_loot_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_fate_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_fate_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_fate_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_fate_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_liaison_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_liaison_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_liaison_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_liaison_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_loot_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_looter_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_omen_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_omen_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_omen_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto action_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto attack_doom_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto attack_duration_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto attack_fate_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto attack_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_liaison_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_treasure_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_treasure_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto duration_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto liaison_treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto loot_treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto loot_treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto loot_treasure_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto treasure_two(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto treasure_three(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto treasure_four(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto treasure_five(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-        auto treasure_other(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    template<AmountIndex ... E>
+    auto sum_tuple_on_enum_index(const kingdom_amounts_t& t) noexcept -> coefficient_t {
+        return (... + (std::get<std::to_underlying(E)>(t)));
     }
 
+    template<AmountIndex ... E>
+    auto diff_tuple_on_enum_index(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t {
+        return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
+    }
+
+    auto looter_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto fate_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto doom_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto liaison_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto loot_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto two_three_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto three_four_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t;
+    auto action_nonduration_five_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t;
+    auto action_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
+    auto action_two_three_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t;
+    auto attack_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t;
 }
