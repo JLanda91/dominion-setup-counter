@@ -3046,7 +3046,7 @@
                 {
                     "expansion": "PLUNDER",
                     "type": "TRAIT",
-                    "amount": 14
+                    "amount": 15
                 },
                 {
                     "expansion": "RISING_SUN",
@@ -3064,16 +3064,26 @@
                     "amount": 1
                 }
             ],
-            "num_queries": 1,
+            "num_queries": 3,
             "queries": [
                 {
-                    "name": "REGULAR",
+                    "name": "EVENT",
                     "types": [
-                        "EVENT",
+                        "EVENT"
+                    ]
+                },
+                {
+                    "name": "TRAIT",
+                    "types": [
+                        "TRAIT"
+                    ]
+                },
+                {
+                    "name": "OTHER_SUPPLY",
+                    "types": [
                         "LANDMARK",
                         "PROJECT",
-                        "WAY",
-                        "TRAIT"
+                        "WAY"
                     ]
                 }
             ]
@@ -3085,27 +3095,32 @@
             "size": 5,
             "data": [
                 {
-                    "name": "YOUNG_WITCH",
+                    "name": "young_witch",
+                    "macro": "YOUNG_WITCH",
                     "expansion": "CORNUCOPIA",
                     "edition_modifier": "NONE"
                 },
                 {
-                    "name": "FERRYMAN",
+                    "name": "ferryman",
+                    "macro": "FERRYMAN",
                     "expansion": "CORNUCOPIA_GUILDS",
                     "edition_modifier": "UPDATE_PACK"
                 },
                 {
-                    "name": "KNIGHTS",
+                    "name": "knights",
+                    "macro": "KNIGHTS",
                     "expansion": "DARK_AGES",
                     "edition_modifier": "NONE"
                 },
                 {
-                    "name": "DRUID",
+                    "name": "druid",
+                    "macro": "DRUID",
                     "expansion": "NOCTURNE",
                     "edition_modifier": "NONE"
                 },
                 {
-                    "name": "RIVERBOAT",
+                    "name": "riverboat",
+                    "macro": "RIVERBOAT",
                     "expansion": "RISING_SUN",
                     "edition_modifier": "NONE"
                 }
@@ -3113,22 +3128,21 @@
         },
         "landscapes": {
             "namespace": "landscapes",
-            "size": 4,
+            "size": 3,
             "data": [
                 {
-                    "name": "OBELISK",
+                    "name": "obelisk",
+                    "macro": "OBELISK",
                     "expansion": "EMPIRES"
                 },
                 {
-                    "name": "WAY_OF_THE_MOUSE",
+                    "name": "way_of_the_mouse",
+                    "macro": "WAY_OF_THE_MOUSE",
                     "expansion": "MENAGERIE"
                 },
                 {
-                    "name": "CURSED",
-                    "expansion": "PLUNDER"
-                },
-                {
-                    "name": "APPROACHING_ARMY",
+                    "name": "approaching_army",
+                    "macro": "APPROACHING_ARMY",
                     "expansion": "RISING_SUN"
                 }
             ]
@@ -3165,9 +3179,9 @@
             "name": "EditionModifier",
             "size": 3,
             "data": [
-                "REMOVED",
+                "NONE",
                 "UPDATE_PACK",
-                "NONE"
+                "REMOVED"
             ]
         },
         {
@@ -3314,54 +3328,166 @@
             "edition_modifier": "NONE"
         }
     ],
-    "amount_getters": [
+    "amount_getters": {
+        "kingdom": [
+            {
+                "name": "looter",
+                "tuple_index": "AmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\t\tAmountIndex::ACTION_LOOTER_FOUR"
+            },
+            {
+                "name": "fate",
+                "tuple_index": "AmountIndex::ACTION_FATE_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\t\tAmountIndex::ATTACK_FATE_TREASURE_FIVE"
+            },
+            {
+                "name": "doom",
+                "tuple_index": "AmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\t\tAmountIndex::ATTACK_DOOM_FIVE"
+            },
+            {
+                "name": "liaison",
+                "tuple_index": "AmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\t\tAmountIndex::DURATION_LIAISON_TREASURE_FIVE,\n\t\t\t\tAmountIndex::LIAISON_TREASURE_TWO"
+            },
+            {
+                "name": "loot",
+                "tuple_index": "AmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\t\tAmountIndex::LOOT_TREASURE_TWO,\n\t\t\t\tAmountIndex::LOOT_TREASURE_FIVE,\n\t\t\t\tAmountIndex::LOOT_TREASURE_OTHER"
+            },
+            {
+                "name": "two_three",
+                "tuple_index": "AmountIndex::NONE_TWO,\n\t\t\t\tAmountIndex::NONE_THREE,\n\t\t\t\tAmountIndex::ACTION_TWO,\n\t\t\t\tAmountIndex::ACTION_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\t\tAmountIndex::DURATION_TWO,\n\t\t\t\tAmountIndex::DURATION_THREE,\n\t\t\t\tAmountIndex::DURATION_TREASURE_TWO,\n\t\t\t\tAmountIndex::DURATION_TREASURE_THREE,\n\t\t\t\tAmountIndex::LIAISON_TREASURE_TWO,\n\t\t\t\tAmountIndex::LOOT_TREASURE_TWO,\n\t\t\t\tAmountIndex::TREASURE_TWO,\n\t\t\t\tAmountIndex::TREASURE_THREE"
+            },
+            {
+                "name": "three_four",
+                "tuple_index": "AmountIndex::NONE_THREE,\n\t\t\t\tAmountIndex::NONE_FOUR,\n\t\t\t\tAmountIndex::ACTION_THREE,\n\t\t\t\tAmountIndex::ACTION_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\t\tAmountIndex::ACTION_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_OMEN_FOUR,\n\t\t\t\tAmountIndex::DURATION_THREE,\n\t\t\t\tAmountIndex::DURATION_TREASURE_THREE,\n\t\t\t\tAmountIndex::DURATION_TREASURE_FOUR,\n\t\t\t\tAmountIndex::TREASURE_THREE,\n\t\t\t\tAmountIndex::TREASURE_FOUR",
+                "count_unused": true
+            },
+            {
+                "name": "action_nonduration_five",
+                "tuple_index": "AmountIndex::ACTION_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_OMEN_FIVE,\n\t\t\t\tAmountIndex::ACTION_TREASURE_FIVE",
+                "count_unused": true
+            },
+            {
+                "name": "action",
+                "tuple_index": "AmountIndex::ACTION_TWO,\n\t\t\t\tAmountIndex::ACTION_THREE,\n\t\t\t\tAmountIndex::ACTION_FOUR,\n\t\t\t\tAmountIndex::ACTION_FIVE,\n\t\t\t\tAmountIndex::ACTION_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_DURATION_FIVE,\n\t\t\t\tAmountIndex::ACTION_DURATION_OTHER,\n\t\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_OMEN_FOUR,\n\t\t\t\tAmountIndex::ACTION_OMEN_FIVE,\n\t\t\t\tAmountIndex::ACTION_OMEN_OTHER,\n\t\t\t\tAmountIndex::ACTION_TREASURE_FIVE"
+            },
+            {
+                "name": "action_two_three",
+                "tuple_index": "AmountIndex::ACTION_TWO,\n\t\t\t\tAmountIndex::ACTION_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\t\tAmountIndex::ACTION_LIAISON_THREE",
+                "count_unused": true
+            },
+            {
+                "name": "attack",
+                "tuple_index": "AmountIndex::ACTION_ATTACK_TWO,\n\t\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\t\tAmountIndex::ATTACK_DOOM_FIVE,\n\t\t\t\tAmountIndex::ATTACK_DURATION_OTHER,\n\t\t\t\tAmountIndex::ATTACK_FATE_TREASURE_FIVE,\n\t\t\t\tAmountIndex::ATTACK_TREASURE_FIVE",
+                "count_unused": true
+            },
+            {
+                "name": "action_or_treasure",
+                "tuple_index": "AmountIndex::ACTION_TWO,\n\t\t\t\tAmountIndex::ACTION_THREE,\n\t\t\t\tAmountIndex::ACTION_FOUR,\n\t\t\t\tAmountIndex::ACTION_FIVE,\n\t\t\t\tAmountIndex::ACTION_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_OTHER,\n\t\t\t\tAmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_FOUR,\n\t\t\t\tAmountIndex::ACTION_DURATION_FIVE,\n\t\t\t\tAmountIndex::ACTION_DURATION_OTHER,\n\t\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\t\tAmountIndex::ACTION_LOOTER_FOUR,\n\t\t\t\tAmountIndex::ACTION_OMEN_FOUR,\n\t\t\t\tAmountIndex::ACTION_OMEN_FIVE,\n\t\t\t\tAmountIndex::ACTION_OMEN_OTHER,\n\t\t\t\tAmountIndex::ACTION_TREASURE_FIVE,\n\t\t\t\tAmountIndex::ATTACK_FATE_TREASURE_FIVE,\n\t\t\t\tAmountIndex::ATTACK_TREASURE_FIVE,\n\t\t\t\tAmountIndex::DURATION_LIAISON_TREASURE_FIVE,\n\t\t\t\tAmountIndex::DURATION_TREASURE_TWO,\n\t\t\t\tAmountIndex::DURATION_TREASURE_THREE,\n\t\t\t\tAmountIndex::DURATION_TREASURE_FOUR,\n\t\t\t\tAmountIndex::DURATION_TREASURE_FIVE,\n\t\t\t\tAmountIndex::LIAISON_TREASURE_TWO,\n\t\t\t\tAmountIndex::LOOT_TREASURE_TWO,\n\t\t\t\tAmountIndex::LOOT_TREASURE_FIVE,\n\t\t\t\tAmountIndex::LOOT_TREASURE_OTHER,\n\t\t\t\tAmountIndex::TREASURE_TWO,\n\t\t\t\tAmountIndex::TREASURE_THREE,\n\t\t\t\tAmountIndex::TREASURE_FOUR,\n\t\t\t\tAmountIndex::TREASURE_FIVE,\n\t\t\t\tAmountIndex::TREASURE_OTHER"
+            }
+        ],
+        "landscapes": [
+            {
+                "name": "event",
+                "tuple_index": "AmountIndex::EVENT"
+            },
+            {
+                "name": "trait",
+                "tuple_index": "AmountIndex::TRAIT"
+            },
+            {
+                "name": "other_supply",
+                "tuple_index": "AmountIndex::OTHER_SUPPLY"
+            }
+        ]
+    },
+    "tuple_indices": [
         {
-            "name": "looter",
-            "tuple_indices": "AmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\tAmountIndex::ACTION_LOOTER_FOUR"
+            "ns": "kingdom",
+            "names": [
+                "NONE_TWO",
+                "NONE_THREE",
+                "NONE_FOUR",
+                "NONE_FIVE",
+                "NONE_OTHER",
+                "ACTION_TWO",
+                "ACTION_THREE",
+                "ACTION_FOUR",
+                "ACTION_FIVE",
+                "ACTION_OTHER",
+                "ACTION_ATTACK_TWO",
+                "ACTION_ATTACK_THREE",
+                "ACTION_ATTACK_FOUR",
+                "ACTION_ATTACK_FIVE",
+                "ACTION_ATTACK_OTHER",
+                "ACTION_ATTACK_DOOM_FOUR",
+                "ACTION_ATTACK_DOOM_FIVE",
+                "ACTION_ATTACK_DURATION_THREE",
+                "ACTION_ATTACK_DURATION_FOUR",
+                "ACTION_ATTACK_DURATION_FIVE",
+                "ACTION_ATTACK_DURATION_OTHER",
+                "ACTION_ATTACK_DURATION_LOOT_FIVE",
+                "ACTION_ATTACK_LOOTER_FOUR",
+                "ACTION_ATTACK_LOOTER_FIVE",
+                "ACTION_ATTACK_OMEN_FIVE",
+                "ACTION_DOOM_THREE",
+                "ACTION_DOOM_FIVE",
+                "ACTION_DURATION_TWO",
+                "ACTION_DURATION_THREE",
+                "ACTION_DURATION_FOUR",
+                "ACTION_DURATION_FIVE",
+                "ACTION_DURATION_OTHER",
+                "ACTION_DURATION_LIAISON_THREE",
+                "ACTION_DURATION_LOOT_TWO",
+                "ACTION_FATE_TWO",
+                "ACTION_FATE_THREE",
+                "ACTION_FATE_FOUR",
+                "ACTION_FATE_FIVE",
+                "ACTION_LIAISON_TWO",
+                "ACTION_LIAISON_THREE",
+                "ACTION_LIAISON_FOUR",
+                "ACTION_LIAISON_FIVE",
+                "ACTION_LOOT_FIVE",
+                "ACTION_LOOTER_FOUR",
+                "ACTION_OMEN_FOUR",
+                "ACTION_OMEN_FIVE",
+                "ACTION_OMEN_OTHER",
+                "ACTION_TREASURE_FIVE",
+                "ATTACK_DOOM_FIVE",
+                "ATTACK_DURATION_OTHER",
+                "ATTACK_FATE_TREASURE_FIVE",
+                "ATTACK_TREASURE_FIVE",
+                "DURATION_TWO",
+                "DURATION_THREE",
+                "DURATION_FIVE",
+                "DURATION_LIAISON_TREASURE_FIVE",
+                "DURATION_TREASURE_TWO",
+                "DURATION_TREASURE_THREE",
+                "DURATION_TREASURE_FOUR",
+                "DURATION_TREASURE_FIVE",
+                "LIAISON_TREASURE_TWO",
+                "LOOT_TREASURE_TWO",
+                "LOOT_TREASURE_FIVE",
+                "LOOT_TREASURE_OTHER",
+                "TREASURE_TWO",
+                "TREASURE_THREE",
+                "TREASURE_FOUR",
+                "TREASURE_FIVE",
+                "TREASURE_OTHER",
+                "YOUNG_WITCH",
+                "FERRYMAN",
+                "KNIGHTS",
+                "DRUID",
+                "RIVERBOAT"
+            ]
         },
         {
-            "name": "fate",
-            "tuple_indices": "AmountIndex::ACTION_FATE_TWO,\n\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\tAmountIndex::ATTACK_FATE_TREASURE_FIVE"
-        },
-        {
-            "name": "doom",
-            "tuple_indices": "AmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\tAmountIndex::ATTACK_DOOM_FIVE"
-        },
-        {
-            "name": "liaison",
-            "tuple_indices": "AmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\tAmountIndex::DURATION_LIAISON_TREASURE_FIVE,\n\t\t\tAmountIndex::LIAISON_TREASURE_TWO"
-        },
-        {
-            "name": "loot",
-            "tuple_indices": "AmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\tAmountIndex::LOOT_TREASURE_TWO,\n\t\t\tAmountIndex::LOOT_TREASURE_FIVE,\n\t\t\tAmountIndex::LOOT_TREASURE_OTHER"
-        },
-        {
-            "name": "two_three",
-            "tuple_indices": "AmountIndex::NONE_TWO,\n\t\t\tAmountIndex::NONE_THREE,\n\t\t\tAmountIndex::ACTION_TWO,\n\t\t\tAmountIndex::ACTION_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\tAmountIndex::DURATION_TWO,\n\t\t\tAmountIndex::DURATION_THREE,\n\t\t\tAmountIndex::DURATION_TREASURE_TWO,\n\t\t\tAmountIndex::DURATION_TREASURE_THREE,\n\t\t\tAmountIndex::LIAISON_TREASURE_TWO,\n\t\t\tAmountIndex::LOOT_TREASURE_TWO,\n\t\t\tAmountIndex::TREASURE_TWO,\n\t\t\tAmountIndex::TREASURE_THREE"
-        },
-        {
-            "name": "three_four",
-            "tuple_indices": "AmountIndex::NONE_THREE,\n\t\t\tAmountIndex::NONE_FOUR,\n\t\t\tAmountIndex::ACTION_THREE,\n\t\t\tAmountIndex::ACTION_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_FOUR,\n\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\tAmountIndex::ACTION_LOOTER_FOUR,\n\t\t\tAmountIndex::ACTION_OMEN_FOUR,\n\t\t\tAmountIndex::DURATION_THREE,\n\t\t\tAmountIndex::DURATION_TREASURE_THREE,\n\t\t\tAmountIndex::DURATION_TREASURE_FOUR,\n\t\t\tAmountIndex::TREASURE_THREE,\n\t\t\tAmountIndex::TREASURE_FOUR",
-            "count_unused": true
-        },
-        {
-            "name": "action_nonduration_five",
-            "tuple_indices": "AmountIndex::ACTION_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\tAmountIndex::ACTION_OMEN_FIVE,\n\t\t\tAmountIndex::ACTION_TREASURE_FIVE",
-            "count_unused": true
-        },
-        {
-            "name": "action",
-            "tuple_indices": "AmountIndex::ACTION_TWO,\n\t\t\tAmountIndex::ACTION_THREE,\n\t\t\tAmountIndex::ACTION_FOUR,\n\t\t\tAmountIndex::ACTION_FIVE,\n\t\t\tAmountIndex::ACTION_OTHER,\n\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_OTHER,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_OTHER,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\tAmountIndex::ACTION_DOOM_FIVE,\n\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_FOUR,\n\t\t\tAmountIndex::ACTION_DURATION_FIVE,\n\t\t\tAmountIndex::ACTION_DURATION_OTHER,\n\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\tAmountIndex::ACTION_FATE_FOUR,\n\t\t\tAmountIndex::ACTION_FATE_FIVE,\n\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\tAmountIndex::ACTION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_LIAISON_FOUR,\n\t\t\tAmountIndex::ACTION_LIAISON_FIVE,\n\t\t\tAmountIndex::ACTION_LOOT_FIVE,\n\t\t\tAmountIndex::ACTION_LOOTER_FOUR,\n\t\t\tAmountIndex::ACTION_OMEN_FOUR,\n\t\t\tAmountIndex::ACTION_OMEN_FIVE,\n\t\t\tAmountIndex::ACTION_OMEN_OTHER,\n\t\t\tAmountIndex::ACTION_TREASURE_FIVE"
-        },
-        {
-            "name": "action_two_three",
-            "tuple_indices": "AmountIndex::ACTION_TWO,\n\t\t\tAmountIndex::ACTION_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_TWO,\n\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_DOOM_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_TWO,\n\t\t\tAmountIndex::ACTION_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_LIAISON_THREE,\n\t\t\tAmountIndex::ACTION_DURATION_LOOT_TWO,\n\t\t\tAmountIndex::ACTION_FATE_TWO,\n\t\t\tAmountIndex::ACTION_FATE_THREE,\n\t\t\tAmountIndex::ACTION_LIAISON_TWO,\n\t\t\tAmountIndex::ACTION_LIAISON_THREE",
-            "count_unused": true
-        },
-        {
-            "name": "attack",
-            "tuple_indices": "AmountIndex::ACTION_ATTACK_TWO,\n\t\t\tAmountIndex::ACTION_ATTACK_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_OTHER,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DOOM_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_THREE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_OTHER,\n\t\t\tAmountIndex::ACTION_ATTACK_DURATION_LOOT_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FOUR,\n\t\t\tAmountIndex::ACTION_ATTACK_LOOTER_FIVE,\n\t\t\tAmountIndex::ACTION_ATTACK_OMEN_FIVE,\n\t\t\tAmountIndex::ATTACK_DOOM_FIVE,\n\t\t\tAmountIndex::ATTACK_DURATION_OTHER,\n\t\t\tAmountIndex::ATTACK_FATE_TREASURE_FIVE,\n\t\t\tAmountIndex::ATTACK_TREASURE_FIVE",
-            "count_unused": true
+            "ns": "landscapes",
+            "names": [
+                "EVENT",
+                "TRAIT",
+                "OTHER_SUPPLY",
+                "OBELISK",
+                "WAY_OF_THE_MOUSE",
+                "APPROACHING_ARMY"
+            ]
         }
     ]
 }

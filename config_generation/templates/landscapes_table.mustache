@@ -33,9 +33,7 @@ namespace landscapes {
         {{=<% %>=}}
         static constexpr queries_t singleton {{
             <%#queries%>
-            <%#query%>
-            { {<%#type%>Type::<%.%>, <%/type%>} },  // <%name%>
-            <%/query%>
+            { {<%#types%>Type::<%.%>, <%/types%>} },  // <%name%>
             <%/queries%>
         }};
         <%={{ }}=%>

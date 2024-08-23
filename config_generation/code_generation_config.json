@@ -54,11 +54,23 @@
       "strings": ["1", "6", "7", "8", "P", "D"]
     }
   ],
-  "supply_landscape_types": [
-    "EVENT",
-    "LANDMARK",
-    "PROJECT",
-    "WAY",
-    "TRAIT"
+  "supply_landscape_groups": [
+    {
+      "name": "EVENT",
+      "strings": ["EVENT"]
+    },
+    {
+      "name": "TRAIT",
+      "strings": ["TRAIT"]
+    },
+    {
+      "name": "OTHER_SUPPLY",
+      "strings": ["LANDMARK", "PROJECT", "WAY"]
+    }
+  ],
+  "tracked_landscape_piles": [
+    "HEX",
+    "BOON",
+    "ALLY"
   ]
 }

@@ -3,24 +3,45 @@
 
 #include "typedefs.hpp"
 
-namespace config::kingdom {
+namespace config {
+    namespace kingdom{
+        {{> tuple_enum_getters}}
 
-    template<AmountIndex ... E>
-    auto sum_tuple_on_enum_index(const kingdom_amounts_t& t) noexcept -> coefficient_t {
-        return (... + (std::get<std::to_underlying(E)>(t)));
+        {{#amount_getters}}
+        {{#kingdom}}
+        {{#count_unused}}
+        auto unused_{{name}}_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;
+        {{/count_unused}}
+        {{^count_unused}}
+        auto {{name}}_total(const amounts_t& t) noexcept -> coefficient_t;
+        {{/count_unused}}
+        {{/kingdom}}
+        {{/amount_getters}}
+
+        {{#specials}}
+        {{#kingdom}}
+        {{#data}}
+        auto has_{{name}}(const amounts_t& t) noexcept -> bool;
+        {{/data}}
+        {{/kingdom}}
+        {{/specials}}
     }
 
-    template<AmountIndex ... E>
-    auto diff_tuple_on_enum_index(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t {
-        return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
-    }
+    namespace landscapes {
+        {{> tuple_enum_getters}}
 
-    {{#amount_getters}}
-    {{#count_unused}}
-    auto {{name}}_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t;
-    {{/count_unused}}
-    {{^count_unused}}
-    auto {{name}}_total(const kingdom_amounts_t& t) noexcept -> coefficient_t;
-    {{/count_unused}}
-    {{/amount_getters}}
+        {{#amount_getters}}
+        {{#landscapes}}
+        auto {{name}}_total(const amounts_t& t) noexcept -> coefficient_t;
+        {{/landscapes}}
+        {{/amount_getters}}
+
+        {{#specials}}
+        {{#landscapes}}
+        {{#data}}
+        auto has_{{name}}(const amounts_t& t) noexcept -> bool;
+        {{/data}}
+        {{/landscapes}}
+        {{/specials}}
+    }
 }

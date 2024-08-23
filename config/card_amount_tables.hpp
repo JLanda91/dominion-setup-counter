@@ -34,9 +34,9 @@ namespace config {
 
     namespace kingdom {
         enum class EditionModifier : uint8_t {
-            REMOVED,
-            UPDATE_PACK,
             NONE,
+            UPDATE_PACK,
+            REMOVED,
         };
 
         using SizedEditionModifier = utils::enums::SizedEnum<EditionModifier, 3uz>;
@@ -452,7 +452,90 @@ namespace config {
             }};
             return singleton;
         }
+    }
 
+    namespace landscapes {
+        struct row_t {
+            Expansion expansion_;
+            Type type_;
+            int8_t amount_;
+
+            constexpr bool operator==(const row_t& other) const noexcept = default;
+        };
+
+        using table_t = std::array<row_t, 14uz>;
+
+        static constexpr auto table() noexcept -> const table_t& {
+            static constexpr table_t singleton {{
+                { Expansion::ADVENTURES, Type::EVENT, 20 },
+                { Expansion::EMPIRES, Type::EVENT, 13 },
+                { Expansion::EMPIRES, Type::LANDMARK, 20 },
+                { Expansion::NOCTURNE, Type::HEX, 12 },
+                { Expansion::NOCTURNE, Type::BOON, 12 },
+                { Expansion::RENAISSANCE, Type::PROJECT, 20 },
+                { Expansion::MENAGERIE, Type::EVENT, 20 },
+                { Expansion::MENAGERIE, Type::WAY, 19 },
+                { Expansion::ALLIES, Type::ALLY, 23 },
+                { Expansion::PLUNDER, Type::EVENT, 15 },
+                { Expansion::PLUNDER, Type::TRAIT, 15 },
+                { Expansion::RISING_SUN, Type::EVENT, 10 },
+                { Expansion::RISING_SUN, Type::PROPHECY, 14 },
+                { Expansion::PROMOS, Type::EVENT, 1 },
+            }};
+            return singleton;
+        }
+
+        using ExpansionFilter = utils::table::EnumMask<SizedExpansion>;
+        using TypeFilter = utils::table::EnumMask<SizedType>;
+
+        struct TableQuery {
+            TypeFilter type_{};
+        };
+
+        using queries_t = std::array<TableQuery, 3uz>;
+
+        static constexpr auto amount_queries() noexcept -> const queries_t& {
+            static constexpr queries_t singleton {{
+                { {Type::EVENT, } },  // EVENT
+                { {Type::TRAIT, } },  // TRAIT
+                { {Type::LANDMARK, Type::PROJECT, Type::WAY, } },  // OTHER_SUPPLY
+            }};
+            return singleton;
+        }
+    }
+
+
+    namespace kingdom {
+        using special_tests_t = std::array<typename ExpansionEditionFilter::enum_t, 5uz>;
+
+        static constexpr auto special_tests() noexcept -> const special_tests_t& {
+            static constexpr special_tests_t singleton {{
+                { Expansion::CORNUCOPIA, EditionModifier::NONE },    // young_witch
+                { Expansion::CORNUCOPIA_GUILDS, EditionModifier::UPDATE_PACK },    // ferryman
+                { Expansion::DARK_AGES, EditionModifier::NONE },    // knights
+                { Expansion::NOCTURNE, EditionModifier::NONE },    // druid
+                { Expansion::RISING_SUN, EditionModifier::NONE },    // riverboat
+            }};
+            return singleton;
+        }
+    }
+
+
+    namespace landscapes {
+        using special_tests_t = std::array<typename ExpansionFilter::enum_t, 3uz>;
+
+        static constexpr auto special_tests() noexcept -> const special_tests_t& {
+            static constexpr special_tests_t singleton {{
+                Expansion::EMPIRES,   // obelisk
+                Expansion::MENAGERIE,   // way_of_the_mouse
+                Expansion::RISING_SUN,   // approaching_army
+            }};
+            return singleton;
+        }
+    }
+
+
+    namespace kingdom {
         enum class AmountIndex : std::size_t {
             NONE_TWO,
             NONE_THREE,
@@ -523,87 +606,23 @@ namespace config {
             TREASURE_FOUR,
             TREASURE_FIVE,
             TREASURE_OTHER,
+            YOUNG_WITCH,
+            FERRYMAN,
+            KNIGHTS,
+            DRUID,
+            RIVERBOAT,
         };
     }
 
     namespace landscapes {
-        struct row_t {
-            Expansion expansion_;
-            Type type_;
-            int8_t amount_;
-
-            constexpr bool operator==(const row_t& other) const noexcept = default;
+        enum class AmountIndex : std::size_t {
+            EVENT,
+            TRAIT,
+            OTHER_SUPPLY,
+            OBELISK,
+            WAY_OF_THE_MOUSE,
+            APPROACHING_ARMY,
         };
-
-        using table_t = std::array<row_t, 14uz>;
-
-        static constexpr auto table() noexcept -> const table_t& {
-            static constexpr table_t singleton {{
-                { Expansion::ADVENTURES, Type::EVENT, 20 },
-                { Expansion::EMPIRES, Type::EVENT, 13 },
-                { Expansion::EMPIRES, Type::LANDMARK, 20 },
-                { Expansion::NOCTURNE, Type::HEX, 12 },
-                { Expansion::NOCTURNE, Type::BOON, 12 },
-                { Expansion::RENAISSANCE, Type::PROJECT, 20 },
-                { Expansion::MENAGERIE, Type::EVENT, 20 },
-                { Expansion::MENAGERIE, Type::WAY, 19 },
-                { Expansion::ALLIES, Type::ALLY, 23 },
-                { Expansion::PLUNDER, Type::EVENT, 15 },
-                { Expansion::PLUNDER, Type::TRAIT, 14 },
-                { Expansion::RISING_SUN, Type::EVENT, 10 },
-                { Expansion::RISING_SUN, Type::PROPHECY, 14 },
-                { Expansion::PROMOS, Type::EVENT, 1 },
-            }};
-            return singleton;
-        }
-
-        using ExpansionFilter = utils::table::EnumMask<SizedExpansion>;
-        using TypeFilter = utils::table::EnumMask<SizedType>;
-
-        struct TableQuery {
-            TypeFilter type_{};
-        };
-
-        using queries_t = std::array<TableQuery, 1uz>;
-
-        static constexpr auto amount_queries() noexcept -> const queries_t& {
-            static constexpr queries_t singleton {{
-            }};
-            return singleton;
-        }
     }
-
-
-    namespace kingdom {
-        using special_tests_t = std::array<typename ExpansionEditionFilter::enum_t, 5uz>;
-
-        static constexpr auto special_tests() noexcept -> const special_tests_t& {
-            static constexpr special_tests_t singleton {{
-                { Expansion::CORNUCOPIA, EditionModifier::NONE },    // YOUNG_WITCH
-                { Expansion::CORNUCOPIA_GUILDS, EditionModifier::UPDATE_PACK },    // FERRYMAN
-                { Expansion::DARK_AGES, EditionModifier::NONE },    // KNIGHTS
-                { Expansion::NOCTURNE, EditionModifier::NONE },    // DRUID
-                { Expansion::RISING_SUN, EditionModifier::NONE },    // RIVERBOAT
-            }};
-            return singleton;
-        }
-    }
-
-
-    namespace landscapes {
-        using special_tests_t = std::array<typename ExpansionFilter::enum_t, 4uz>;
-
-        static constexpr auto special_tests() noexcept -> const special_tests_t& {
-            static constexpr special_tests_t singleton {{
-                Expansion::EMPIRES,   // OBELISK
-                Expansion::MENAGERIE,   // WAY_OF_THE_MOUSE
-                Expansion::PLUNDER,   // CURSED
-                Expansion::RISING_SUN,   // APPROACHING_ARMY
-            }};
-            return singleton;
-        }
-    }
-
-
 
 }

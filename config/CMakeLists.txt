@@ -29,5 +29,6 @@ add_library(config
         generator_bounds.cpp
         generator_bounds.hpp
         typedefs.hpp
+        amount_getters.cpp
         amount_getters.hpp
 )

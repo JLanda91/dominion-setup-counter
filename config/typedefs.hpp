@@ -13,12 +13,15 @@ namespace config {
     template<size_t N>
     using coefficient_tuple_t = typename utils::tuple::repeated_tuple<coefficient_t, N>::type;
 
-    using kingdom_query_amounts_t = coefficient_tuple_t<std::tuple_size_v<kingdom::queries_t>>;
-    using landscapes_query_amounts_t = coefficient_tuple_t<std::tuple_size_v<landscapes::queries_t>>;
+    namespace kingdom {
+        using query_amounts_t = coefficient_tuple_t<std::tuple_size_v<kingdom::queries_t>>;
+        using special_amounts_t = coefficient_tuple_t<std::tuple_size_v<kingdom::special_tests_t>>;
+        using amounts_t = coefficient_tuple_t<std::tuple_size_v<kingdom::queries_t> + std::tuple_size_v<kingdom::special_tests_t>>;
+    }
 
-    using kingdom_special_amounts_t = coefficient_tuple_t<std::tuple_size_v<kingdom::special_tests_t>>;
-    using landscapes_special_amounts_t = coefficient_tuple_t<std::tuple_size_v<landscapes::special_tests_t>>;
-
-    using kingdom_amounts_t = coefficient_tuple_t<std::tuple_size_v<kingdom::queries_t> + std::tuple_size_v<kingdom::special_tests_t>>;
-    using landscapes_amounts_t = coefficient_tuple_t<std::tuple_size_v<landscapes::queries_t> + std::tuple_size_v<landscapes::special_tests_t>>;
+    namespace landscapes {
+        using query_amounts_t = coefficient_tuple_t<std::tuple_size_v<landscapes::queries_t>>;
+        using special_amounts_t = coefficient_tuple_t<std::tuple_size_v<landscapes::special_tests_t>>;
+        using amounts_t = coefficient_tuple_t<std::tuple_size_v<landscapes::queries_t> + std::tuple_size_v<landscapes::special_tests_t>>;
+    }
 }

@@ -30,7 +30,8 @@ class TemplateVars:
         self._data["specials"] = {"kingdom": self._kingdom_specials(), "landscapes": self._landscapes_specials()}
         self._data["enums"] = self._enums()
         self._data["default_editions"] = self._default_editions()
-        self._data["amount_getters"] = self._amount_getters()
+        self._data["amount_getters"] = {"kingdom": self._kingdom_amount_getters(), "landscapes": self._landscapes_amount_getters()}
+        self._data["tuple_indices"] = self._tuple_indices()
 
     def _kingdom_table(self):
         table = self._card_list["kingdom_regular"]
@@ -61,11 +62,11 @@ class TemplateVars:
                          "type": landscape_type,
                          "amount": amount
                      } for (expansion, landscape_type), amount in table.itertuples()),
-            "num_queries": 1,
+            "num_queries": len(self._generator_config["supply_landscape_groups"]),
             "queries": [{
-                    "name": "REGULAR",
-                    "types": self._generator_config["supply_landscape_types"],
-            }, ]
+                    "name": supply_landscape_group["name"],
+                    "types": supply_landscape_group["strings"],
+            } for supply_landscape_group in self._generator_config["supply_landscape_groups"]]
         }
 
     def _kingdom_specials(self):
@@ -74,7 +75,8 @@ class TemplateVars:
             "namespace": "kingdom",
             "size": len(source_table),
             "data": list({
-                             "name": self._macro_name(name),
+                             "name": name.lower().translate(str.maketrans({' ': '_'})),
+                             "macro": name.upper().translate(str.maketrans({' ': '_'})),
                              "expansion": self._macro_name(expansion),
                              "edition_modifier": self._edition_modifier(edition),
                          } for _, name, expansion, edition in source_table.itertuples())
@@ -86,7 +88,8 @@ class TemplateVars:
             "namespace": "landscapes",
             "size": len(source_table),
             "data": list({
-                             "name": self._macro_name(name),
+                             "name": name.lower().translate(str.maketrans({' ': '_'})),
+                             "macro": name.upper().translate(str.maketrans({' ': '_'})),
                              "expansion": self._macro_name(expansion),
                          } for _, name, expansion in source_table.itertuples())
         }
@@ -140,59 +143,80 @@ class TemplateVars:
                         "edition_modifier": edition_modifier
                     } for expansion, edition_modifier in iterable)
 
-    def _amount_getters(self):
-        def kingdom_query_filter_str(q_filter):
-            return ',\n\t\t\t'.join(f'AmountIndex::{q["name"]}' for q in self._data["tables"]["kingdom"]["queries"] if q_filter(q))
+    def _kingdom_amount_getters(self):
+        def filter_queries(q_filter):
+            return ',\n\t\t\t\t'.join(f'AmountIndex::{q["name"]}' for q in self._data["tables"]["kingdom"]["queries"] if q_filter(q))
 
         return [
             {   # Looter
                 "name": "looter",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'LOOTER' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'LOOTER' in q["tracked_types"]),
             },
             {   # Fate
                 "name": "fate",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'FATE' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'FATE' in q["tracked_types"]),
             },
             {   # Doom
                 "name": "doom",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'DOOM' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'DOOM' in q["tracked_types"]),
             },
             {   # Liaison
                 "name": "liaison",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'LIAISON' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'LIAISON' in q["tracked_types"]),
             },
             {   # Loot
                 "name": "loot",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'LOOT' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'LOOT' in q["tracked_types"]),
             },
             {   # Young Witch
                 "name": "two_three",
-                "tuple_indices": kingdom_query_filter_str(lambda q: q["cost_group"] in ('TWO', 'THREE')),
+                "tuple_index": filter_queries(lambda q: q["cost_group"] in ('TWO', 'THREE')),
             },
             {   # Ferryman
                 "name": "three_four",
-                "tuple_indices": kingdom_query_filter_str(lambda q:  q["cost_group"] in ('THREE', 'FOUR')),
+                "tuple_index": filter_queries(lambda q:  q["cost_group"] in ('THREE', 'FOUR')),
                 "count_unused": True,
             },
             {   # Riverboat
                 "name": "action_nonduration_five",
-                "tuple_indices": kingdom_query_filter_str(lambda q:  (q["cost_group"] == 'FIVE') and ('ACTION' in q["tracked_types"]) and ('DURATION' not in q["tracked_types"])),
+                "tuple_index": filter_queries(lambda q:  (q["cost_group"] == 'FIVE') and ('ACTION' in q["tracked_types"]) and ('DURATION' not in q["tracked_types"])),
                 "count_unused": True,
             },
             {   # Obelisk
                 "name": "action",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'ACTION' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'ACTION' in q["tracked_types"]),
             },
             {   # Way Of The Mouse
                 "name": "action_two_three",
-                "tuple_indices": kingdom_query_filter_str(lambda q: ('ACTION' in q["tracked_types"]) and (q["cost_group"] in ('TWO', 'THREE'))),
+                "tuple_index": filter_queries(lambda q: ('ACTION' in q["tracked_types"]) and (q["cost_group"] in ('TWO', 'THREE'))),
                 "count_unused": True,
             },
             {   # Approaching Army
                 "name": "attack",
-                "tuple_indices": kingdom_query_filter_str(lambda q: 'ATTACK' in q["tracked_types"]),
+                "tuple_index": filter_queries(lambda q: 'ATTACK' in q["tracked_types"]),
                 "count_unused": True,
             },
+            {   # Traits
+                "name": "action_or_treasure",
+                "tuple_index": filter_queries(lambda q: any(map(lambda t: t in q["tracked_types"], ("ACTION", "TREASURE",)))),
+            },
+        ]
+
+    def _landscapes_amount_getters(self):
+        queries = self._data["tables"]["landscapes"]["queries"]
+        return [
+            {
+                "name": query["name"].lower(),
+                "tuple_index": f"AmountIndex::{query['name']}"
+            } for query in queries
+        ]
+
+    def _tuple_indices(self):
+        return [
+            {
+                "ns": ns,
+                "names": list(q["name"] for q in self._data["tables"][ns]["queries"]) + list(q["name"].upper() for q in self._data["specials"][ns]["data"])
+            } for ns in ("kingdom", "landscapes",)
         ]
 
     def to_dict(self):

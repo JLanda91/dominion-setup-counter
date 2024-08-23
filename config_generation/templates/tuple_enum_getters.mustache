@@ -1,0 +1,9 @@
+template<AmountIndex ... E>
+auto sum_tuple_on_enum_index(const amounts_t& t) noexcept -> coefficient_t {
+    return (... + (std::get<std::to_underlying(E)>(t)));
+}
+
+template<AmountIndex ... E>
+auto diff_tuple_on_enum_index(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+    return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
+}

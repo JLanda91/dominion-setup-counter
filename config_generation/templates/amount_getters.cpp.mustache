@@ -1,22 +1,59 @@
 #include "amount_getters.hpp"
 
-namespace config::kingdom {
-    {{#amount_getters}}
-    {{#count_unused}}
-    auto {{name}}_unused(const kingdom_amounts_t& t, const kingdom_amounts_t& max) noexcept -> coefficient_t {
-        return diff_tuple_on_enum_index<
-            {{tuple_indices}}
-        >(t, max);
+namespace config {
+    namespace kingdom {
+        {{#amount_getters}}
+        {{#kingdom}}
+        {{#count_unused}}
+        auto unused_{{name}}_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+            return diff_tuple_on_enum_index<
+                {{tuple_index}}
+            >(t, max);
+        }
+
+        {{/count_unused}}
+        {{^count_unused}}
+        auto {{name}}_total(const amounts_t& t) noexcept -> coefficient_t {
+            return sum_tuple_on_enum_index<
+                {{tuple_index}}
+            >(t);
+        }
+
+        {{/count_unused}}
+        {{/kingdom}}
+        {{/amount_getters}}
+
+        {{#specials}}
+        {{#kingdom}}
+        {{#data}}
+        auto has_{{name}}(const amounts_t& t) noexcept -> bool {
+            return std::get<std::to_underlying(AmountIndex::{{macro}})>(t) > 0u;
+        }
+
+        {{/data}}
+        {{/kingdom}}
+        {{/specials}}
     }
 
-    {{/count_unused}}
-    {{^count_unused}}
-    auto {{name}}_total(const kingdom_amounts_t& t) noexcept -> coefficient_t {
-        return sum_tuple_on_enum_index<
-            {{tuple_indices}}
-        >(t);
-    }
+    namespace landscapes {
+        {{#amount_getters}}
+        {{#landscapes}}
+        auto {{name}}_total(const amounts_t& t) noexcept -> coefficient_t {
+            return std::get<std::to_underlying({{tuple_index}})>(t);
+        }
 
-    {{/count_unused}}
-    {{/amount_getters}}
+        {{/landscapes}}
+        {{/amount_getters}}
+
+        {{#specials}}
+        {{#landscapes}}
+        {{#data}}
+        auto has_{{name}}(const amounts_t& t) noexcept -> bool {
+            return std::get<std::to_underlying(AmountIndex::{{macro}})>(t) > 0u;
+        }
+
+        {{/data}}
+        {{/landscapes}}
+        {{/specials}}
+    }
 }
