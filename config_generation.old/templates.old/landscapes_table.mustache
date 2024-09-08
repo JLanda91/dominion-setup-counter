@@ -2,7 +2,7 @@ namespace landscapes {
     struct row_t {
         Expansion expansion_;
         Type type_;
-        int8_t amount_;
+        uint8_t amount_;
 
         constexpr bool operator==(const row_t& other) const noexcept = default;
     };

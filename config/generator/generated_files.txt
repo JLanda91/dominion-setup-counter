@@ -1,0 +1,1 @@
+templates/card_amount_tables.hpp -o ../card_amount_tables.hpp -I .

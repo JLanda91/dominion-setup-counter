@@ -2,10 +2,10 @@ namespace kingdom {
     using TrackedTypeMask = utils::table::EnumMask<SizedTrackedType>;
 
     struct row_t {
-        std::pair<Expansion, EditionModifier> expansion_edition_;
-        TrackedTypeMask tracked_types_;
-        CostGroup cost_group_;
-        int8_t amount_;
+        std::pair<Expansion, EditionModifier> expansion_edition_{};
+        TrackedTypeMask tracked_types_mask_{};
+        CostGroup cost_group_{};
+        uint8_t amount_{};
 
         constexpr bool operator==(const row_t& other) const noexcept = default;
     };
@@ -24,11 +24,10 @@ namespace kingdom {
     }
 
     using ExpansionEditionFilter = utils::table::EnumMask<SizedExpansion, SizedEditionModifier>;
-    using CostGroupFilter = utils::table::EnumMask<SizedCostGroup>;
 
     struct TableQuery {
-        TrackedTypeMask tracked_types_{};
-        CostGroupFilter cost_group_{};
+        TrackedTypeMask tracked_types_mask_{};
+        CostGroup cost_group_{};
     };
 
     using queries_t = std::array<TableQuery, {{num_queries}}uz>;
@@ -37,7 +36,7 @@ namespace kingdom {
         {{=<% %>=}}
         static constexpr queries_t singleton {{
             <%#queries%>
-            { {<%#tracked_types%>TrackedType::<%.%>, <%/tracked_types%>}, {CostGroup::<%cost_group%>} },    // <%name%>
+            { {<%#tracked_types%>TrackedType::<%.%>, <%/tracked_types%>}, CostGroup::<%cost_group%> },    // <%name%>
             <%/queries%>
         }};
         <%={{ }}=%>

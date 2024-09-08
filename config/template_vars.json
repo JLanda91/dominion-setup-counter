@@ -3218,114 +3218,16 @@
             "name": "Type",
             "size": 9,
             "data": [
-                "EVENT",
-                "LANDMARK",
-                "HEX",
-                "BOON",
-                "PROJECT",
-                "WAY",
                 "ALLY",
+                "BOON",
+                "EVENT",
+                "HEX",
+                "LANDMARK",
+                "PROJECT",
+                "PROPHECY",
                 "TRAIT",
-                "PROPHECY"
+                "WAY"
             ]
-        }
-    ],
-    "default_editions": [
-        {
-            "expansion": "DOMINION",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "DOMINION",
-            "edition_modifier": "UPDATE_PACK"
-        },
-        {
-            "expansion": "INTRIGUE",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "INTRIGUE",
-            "edition_modifier": "UPDATE_PACK"
-        },
-        {
-            "expansion": "SEASIDE",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "SEASIDE",
-            "edition_modifier": "UPDATE_PACK"
-        },
-        {
-            "expansion": "ALCHEMY",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "PROSPERITY",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "PROSPERITY",
-            "edition_modifier": "UPDATE_PACK"
-        },
-        {
-            "expansion": "CORNUCOPIA",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "HINTERLANDS",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "HINTERLANDS",
-            "edition_modifier": "UPDATE_PACK"
-        },
-        {
-            "expansion": "DARK_AGES",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "GUILDS",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "ADVENTURES",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "CORNUCOPIA_GUILDS",
-            "edition_modifier": "UPDATE_PACK"
-        },
-        {
-            "expansion": "EMPIRES",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "NOCTURNE",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "RENAISSANCE",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "MENAGERIE",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "ALLIES",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "PLUNDER",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "RISING_SUN",
-            "edition_modifier": "NONE"
-        },
-        {
-            "expansion": "PROMOS",
-            "edition_modifier": "NONE"
         }
     ],
     "amount_getters": {
@@ -3487,6 +3389,681 @@
                 "OBELISK",
                 "WAY_OF_THE_MOUSE",
                 "APPROACHING_ARMY"
+            ]
+        }
+    ],
+    "generator_bounds_tests": [
+        {
+            "name": "all_expansion_editions",
+            "all": true,
+            "kingdom_outcome": [
+                {
+                    "name": "NONE_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "NONE_THREE",
+                    "amount": 4
+                },
+                {
+                    "name": "NONE_FOUR",
+                    "amount": 6
+                },
+                {
+                    "name": "NONE_FIVE",
+                    "amount": 2
+                },
+                {
+                    "name": "NONE_OTHER",
+                    "amount": 3
+                },
+                {
+                    "name": "ACTION_TWO",
+                    "amount": 34
+                },
+                {
+                    "name": "ACTION_THREE",
+                    "amount": 53
+                },
+                {
+                    "name": "ACTION_FOUR",
+                    "amount": 84
+                },
+                {
+                    "name": "ACTION_FIVE",
+                    "amount": 87
+                },
+                {
+                    "name": "ACTION_OTHER",
+                    "amount": 28
+                },
+                {
+                    "name": "ACTION_ATTACK_TWO",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_ATTACK_THREE",
+                    "amount": 6
+                },
+                {
+                    "name": "ACTION_ATTACK_FOUR",
+                    "amount": 12
+                },
+                {
+                    "name": "ACTION_ATTACK_FIVE",
+                    "amount": 26
+                },
+                {
+                    "name": "ACTION_ATTACK_OTHER",
+                    "amount": 3
+                },
+                {
+                    "name": "ACTION_ATTACK_DOOM_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_DOOM_FIVE",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_THREE",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_FIVE",
+                    "amount": 8
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_OTHER",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_LOOT_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_LOOTER_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_LOOTER_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_OMEN_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_DOOM_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_DOOM_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_DURATION_TWO",
+                    "amount": 3
+                },
+                {
+                    "name": "ACTION_DURATION_THREE",
+                    "amount": 12
+                },
+                {
+                    "name": "ACTION_DURATION_FOUR",
+                    "amount": 9
+                },
+                {
+                    "name": "ACTION_DURATION_FIVE",
+                    "amount": 12
+                },
+                {
+                    "name": "ACTION_DURATION_OTHER",
+                    "amount": 3
+                },
+                {
+                    "name": "ACTION_DURATION_LIAISON_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_DURATION_LOOT_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_FATE_TWO",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_FATE_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_FATE_FOUR",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_FATE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_LIAISON_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_LIAISON_THREE",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_LIAISON_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_LIAISON_FIVE",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_LOOT_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_LOOTER_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_OMEN_FOUR",
+                    "amount": 3
+                },
+                {
+                    "name": "ACTION_OMEN_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_OMEN_OTHER",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_TREASURE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ATTACK_DOOM_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ATTACK_DURATION_OTHER",
+                    "amount": 1
+                },
+                {
+                    "name": "ATTACK_FATE_TREASURE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ATTACK_TREASURE_FIVE",
+                    "amount": 2
+                },
+                {
+                    "name": "DURATION_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "DURATION_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "DURATION_FIVE",
+                    "amount": 3
+                },
+                {
+                    "name": "DURATION_LIAISON_TREASURE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "DURATION_TREASURE_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "DURATION_TREASURE_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "DURATION_TREASURE_FOUR",
+                    "amount": 3
+                },
+                {
+                    "name": "DURATION_TREASURE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "LIAISON_TREASURE_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "LOOT_TREASURE_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "LOOT_TREASURE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "LOOT_TREASURE_OTHER",
+                    "amount": 1
+                },
+                {
+                    "name": "TREASURE_TWO",
+                    "amount": 4
+                },
+                {
+                    "name": "TREASURE_THREE",
+                    "amount": 4
+                },
+                {
+                    "name": "TREASURE_FOUR",
+                    "amount": 6
+                },
+                {
+                    "name": "TREASURE_FIVE",
+                    "amount": 19
+                },
+                {
+                    "name": "TREASURE_OTHER",
+                    "amount": 6
+                },
+                {
+                    "name": "YOUNG WITCH",
+                    "amount": 1
+                },
+                {
+                    "name": "FERRYMAN",
+                    "amount": 1
+                },
+                {
+                    "name": "KNIGHTS",
+                    "amount": 1
+                },
+                {
+                    "name": "DRUID",
+                    "amount": 1
+                },
+                {
+                    "name": "RIVERBOAT",
+                    "amount": 1,
+                    "last_element": true
+                }
+            ],
+            "landscapes_outcome": [
+                {
+                    "name": "EVENT",
+                    "amount": 79
+                },
+                {
+                    "name": "TRAIT",
+                    "amount": 15
+                },
+                {
+                    "name": "OTHER_SUPPLY",
+                    "amount": 59
+                },
+                {
+                    "name": "OBELISK",
+                    "amount": 1
+                },
+                {
+                    "name": "WAY OF THE MOUSE",
+                    "amount": 1
+                },
+                {
+                    "name": "APPROACHING ARMY",
+                    "amount": 1,
+                    "last_element": true
+                }
+            ]
+        },
+        {
+            "name": "ferryman_knights_way_of_the_mouse",
+            "expansion_editions": [
+                {
+                    "expansion": "CORNUCOPIA_GUILDS",
+                    "edition_modifier": "UPDATE_PACK"
+                },
+                {
+                    "expansion": "DARK_AGES",
+                    "edition_modifier": "NONE"
+                },
+                {
+                    "expansion": "MENAGERIE",
+                    "edition_modifier": "NONE"
+                }
+            ],
+            "kingdom_outcome": [
+                {
+                    "name": "NONE_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "NONE_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "NONE_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "NONE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "NONE_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_TWO",
+                    "amount": 5
+                },
+                {
+                    "name": "ACTION_THREE",
+                    "amount": 12
+                },
+                {
+                    "name": "ACTION_FOUR",
+                    "amount": 12
+                },
+                {
+                    "name": "ACTION_FIVE",
+                    "amount": 18
+                },
+                {
+                    "name": "ACTION_OTHER",
+                    "amount": 6
+                },
+                {
+                    "name": "ACTION_ATTACK_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_FIVE",
+                    "amount": 4
+                },
+                {
+                    "name": "ACTION_ATTACK_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_DOOM_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_DOOM_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_DURATION_LOOT_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_ATTACK_LOOTER_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_LOOTER_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_ATTACK_OMEN_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DOOM_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DOOM_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DURATION_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DURATION_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DURATION_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_DURATION_FIVE",
+                    "amount": 2
+                },
+                {
+                    "name": "ACTION_DURATION_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DURATION_LIAISON_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_DURATION_LOOT_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_FATE_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_FATE_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_FATE_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_FATE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_LIAISON_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_LIAISON_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_LIAISON_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_LIAISON_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_LOOT_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_LOOTER_FOUR",
+                    "amount": 1
+                },
+                {
+                    "name": "ACTION_OMEN_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_OMEN_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_OMEN_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "ACTION_TREASURE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ATTACK_DOOM_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ATTACK_DURATION_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "ATTACK_FATE_TREASURE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "ATTACK_TREASURE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_LIAISON_TREASURE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_TREASURE_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_TREASURE_THREE",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_TREASURE_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "DURATION_TREASURE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "LIAISON_TREASURE_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "LOOT_TREASURE_TWO",
+                    "amount": 0
+                },
+                {
+                    "name": "LOOT_TREASURE_FIVE",
+                    "amount": 0
+                },
+                {
+                    "name": "LOOT_TREASURE_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "TREASURE_TWO",
+                    "amount": 1
+                },
+                {
+                    "name": "TREASURE_THREE",
+                    "amount": 1
+                },
+                {
+                    "name": "TREASURE_FOUR",
+                    "amount": 0
+                },
+                {
+                    "name": "TREASURE_FIVE",
+                    "amount": 1
+                },
+                {
+                    "name": "TREASURE_OTHER",
+                    "amount": 0
+                },
+                {
+                    "name": "YOUNG_WITCH",
+                    "amount": 0
+                },
+                {
+                    "name": "FERRYMAN",
+                    "amount": 1
+                },
+                {
+                    "name": "KNIGHTS",
+                    "amount": 1
+                },
+                {
+                    "name": "DRUID",
+                    "amount": 0
+                },
+                {
+                    "name": "RIVERBOAT",
+                    "amount": 0,
+                    "last_element": true
+                }
+            ],
+            "landscapes_outcome": [
+                {
+                    "name": "EVENT",
+                    "amount": 20
+                },
+                {
+                    "name": "TRAIT",
+                    "amount": 0
+                },
+                {
+                    "name": "OTHER_SUPPLY",
+                    "amount": 19
+                },
+                {
+                    "name": "OBELISK",
+                    "amount": 0
+                },
+                {
+                    "name": "WAY_OF_THE_MOUSE",
+                    "amount": 1
+                },
+                {
+                    "name": "APPROACHING_ARMY",
+                    "amount": 0,
+                    "last_element": true
+                }
             ]
         }
     ]

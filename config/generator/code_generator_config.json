@@ -1,0 +1,96 @@
+{
+  "tracked_kingdom_card_types": [
+      "Action",
+      "Attack",
+      "Duration",
+      "Treasure",
+      "Looter",
+      "Fate",
+      "Doom",
+      "Liaison",
+      "Loot",
+      "Omen"
+  ],
+  "supported_expansions": [
+    "Dominion",
+    "Intrigue",
+    "Seaside",
+    "Alchemy",
+    "Prosperity",
+    "Cornucopia",
+    "Hinterlands",
+    "Dark Ages",
+    "Guilds",
+    "Adventures",
+    "Cornucopia Guilds",
+    "Empires",
+    "Nocturne",
+    "Renaissance",
+    "Menagerie",
+    "Allies",
+    "Plunder",
+    "Rising Sun",
+    "Promos"
+  ],
+  "cost_groups": [
+    {
+      "name": "Two",
+      "strings": ["2"]
+    },
+    {
+      "name": "Three",
+      "strings": ["3"]
+    },
+    {
+      "name": "Four",
+      "strings": ["4"]
+    },
+    {
+      "name": "Five",
+      "strings": ["5"]
+    },
+    {
+      "name": "Other",
+      "strings": ["1", "6", "7", "8", "P", "D"]
+    }
+  ],
+  "supply_landscape_groups": [
+    {
+      "name": "Event",
+      "strings": ["Event"]
+    },
+    {
+      "name": "Trait",
+      "strings": ["Trait"]
+    },
+    {
+      "name": "Other Supply",
+      "strings": ["Landmark", "Project", "Way"]
+    }
+  ],
+  "tracked_landscape_piles": [
+    "Hex",
+    "Boon",
+    "Ally",
+    "Prophecy"
+  ],
+  "generator_bounds_tests": [
+    {
+      "name": "ferryman_knights_way_of_the_mouse",
+      "expansion_editions": [
+        {
+          "expansion": "Cornucopia Guilds",
+          "edition_modifier": "Update Pack"
+        },
+        {
+          "expansion": "Dark Ages",
+          "edition_modifier": "None"
+        },
+        {
+          "expansion": "Menagerie",
+          "edition_modifier": "None"
+        }
+      ]
+    }
+  ]
+}

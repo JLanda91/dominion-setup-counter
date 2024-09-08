@@ -11,12 +11,11 @@ namespace config {
 
     coefficient_t filter_kingdom_table(const kingdom::table_t& table, const kingdom::ExpansionEditionFilter& expansion_edition, const kingdom::TableQuery& query) noexcept {
         return std::ranges::fold_left(table |
-                                      std::views::filter([&expansion_edition, &query](const kingdom::row_t& row){ return
+                                      std::views::filter([&expansion_edition, &query](const kingdom::row_t& row) { return
                                               expansion_edition.test(row.expansion_edition_) &&
-                                              query.primary_type_.test(row.primary_type_) &&
-                                              query.secondary_type_.test(row.secondary_type_) &&
-                                              query.cost_.test(row.cost_);}) |
-                                      std::views::transform([](const kingdom::row_t& row){return row.amount_;}),
+                                              query.tracked_types_mask_ == row.tracked_types_mask_ &&
+                                              query.cost_group_ == row.cost_group_;}) |
+                                      std::views::transform([](const kingdom::row_t& row) { return row.amount_; }),
                                       coefficient_t{}, std::plus{});
     }
 
@@ -29,9 +28,9 @@ namespace config {
                                       coefficient_t{}, std::plus{});
     }
 
-    kingdom_query_amounts_t kingdom_query_bounds(const kingdom::ExpansionEditionFilter& l) noexcept {
+    kingdom::query_amounts_t kingdom_query_bounds(const kingdom::ExpansionEditionFilter& l) noexcept {
         auto impl = [&l]<std::size_t ... I>(std::index_sequence<I...>){
-            kingdom_query_amounts_t result{};
+            kingdom::query_amounts_t result{};
             const auto& amount_queries = kingdom::amount_queries();
             (..., (std::get<I>(result) = filter_kingdom_table(kingdom::table(), l, std::get<I>(amount_queries))));
             return result;
@@ -39,15 +38,15 @@ namespace config {
         return impl(std::make_index_sequence<std::tuple_size_v<kingdom::queries_t>>{});
     }
 
-    kingdom_special_amounts_t kingdom_special_bounds(const kingdom::ExpansionEditionFilter& l) noexcept {
-        kingdom_special_amounts_t result{};
+    kingdom::special_amounts_t kingdom_special_bounds(const kingdom::ExpansionEditionFilter& l) noexcept {
+        kingdom::special_amounts_t result{};
         populate_special(result, l, kingdom::special_tests());
         return result;
     }
 
-    landscapes_query_amounts_t landscape_query_bounds(const landscapes::ExpansionFilter& l) noexcept {
+    landscapes::query_amounts_t landscape_query_bounds(const landscapes::ExpansionFilter& l) noexcept {
         auto impl = [&l]<std::size_t ... I>(std::index_sequence<I...>){
-            landscapes_query_amounts_t result{};
+            landscapes::query_amounts_t result{};
             const auto& amount_queries = landscapes::amount_queries();
             (..., (std::get<I>(result) = filter_landscapes_table(landscapes::table(), l, std::get<I>(amount_queries))));
             return result;
@@ -55,14 +54,14 @@ namespace config {
         return impl(std::make_index_sequence<std::tuple_size_v<landscapes::queries_t>>{});
     }
 
-    landscapes_special_amounts_t landscapes_special_bounds(const landscapes::ExpansionFilter& l) noexcept {
-        landscapes_special_amounts_t result{};
+    landscapes::special_amounts_t landscapes_special_bounds(const landscapes::ExpansionFilter& l) noexcept {
+        landscapes::special_amounts_t result{};
         populate_special(result, l, landscapes::special_tests());
         return result;
     }
 
     landscapes::ExpansionFilter expansion_only(const kingdom::ExpansionEditionFilter& l){
-        auto result = landscapes::ExpansionFilter{}.none();
+        auto result = landscapes::ExpansionFilter{}.reset();
         for(auto expansion : magic_enum::enum_values<Expansion>()){
             if(l.test({expansion, kingdom::EditionModifier::NONE})){
                 result.set(expansion);

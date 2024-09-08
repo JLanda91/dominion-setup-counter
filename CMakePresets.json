@@ -1,0 +1,60 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 27,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "displayName": "VCPKG",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/cmake-build-${presetName}",
+      "toolchainFile": "/home/jasper/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "23",
+        "VCPKG_MANIFEST_INSTALL": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      },
+      "hidden": true
+    },
+    {
+      "name": "gcc-14",
+      "displayName": "GCC 14",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc-14",
+        "CMAKE_CXX_COMPILER": "g++-14"
+      },
+      "hidden": true
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "hidden": true
+    },
+    {
+      "name": "debug-gcc-14",
+      "displayName": "Debug GCC-14",
+      "inherits": ["vcpkg", "gcc-14", "debug"]
+    },
+    {
+      "name": "release-gcc-14",
+      "displayName": "Release GCC-14",
+      "inherits": ["vcpkg", "gcc-14", "release"]
+    }
+  ]
+}

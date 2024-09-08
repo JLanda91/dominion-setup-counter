@@ -72,5 +72,24 @@
     "HEX",
     "BOON",
     "ALLY"
+  ],
+  "generator_bounds_tests": [
+    {
+      "name": "ferryman_knights_way_of_the_mouse",
+      "expansion_editions": [
+        {
+          "expansion": "CORNUCOPIA_GUILDS",
+          "edition_modifier": "UPDATE_PACK"
+        },
+        {
+          "expansion": "DARK_AGES",
+          "edition_modifier": "NONE"
+        },
+        {
+          "expansion": "MENAGERIE",
+          "edition_modifier": "NONE"
+        }
+      ]
+    }
   ]
 }

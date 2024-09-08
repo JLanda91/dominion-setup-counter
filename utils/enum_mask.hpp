@@ -19,7 +19,7 @@ namespace utils::table{
         using mask_t = std::bitset<size>;
         using enum_t = std::tuple<typename SizedEnum::type ...>;
 
-        constexpr EnumMask() noexcept : mask_(mask_t{}.set()) {}
+        constexpr EnumMask() noexcept = default;
 
         constexpr EnumMask(std::initializer_list<enum_t> l) noexcept {
             for (const auto& x : l) {
@@ -27,8 +27,13 @@ namespace utils::table{
             }
         }
 
-        constexpr EnumMask& none() noexcept {
+        constexpr EnumMask& reset() noexcept {
             mask_.reset();
+            return *this;
+        }
+
+        constexpr EnumMask& set() noexcept {
+            mask_.set();
             return *this;
         }
 

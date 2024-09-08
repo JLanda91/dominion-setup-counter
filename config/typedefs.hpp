@@ -3,7 +3,7 @@
 #include <boost/multiprecision/integer.hpp>
 
 #include "tuple.hpp"
-#include "card_amount_tables.hpp"
+#include "card_amount_tables.save.hpp"
 
 namespace config {
     using result_t = boost::multiprecision::uint512_t;

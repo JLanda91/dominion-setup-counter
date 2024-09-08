@@ -1,6 +1,7 @@
-find_package(GTest REQUIRED)
+find_package(gtest CONFIG REQUIRED)
 
 message(STATUS "Including tests")
+enable_testing()
 
 macro(gtest)
     set(options)
@@ -11,7 +12,7 @@ macro(gtest)
     target_compile_options(${TEST_NAME} PRIVATE -fsanitize=address)
     target_link_options(${TEST_NAME} PRIVATE -fsanitize=address -static-libasan)
     target_link_libraries(${TEST_NAME} GTest::gtest_main GTest::gmock_main ${TEST_LIBS})
-    gtest_discover_tests(${TEST_NAME})
+    add_test(${TEST_NAME} ${TEST_NAME})
 endmacro(gtest)
 
 gtest(NAME unit.utils.enum_mask)

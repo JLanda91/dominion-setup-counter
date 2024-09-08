@@ -1,0 +1,45 @@
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+#include "generator_bounds.hpp"
+#include "default_expansion_editions.hpp"
+
+namespace {
+    using config::coefficient_t;
+    using config::GeneratorBounds;
+    using config::Expansion;
+    using config::kAllExpansionEditions;
+    using config::kingdom::ExpansionEditionFilter;
+    using config::kingdom::EditionModifier;
+
+    using testing::FieldsAre;
+
+{{#generator_bounds_tests}}
+    TEST(generator_bounds, {{name}}){
+        {{#all}}
+        const auto& expansion_edition_filter = kAllExpansionEditions;
+        {{/all}}
+        {{^all}}
+        const auto expansion_edition_filter = ExpansionEditionFilter{
+        {{#expansion_editions}}
+            { Expansion::{{expansion}}, EditionModifier::{{edition_modifier}} },
+        {{/expansion_editions}}
+        };
+        {{/all}}
+
+        const auto actual = from_expansions_editions(expansion_edition_filter);
+        ASSERT_THAT(actual.kingdom_, FieldsAre(
+        {{#kingdom_outcome}}
+            (coefficient_t){{amount}}{{^last_element}},{{/last_element}}     // {{name}}
+        {{/kingdom_outcome}}
+        ));
+
+        ASSERT_THAT(actual.landscapes_, FieldsAre(
+        {{#landscapes_outcome}}
+            (coefficient_t){{amount}}{{^last_element}},{{/last_element}}     // {{name}}
+        {{/landscapes_outcome}}
+        ));
+    }
+
+{{/generator_bounds_tests}}
+}
