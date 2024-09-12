@@ -49,12 +49,18 @@
     {
       "name": "debug-gcc-14",
       "displayName": "Debug GCC-14",
-      "inherits": ["vcpkg", "gcc-14", "debug"]
+      "inherits": ["vcpkg", "gcc-14", "debug"],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-g -O0 -Wall -Wextra -Wsign-conversion -Wpedantic"
+      }
     },
     {
       "name": "release-gcc-14",
       "displayName": "Release GCC-14",
-      "inherits": ["vcpkg", "gcc-14", "release"]
+      "inherits": ["vcpkg", "gcc-14", "release"],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -fPIC -Wall -Wextra -Wsign-conversion -Wpedantic -Werror"
+      }
     }
   ]
 }

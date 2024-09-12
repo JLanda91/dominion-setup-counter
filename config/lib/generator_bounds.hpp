@@ -5,7 +5,6 @@
 
 namespace config {
     struct GeneratorBounds {
-        // should be equal to the number of special behavior kingdom cards and landscapes
         kingdom::amounts_t kingdom_;
         landscapes::amounts_t landscapes_;
     };

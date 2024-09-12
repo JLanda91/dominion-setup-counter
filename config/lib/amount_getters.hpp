@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/typedefs.hpp"
+#include "typedefs.hpp"
 
 namespace config {
     namespace kingdom {
