@@ -19,7 +19,7 @@ namespace config {
                                       coefficient_t{}, std::plus{});
     }
 
-    coefficient_t filter_landscapes_table(const landscapes::table_t& table, const landscapes::ExpansionFilter& expansion, const landscapes::TableQuery& query) noexcept {
+    coefficient_t filter_landscapes_table(const landscapes::supply_table_t& table, const landscapes::ExpansionFilter& expansion, const landscapes::TableQuery& query) noexcept {
         return std::ranges::fold_left(table |
                                       std::views::filter([&expansion, &query](const landscapes::row_t& row){ return
                                               expansion.test(row.expansion_) &&
@@ -35,28 +35,28 @@ namespace config {
             (..., (std::get<I>(result) = filter_kingdom_table(kingdom::table(), l, std::get<I>(amount_queries))));
             return result;
         };
-        return impl(std::make_index_sequence<std::tuple_size_v<kingdom::queries_t>>{});
+        return impl(std::make_index_sequence<std::tuple_size_v<kingdom::amount_queries_t>>{});
     }
 
     kingdom::special_amounts_t kingdom_special_bounds(const kingdom::ExpansionEditionFilter& l) noexcept {
         kingdom::special_amounts_t result{};
-        populate_special(result, l, kingdom::special_tests());
+        populate_special(result, l, kingdom::special_predicates());
         return result;
     }
 
     landscapes::query_amounts_t landscape_query_bounds(const landscapes::ExpansionFilter& l) noexcept {
         auto impl = [&l]<std::size_t ... I>(std::index_sequence<I...>){
             landscapes::query_amounts_t result{};
-            const auto& amount_queries = landscapes::amount_queries();
-            (..., (std::get<I>(result) = filter_landscapes_table(landscapes::table(), l, std::get<I>(amount_queries))));
+            const auto& amount_queries = landscapes::supply_amount_queries();
+            (..., (std::get<I>(result) = filter_landscapes_table(landscapes::supply_table(), l, std::get<I>(amount_queries))));
             return result;
         };
-        return impl(std::make_index_sequence<std::tuple_size_v<landscapes::queries_t>>{});
+        return impl(std::make_index_sequence<std::tuple_size_v<landscapes::supply_amount_queries_t>>{});
     }
 
     landscapes::special_amounts_t landscapes_special_bounds(const landscapes::ExpansionFilter& l) noexcept {
         landscapes::special_amounts_t result{};
-        populate_special(result, l, landscapes::special_tests());
+        populate_special(result, l, landscapes::supply_special_predicates());
         return result;
     }
 
@@ -74,8 +74,8 @@ namespace config {
         const auto el = expansion_only(l);
 
         return GeneratorBounds{
-            .kingdom_ = std::tuple_cat(kingdom_query_bounds(l), kingdom_special_bounds(l)),
-            .landscapes_ = std::tuple_cat(landscape_query_bounds(el), landscapes_special_bounds(el))
+                .kingdom_ = std::tuple_cat(kingdom_query_bounds(l), kingdom_special_bounds(l)),
+                .landscapes_ = std::tuple_cat(landscape_query_bounds(el), landscapes_special_bounds(el))
         };
     }
 }

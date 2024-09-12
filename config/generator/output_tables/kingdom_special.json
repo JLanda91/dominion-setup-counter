@@ -1,0 +1,58 @@
+{
+    "schema":{
+        "fields":[
+            {
+                "name":"index",
+                "type":"integer"
+            },
+            {
+                "name":"Name",
+                "type":"string"
+            },
+            {
+                "name":"Expansion",
+                "type":"string"
+            },
+            {
+                "name":"Edition",
+                "type":"string"
+            }
+        ],
+        "primaryKey":[
+            "index"
+        ],
+        "pandas_version":"1.4.0"
+    },
+    "data":[
+        {
+            "index":152,
+            "Name":"Young Witch",
+            "Expansion":"Cornucopia",
+            "Edition":"None"
+        },
+        {
+            "index":176,
+            "Name":"Ferryman",
+            "Expansion":"Cornucopia Guilds",
+            "Edition":"Update Pack"
+        },
+        {
+            "index":242,
+            "Name":"Knights",
+            "Expansion":"Dark Ages",
+            "Edition":"None"
+        },
+        {
+            "index":303,
+            "Name":"Druid",
+            "Expansion":"Nocturne",
+            "Edition":"None"
+        },
+        {
+            "index":466,
+            "Name":"Riverboat",
+            "Expansion":"Rising Sun",
+            "Edition":"None"
+        }
+    ]
+}

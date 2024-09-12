@@ -72,7 +72,7 @@ namespace config {
 
         struct row_t {
             std::pair<Expansion, EditionModifier> expansion_edition_;
-            TrackedTypeMask tracked_types_;
+            TrackedTypeMask tracked_types_mask_;
             CostGroup cost_group_;
             uint8_t amount_;
 
@@ -352,83 +352,83 @@ namespace config {
         using CostGroupFilter = utils::table::EnumMask<SizedCostGroup>;
 
         struct TableQuery {
-            TrackedTypeMask tracked_types_{};
-            CostGroupFilter cost_group_{};
+            TrackedTypeMask tracked_types_mask_{};
+            CostGroup cost_group_{};
         };
 
         using amount_queries_t = std::array<TableQuery, 69uz>;
             
         static constexpr auto amount_queries() noexcept -> const amount_queries_t& {
             static constexpr amount_queries_t singleton {{
-        		{ { }, { CostGroup::TWO } }, //	NONE_TWO
-        		{ { }, { CostGroup::THREE } }, //	NONE_THREE
-        		{ { }, { CostGroup::FOUR } }, //	NONE_FOUR
-        		{ { }, { CostGroup::FIVE } }, //	NONE_FIVE
-        		{ { }, { CostGroup::OTHER } }, //	NONE_OTHER
-        		{ { TrackedType::ACTION, }, { CostGroup::TWO } }, //	ACTION_TWO
-        		{ { TrackedType::ACTION, }, { CostGroup::THREE } }, //	ACTION_THREE
-        		{ { TrackedType::ACTION, }, { CostGroup::FOUR } }, //	ACTION_FOUR
-        		{ { TrackedType::ACTION, }, { CostGroup::FIVE } }, //	ACTION_FIVE
-        		{ { TrackedType::ACTION, }, { CostGroup::OTHER } }, //	ACTION_OTHER
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, { CostGroup::TWO } }, //	ACTION_ATTACK_TWO
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, { CostGroup::THREE } }, //	ACTION_ATTACK_THREE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, { CostGroup::FOUR } }, //	ACTION_ATTACK_FOUR
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, { CostGroup::FIVE } }, //	ACTION_ATTACK_FIVE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, { CostGroup::OTHER } }, //	ACTION_ATTACK_OTHER
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DOOM, }, { CostGroup::FOUR } }, //	ACTION_ATTACK_DOOM_FOUR
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DOOM, }, { CostGroup::FIVE } }, //	ACTION_ATTACK_DOOM_FIVE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, { CostGroup::THREE } }, //	ACTION_ATTACK_DURATION_THREE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, { CostGroup::FOUR } }, //	ACTION_ATTACK_DURATION_FOUR
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, { CostGroup::FIVE } }, //	ACTION_ATTACK_DURATION_FIVE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, { CostGroup::OTHER } }, //	ACTION_ATTACK_DURATION_OTHER
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, TrackedType::LOOT, }, { CostGroup::FIVE } }, //	ACTION_ATTACK_DURATION_LOOT_FIVE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::LOOTER, }, { CostGroup::FOUR } }, //	ACTION_ATTACK_LOOTER_FOUR
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::LOOTER, }, { CostGroup::FIVE } }, //	ACTION_ATTACK_LOOTER_FIVE
-        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::OMEN, }, { CostGroup::FIVE } }, //	ACTION_ATTACK_OMEN_FIVE
-        		{ { TrackedType::ACTION, TrackedType::DOOM, }, { CostGroup::THREE } }, //	ACTION_DOOM_THREE
-        		{ { TrackedType::ACTION, TrackedType::DOOM, }, { CostGroup::FIVE } }, //	ACTION_DOOM_FIVE
-        		{ { TrackedType::ACTION, TrackedType::DURATION, }, { CostGroup::TWO } }, //	ACTION_DURATION_TWO
-        		{ { TrackedType::ACTION, TrackedType::DURATION, }, { CostGroup::THREE } }, //	ACTION_DURATION_THREE
-        		{ { TrackedType::ACTION, TrackedType::DURATION, }, { CostGroup::FOUR } }, //	ACTION_DURATION_FOUR
-        		{ { TrackedType::ACTION, TrackedType::DURATION, }, { CostGroup::FIVE } }, //	ACTION_DURATION_FIVE
-        		{ { TrackedType::ACTION, TrackedType::DURATION, }, { CostGroup::OTHER } }, //	ACTION_DURATION_OTHER
-        		{ { TrackedType::ACTION, TrackedType::DURATION, TrackedType::LIAISON, }, { CostGroup::THREE } }, //	ACTION_DURATION_LIAISON_THREE
-        		{ { TrackedType::ACTION, TrackedType::DURATION, TrackedType::LOOT, }, { CostGroup::TWO } }, //	ACTION_DURATION_LOOT_TWO
-        		{ { TrackedType::ACTION, TrackedType::FATE, }, { CostGroup::TWO } }, //	ACTION_FATE_TWO
-        		{ { TrackedType::ACTION, TrackedType::FATE, }, { CostGroup::THREE } }, //	ACTION_FATE_THREE
-        		{ { TrackedType::ACTION, TrackedType::FATE, }, { CostGroup::FOUR } }, //	ACTION_FATE_FOUR
-        		{ { TrackedType::ACTION, TrackedType::FATE, }, { CostGroup::FIVE } }, //	ACTION_FATE_FIVE
-        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, { CostGroup::TWO } }, //	ACTION_LIAISON_TWO
-        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, { CostGroup::THREE } }, //	ACTION_LIAISON_THREE
-        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, { CostGroup::FOUR } }, //	ACTION_LIAISON_FOUR
-        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, { CostGroup::FIVE } }, //	ACTION_LIAISON_FIVE
-        		{ { TrackedType::ACTION, TrackedType::LOOT, }, { CostGroup::FIVE } }, //	ACTION_LOOT_FIVE
-        		{ { TrackedType::ACTION, TrackedType::LOOTER, }, { CostGroup::FOUR } }, //	ACTION_LOOTER_FOUR
-        		{ { TrackedType::ACTION, TrackedType::OMEN, }, { CostGroup::FOUR } }, //	ACTION_OMEN_FOUR
-        		{ { TrackedType::ACTION, TrackedType::OMEN, }, { CostGroup::FIVE } }, //	ACTION_OMEN_FIVE
-        		{ { TrackedType::ACTION, TrackedType::OMEN, }, { CostGroup::OTHER } }, //	ACTION_OMEN_OTHER
-        		{ { TrackedType::ACTION, TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	ACTION_TREASURE_FIVE
-        		{ { TrackedType::ATTACK, TrackedType::DOOM, }, { CostGroup::FIVE } }, //	ATTACK_DOOM_FIVE
-        		{ { TrackedType::ATTACK, TrackedType::DURATION, }, { CostGroup::OTHER } }, //	ATTACK_DURATION_OTHER
-        		{ { TrackedType::ATTACK, TrackedType::FATE, TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	ATTACK_FATE_TREASURE_FIVE
-        		{ { TrackedType::ATTACK, TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	ATTACK_TREASURE_FIVE
-        		{ { TrackedType::DURATION, }, { CostGroup::TWO } }, //	DURATION_TWO
-        		{ { TrackedType::DURATION, }, { CostGroup::THREE } }, //	DURATION_THREE
-        		{ { TrackedType::DURATION, }, { CostGroup::FIVE } }, //	DURATION_FIVE
-        		{ { TrackedType::DURATION, TrackedType::LIAISON, TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	DURATION_LIAISON_TREASURE_FIVE
-        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, { CostGroup::TWO } }, //	DURATION_TREASURE_TWO
-        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, { CostGroup::THREE } }, //	DURATION_TREASURE_THREE
-        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, { CostGroup::FOUR } }, //	DURATION_TREASURE_FOUR
-        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	DURATION_TREASURE_FIVE
-        		{ { TrackedType::LIAISON, TrackedType::TREASURE, }, { CostGroup::TWO } }, //	LIAISON_TREASURE_TWO
-        		{ { TrackedType::LOOT, TrackedType::TREASURE, }, { CostGroup::TWO } }, //	LOOT_TREASURE_TWO
-        		{ { TrackedType::LOOT, TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	LOOT_TREASURE_FIVE
-        		{ { TrackedType::LOOT, TrackedType::TREASURE, }, { CostGroup::OTHER } }, //	LOOT_TREASURE_OTHER
-        		{ { TrackedType::TREASURE, }, { CostGroup::TWO } }, //	TREASURE_TWO
-        		{ { TrackedType::TREASURE, }, { CostGroup::THREE } }, //	TREASURE_THREE
-        		{ { TrackedType::TREASURE, }, { CostGroup::FOUR } }, //	TREASURE_FOUR
-        		{ { TrackedType::TREASURE, }, { CostGroup::FIVE } }, //	TREASURE_FIVE
-        		{ { TrackedType::TREASURE, }, { CostGroup::OTHER } }, //	TREASURE_OTHER
+        		{ { }, CostGroup::TWO }, //	NONE_TWO
+        		{ { }, CostGroup::THREE }, //	NONE_THREE
+        		{ { }, CostGroup::FOUR }, //	NONE_FOUR
+        		{ { }, CostGroup::FIVE }, //	NONE_FIVE
+        		{ { }, CostGroup::OTHER }, //	NONE_OTHER
+        		{ { TrackedType::ACTION, }, CostGroup::TWO }, //	ACTION_TWO
+        		{ { TrackedType::ACTION, }, CostGroup::THREE }, //	ACTION_THREE
+        		{ { TrackedType::ACTION, }, CostGroup::FOUR }, //	ACTION_FOUR
+        		{ { TrackedType::ACTION, }, CostGroup::FIVE }, //	ACTION_FIVE
+        		{ { TrackedType::ACTION, }, CostGroup::OTHER }, //	ACTION_OTHER
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, CostGroup::TWO }, //	ACTION_ATTACK_TWO
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, CostGroup::THREE }, //	ACTION_ATTACK_THREE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, CostGroup::FOUR }, //	ACTION_ATTACK_FOUR
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, CostGroup::FIVE }, //	ACTION_ATTACK_FIVE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, }, CostGroup::OTHER }, //	ACTION_ATTACK_OTHER
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DOOM, }, CostGroup::FOUR }, //	ACTION_ATTACK_DOOM_FOUR
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DOOM, }, CostGroup::FIVE }, //	ACTION_ATTACK_DOOM_FIVE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, CostGroup::THREE }, //	ACTION_ATTACK_DURATION_THREE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, CostGroup::FOUR }, //	ACTION_ATTACK_DURATION_FOUR
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, CostGroup::FIVE }, //	ACTION_ATTACK_DURATION_FIVE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, }, CostGroup::OTHER }, //	ACTION_ATTACK_DURATION_OTHER
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::DURATION, TrackedType::LOOT, }, CostGroup::FIVE }, //	ACTION_ATTACK_DURATION_LOOT_FIVE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::LOOTER, }, CostGroup::FOUR }, //	ACTION_ATTACK_LOOTER_FOUR
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::LOOTER, }, CostGroup::FIVE }, //	ACTION_ATTACK_LOOTER_FIVE
+        		{ { TrackedType::ACTION, TrackedType::ATTACK, TrackedType::OMEN, }, CostGroup::FIVE }, //	ACTION_ATTACK_OMEN_FIVE
+        		{ { TrackedType::ACTION, TrackedType::DOOM, }, CostGroup::THREE }, //	ACTION_DOOM_THREE
+        		{ { TrackedType::ACTION, TrackedType::DOOM, }, CostGroup::FIVE }, //	ACTION_DOOM_FIVE
+        		{ { TrackedType::ACTION, TrackedType::DURATION, }, CostGroup::TWO }, //	ACTION_DURATION_TWO
+        		{ { TrackedType::ACTION, TrackedType::DURATION, }, CostGroup::THREE }, //	ACTION_DURATION_THREE
+        		{ { TrackedType::ACTION, TrackedType::DURATION, }, CostGroup::FOUR }, //	ACTION_DURATION_FOUR
+        		{ { TrackedType::ACTION, TrackedType::DURATION, }, CostGroup::FIVE }, //	ACTION_DURATION_FIVE
+        		{ { TrackedType::ACTION, TrackedType::DURATION, }, CostGroup::OTHER }, //	ACTION_DURATION_OTHER
+        		{ { TrackedType::ACTION, TrackedType::DURATION, TrackedType::LIAISON, }, CostGroup::THREE }, //	ACTION_DURATION_LIAISON_THREE
+        		{ { TrackedType::ACTION, TrackedType::DURATION, TrackedType::LOOT, }, CostGroup::TWO }, //	ACTION_DURATION_LOOT_TWO
+        		{ { TrackedType::ACTION, TrackedType::FATE, }, CostGroup::TWO }, //	ACTION_FATE_TWO
+        		{ { TrackedType::ACTION, TrackedType::FATE, }, CostGroup::THREE }, //	ACTION_FATE_THREE
+        		{ { TrackedType::ACTION, TrackedType::FATE, }, CostGroup::FOUR }, //	ACTION_FATE_FOUR
+        		{ { TrackedType::ACTION, TrackedType::FATE, }, CostGroup::FIVE }, //	ACTION_FATE_FIVE
+        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, CostGroup::TWO }, //	ACTION_LIAISON_TWO
+        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, CostGroup::THREE }, //	ACTION_LIAISON_THREE
+        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, CostGroup::FOUR }, //	ACTION_LIAISON_FOUR
+        		{ { TrackedType::ACTION, TrackedType::LIAISON, }, CostGroup::FIVE }, //	ACTION_LIAISON_FIVE
+        		{ { TrackedType::ACTION, TrackedType::LOOT, }, CostGroup::FIVE }, //	ACTION_LOOT_FIVE
+        		{ { TrackedType::ACTION, TrackedType::LOOTER, }, CostGroup::FOUR }, //	ACTION_LOOTER_FOUR
+        		{ { TrackedType::ACTION, TrackedType::OMEN, }, CostGroup::FOUR }, //	ACTION_OMEN_FOUR
+        		{ { TrackedType::ACTION, TrackedType::OMEN, }, CostGroup::FIVE }, //	ACTION_OMEN_FIVE
+        		{ { TrackedType::ACTION, TrackedType::OMEN, }, CostGroup::OTHER }, //	ACTION_OMEN_OTHER
+        		{ { TrackedType::ACTION, TrackedType::TREASURE, }, CostGroup::FIVE }, //	ACTION_TREASURE_FIVE
+        		{ { TrackedType::ATTACK, TrackedType::DOOM, }, CostGroup::FIVE }, //	ATTACK_DOOM_FIVE
+        		{ { TrackedType::ATTACK, TrackedType::DURATION, }, CostGroup::OTHER }, //	ATTACK_DURATION_OTHER
+        		{ { TrackedType::ATTACK, TrackedType::FATE, TrackedType::TREASURE, }, CostGroup::FIVE }, //	ATTACK_FATE_TREASURE_FIVE
+        		{ { TrackedType::ATTACK, TrackedType::TREASURE, }, CostGroup::FIVE }, //	ATTACK_TREASURE_FIVE
+        		{ { TrackedType::DURATION, }, CostGroup::TWO }, //	DURATION_TWO
+        		{ { TrackedType::DURATION, }, CostGroup::THREE }, //	DURATION_THREE
+        		{ { TrackedType::DURATION, }, CostGroup::FIVE }, //	DURATION_FIVE
+        		{ { TrackedType::DURATION, TrackedType::LIAISON, TrackedType::TREASURE, }, CostGroup::FIVE }, //	DURATION_LIAISON_TREASURE_FIVE
+        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, CostGroup::TWO }, //	DURATION_TREASURE_TWO
+        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, CostGroup::THREE }, //	DURATION_TREASURE_THREE
+        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, CostGroup::FOUR }, //	DURATION_TREASURE_FOUR
+        		{ { TrackedType::DURATION, TrackedType::TREASURE, }, CostGroup::FIVE }, //	DURATION_TREASURE_FIVE
+        		{ { TrackedType::LIAISON, TrackedType::TREASURE, }, CostGroup::TWO }, //	LIAISON_TREASURE_TWO
+        		{ { TrackedType::LOOT, TrackedType::TREASURE, }, CostGroup::TWO }, //	LOOT_TREASURE_TWO
+        		{ { TrackedType::LOOT, TrackedType::TREASURE, }, CostGroup::FIVE }, //	LOOT_TREASURE_FIVE
+        		{ { TrackedType::LOOT, TrackedType::TREASURE, }, CostGroup::OTHER }, //	LOOT_TREASURE_OTHER
+        		{ { TrackedType::TREASURE, }, CostGroup::TWO }, //	TREASURE_TWO
+        		{ { TrackedType::TREASURE, }, CostGroup::THREE }, //	TREASURE_THREE
+        		{ { TrackedType::TREASURE, }, CostGroup::FOUR }, //	TREASURE_FOUR
+        		{ { TrackedType::TREASURE, }, CostGroup::FIVE }, //	TREASURE_FIVE
+        		{ { TrackedType::TREASURE, }, CostGroup::OTHER }, //	TREASURE_OTHER
         	}};
         	return singleton;
         }
@@ -575,10 +575,10 @@ namespace config {
             TypeFilter type_{};
         };
 
-        using supply_queries_t = std::array<TableQuery, 3uz>;
+        using supply_amount_queries_t = std::array<TableQuery, 3uz>;
             
-        static constexpr auto supply_queries() noexcept -> const supply_queries_t& {
-            static constexpr supply_queries_t singleton {{
+        static constexpr auto supply_amount_queries() noexcept -> const supply_amount_queries_t& {
+            static constexpr supply_amount_queries_t singleton {{
         		{ { Type::EVENT, } },
         		{ { Type::TRAIT, } },
         		{ { Type::LANDMARK, Type::PROJECT, Type::WAY, } },
@@ -586,10 +586,10 @@ namespace config {
         	return singleton;
         }
             
-        using supply_special_tests_t = std::array<typename ExpansionFilter::enum_t, 2uz>;
+        using supply_special_predicates_t = std::array<typename ExpansionFilter::enum_t, 2uz>;
             
-        static constexpr auto supply_special_tests() noexcept -> const supply_special_tests_t& {
-            static constexpr supply_special_tests_t singleton {{
+        static constexpr auto supply_special_predicates() noexcept -> const supply_special_predicates_t& {
+            static constexpr supply_special_predicates_t singleton {{
         		Expansion::EMPIRES,	// OBELISK
         		Expansion::MENAGERIE,	// WAY_OF_THE_MOUSE
         	}};

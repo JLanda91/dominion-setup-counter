@@ -11,16 +11,18 @@ namespace config {
     /*[[[cog
     import cog
     from config_io import generator_config, card_list
-    import generator_utils
-    generator_utils.create_enum_class('Expansion', generator_config["supported_expansions"], 'uint8_t')
+    from generator_utils import create_enum_class
+    from generator_card_amount_tables import CardAmountTablesGenerator
+    generator = CardAmountTablesGenerator(card_list, generator_config)
+    create_enum_class('Expansion', generator_config["supported_expansions"], 'uint8_t')
     ]]]*/
     //[[[end]]]
 
     namespace kingdom {
         /*[[[cog
-        generator_utils.create_enum_class('EditionModifier', card_list["kingdom_regular"].index.unique(level=1), 'uint8_t')
-        generator_utils.create_enum_class('CostGroup', card_list["kingdom_regular"].index.unique(level=2), 'uint8_t')
-        generator_utils.create_enum_class('TrackedType', generator_config["tracked_kingdom_card_types"], 'uint8_t')
+        create_enum_class('EditionModifier', card_list["kingdom_regular"].index.unique(level=1), 'uint8_t')
+        create_enum_class('CostGroup', card_list["kingdom_regular"].index.unique(level=2), 'uint8_t')
+        create_enum_class('TrackedType', generator_config["tracked_kingdom_card_types"], 'uint8_t')
         ]]]*/
         //[[[end]]]
 
@@ -28,7 +30,7 @@ namespace config {
 
         struct row_t {
             std::pair<Expansion, EditionModifier> expansion_edition_;
-            TrackedTypeMask tracked_types_;
+            TrackedTypeMask tracked_types_mask_;
             CostGroup cost_group_;
             uint8_t amount_;
 
@@ -36,7 +38,7 @@ namespace config {
         };
 
         /*[[[cog
-        generator_utils.create_kingdom_table(card_list["kingdom_regular"])
+        generator.create_kingdom_table()
         ]]]*/
         //[[[end]]]
 
@@ -44,14 +46,14 @@ namespace config {
         using CostGroupFilter = utils::table::EnumMask<SizedCostGroup>;
 
         struct TableQuery {
-            TrackedTypeMask tracked_types_{};
-            CostGroupFilter cost_group_{};
+            TrackedTypeMask tracked_types_mask_{};
+            CostGroup cost_group_{};
         };
 
         /*[[[cog
-        generator_utils.create_kingdom_amount_queries(card_list["kingdom_queries"])
-        generator_utils.create_kingdom_special_predicates(card_list["kingdom_special"])
-        generator_utils.create_kingdom_amount_index(card_list["kingdom_queries"], card_list["kingdom_special"])
+        generator.create_kingdom_amount_queries()
+        generator.create_kingdom_special_predicates()
+        generator.create_kingdom_amount_index()
         ]]]*/
         //[[[end]]]
     }
@@ -59,7 +61,7 @@ namespace config {
     namespace landscapes {
         /*[[[cog
         from itertools import chain
-        generator_utils.create_enum_class('Type', list(chain.from_iterable(group["strings"] for group in generator_config["supply_landscape_groups"])) + generator_config["tracked_landscape_piles"], 'uint8_t')
+        create_enum_class('Type', list(chain.from_iterable(group["strings"] for group in generator_config["supply_landscape_groups"])) + generator_config["other_landscape_types"], 'uint8_t')
         ]]]*/
         //[[[end]]]
 
@@ -72,7 +74,7 @@ namespace config {
         };
 
         /*[[[cog
-        generator_utils.create_landscapes_supply_table(card_list["landscapes_supply_regular"])
+        generator.create_landscapes_supply_table()
         ]]]*/
         //[[[end]]]
 
@@ -84,9 +86,9 @@ namespace config {
         };
 
         /*[[[cog
-        generator_utils.create_landscapes_supply_queries(generator_config["supply_landscape_groups"])
-        generator_utils.create_landscapes_supply_specials(card_list["landscapes_supply_special"])
-        generator_utils.create_landscapes_amount_index(generator_config["supply_landscape_groups"], card_list["landscapes_supply_special"])
+        generator.create_landscapes_supply_queries()
+        generator.create_landscapes_supply_specials()
+        generator.create_landscapes_amount_index()
         ]]]*/
         //[[[end]]]
     }

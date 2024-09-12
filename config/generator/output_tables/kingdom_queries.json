@@ -1,0 +1,370 @@
+{
+    "schema":{
+        "fields":[
+            {
+                "name":"Types",
+                "type":"string"
+            },
+            {
+                "name":"Cost Group",
+                "type":"string"
+            },
+            {
+                "name":"Count",
+                "type":"integer"
+            }
+        ],
+        "primaryKey":[
+            "Types",
+            "Cost Group"
+        ],
+        "pandas_version":"1.4.0"
+    },
+    "data":[
+        {
+            "Types":"",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"",
+            "Cost Group":"Three",
+            "Count":4
+        },
+        {
+            "Types":"",
+            "Cost Group":"Four",
+            "Count":6
+        },
+        {
+            "Types":"",
+            "Cost Group":"Five",
+            "Count":2
+        },
+        {
+            "Types":"",
+            "Cost Group":"Other",
+            "Count":3
+        },
+        {
+            "Types":"Action",
+            "Cost Group":"Two",
+            "Count":34
+        },
+        {
+            "Types":"Action",
+            "Cost Group":"Three",
+            "Count":53
+        },
+        {
+            "Types":"Action",
+            "Cost Group":"Four",
+            "Count":84
+        },
+        {
+            "Types":"Action",
+            "Cost Group":"Five",
+            "Count":87
+        },
+        {
+            "Types":"Action",
+            "Cost Group":"Other",
+            "Count":28
+        },
+        {
+            "Types":"Action - Attack",
+            "Cost Group":"Two",
+            "Count":2
+        },
+        {
+            "Types":"Action - Attack",
+            "Cost Group":"Three",
+            "Count":6
+        },
+        {
+            "Types":"Action - Attack",
+            "Cost Group":"Four",
+            "Count":12
+        },
+        {
+            "Types":"Action - Attack",
+            "Cost Group":"Five",
+            "Count":26
+        },
+        {
+            "Types":"Action - Attack",
+            "Cost Group":"Other",
+            "Count":3
+        },
+        {
+            "Types":"Action - Attack - Doom",
+            "Cost Group":"Four",
+            "Count":1
+        },
+        {
+            "Types":"Action - Attack - Doom",
+            "Cost Group":"Five",
+            "Count":2
+        },
+        {
+            "Types":"Action - Attack - Duration",
+            "Cost Group":"Three",
+            "Count":2
+        },
+        {
+            "Types":"Action - Attack - Duration",
+            "Cost Group":"Four",
+            "Count":1
+        },
+        {
+            "Types":"Action - Attack - Duration",
+            "Cost Group":"Five",
+            "Count":8
+        },
+        {
+            "Types":"Action - Attack - Duration",
+            "Cost Group":"Other",
+            "Count":1
+        },
+        {
+            "Types":"Action - Attack - Duration - Loot",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Attack - Looter",
+            "Cost Group":"Four",
+            "Count":1
+        },
+        {
+            "Types":"Action - Attack - Looter",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Attack - Omen",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Doom",
+            "Cost Group":"Three",
+            "Count":1
+        },
+        {
+            "Types":"Action - Doom",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Duration",
+            "Cost Group":"Two",
+            "Count":3
+        },
+        {
+            "Types":"Action - Duration",
+            "Cost Group":"Three",
+            "Count":12
+        },
+        {
+            "Types":"Action - Duration",
+            "Cost Group":"Four",
+            "Count":9
+        },
+        {
+            "Types":"Action - Duration",
+            "Cost Group":"Five",
+            "Count":12
+        },
+        {
+            "Types":"Action - Duration",
+            "Cost Group":"Other",
+            "Count":3
+        },
+        {
+            "Types":"Action - Duration - Liaison",
+            "Cost Group":"Three",
+            "Count":1
+        },
+        {
+            "Types":"Action - Duration - Loot",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"Action - Fate",
+            "Cost Group":"Two",
+            "Count":2
+        },
+        {
+            "Types":"Action - Fate",
+            "Cost Group":"Three",
+            "Count":1
+        },
+        {
+            "Types":"Action - Fate",
+            "Cost Group":"Four",
+            "Count":2
+        },
+        {
+            "Types":"Action - Fate",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Liaison",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"Action - Liaison",
+            "Cost Group":"Three",
+            "Count":2
+        },
+        {
+            "Types":"Action - Liaison",
+            "Cost Group":"Four",
+            "Count":1
+        },
+        {
+            "Types":"Action - Liaison",
+            "Cost Group":"Five",
+            "Count":2
+        },
+        {
+            "Types":"Action - Loot",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Looter",
+            "Cost Group":"Four",
+            "Count":1
+        },
+        {
+            "Types":"Action - Omen",
+            "Cost Group":"Four",
+            "Count":3
+        },
+        {
+            "Types":"Action - Omen",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Action - Omen",
+            "Cost Group":"Other",
+            "Count":1
+        },
+        {
+            "Types":"Action - Treasure",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Attack - Doom",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Attack - Duration",
+            "Cost Group":"Other",
+            "Count":1
+        },
+        {
+            "Types":"Attack - Fate - Treasure",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Attack - Treasure",
+            "Cost Group":"Five",
+            "Count":2
+        },
+        {
+            "Types":"Duration",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"Duration",
+            "Cost Group":"Three",
+            "Count":1
+        },
+        {
+            "Types":"Duration",
+            "Cost Group":"Five",
+            "Count":3
+        },
+        {
+            "Types":"Duration - Liaison - Treasure",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Duration - Treasure",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"Duration - Treasure",
+            "Cost Group":"Three",
+            "Count":1
+        },
+        {
+            "Types":"Duration - Treasure",
+            "Cost Group":"Four",
+            "Count":3
+        },
+        {
+            "Types":"Duration - Treasure",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Liaison - Treasure",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"Loot - Treasure",
+            "Cost Group":"Two",
+            "Count":1
+        },
+        {
+            "Types":"Loot - Treasure",
+            "Cost Group":"Five",
+            "Count":1
+        },
+        {
+            "Types":"Loot - Treasure",
+            "Cost Group":"Other",
+            "Count":1
+        },
+        {
+            "Types":"Treasure",
+            "Cost Group":"Two",
+            "Count":4
+        },
+        {
+            "Types":"Treasure",
+            "Cost Group":"Three",
+            "Count":4
+        },
+        {
+            "Types":"Treasure",
+            "Cost Group":"Four",
+            "Count":6
+        },
+        {
+            "Types":"Treasure",
+            "Cost Group":"Five",
+            "Count":19
+        },
+        {
+            "Types":"Treasure",
+            "Cost Group":"Other",
+            "Count":6
+        }
+    ]
+}

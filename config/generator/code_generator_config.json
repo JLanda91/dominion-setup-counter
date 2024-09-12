@@ -68,7 +68,7 @@
       "strings": ["Landmark", "Project", "Way"]
     }
   ],
-  "tracked_landscape_piles": [
+  "other_landscape_types": [
     "Hex",
     "Boon",
     "Ally",

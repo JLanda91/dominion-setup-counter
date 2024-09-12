@@ -1,6 +1,6 @@
 from json import load
 
-from pandas import ExcelFile, Index, DataFrame, Series, MultiIndex
+from pandas import ExcelFile
 from pathlib import Path
 from itertools import chain
 
@@ -59,13 +59,15 @@ def load_card_list(generator_config):
     # Parse and set nas to empty string
     kingdom_card_list = excel_file.parse(sheet_name="Kingdom", header=0, index_col=None, dtype=str)
     kingdom_card_list.fillna('', inplace=True)
-    print(f"Kingdom card list has length {len(kingdom_card_list)}, ", end='')
+    print("KINGDOM:")
+    print("==================")
+    print(f"Card list has length {len(kingdom_card_list)}, ", end='')
 
     # Don't view the rows with expansions that are not supported
     unsupported_expansions = kingdom_card_list.loc[~kingdom_card_list['Expansion'].isin(generator_config["supported_expansions"])]["Expansion"].unique()
     kingdom_card_list = kingdom_card_list.loc[kingdom_card_list['Expansion'].isin(generator_config["supported_expansions"])]
     print(f"of which {len(kingdom_card_list)} are cards from currently supported expansions")
-    print(f"Unsupported expansions found in kingdom card list: ", 'none' if not unsupported_expansions else ', '.join(unsupported_expansions))
+    print(f"Unsupported expansions found in card list: ", 'none' if not unsupported_expansions else ', '.join(unsupported_expansions))
 
     # Map edition to their string
     kingdom_card_list["Edition"] = kingdom_card_list["Edition"].map(edition_modifier)
@@ -78,7 +80,7 @@ def load_card_list(generator_config):
     types_columns = list(col for col in kingdom_card_list.columns if col.startswith("Type"))
     kingdom_card_list["Types"] = list(tracked_type_tuple(t, generator_config["tracked_kingdom_card_types"]) for t in zip(*(kingdom_card_list[col] for col in types_columns)))
     untracked_types = set(t for t in chain.from_iterable((kingdom_card_list[col] for col in types_columns)) if len(t) > 0 and t not in generator_config["tracked_kingdom_card_types"])
-    print("Untracked kingdom card types found in card list:", ", ".join(untracked_types))
+    print("Untracked card types found in card list:", ", ".join(untracked_types))
 
     # Delete Type<n> columns
     kingdom_card_list.drop(columns=types_columns, inplace=True)
@@ -97,32 +99,39 @@ def load_card_list(generator_config):
     result["kingdom_queries"] = type_cost_sort(result["kingdom_regular"].groupby(["Types", "Cost Group"]).sum())
 
     # adding landscape cards list to the result dictionary.
+    supported_supply_types = list(chain.from_iterable(landscape_group["strings"] for landscape_group in generator_config["supply_landscape_groups"]))
+    supported_other_types = generator_config["other_landscape_types"]
+    supported_all_types = supported_supply_types + supported_other_types
+    print(f"Landscape supply types are: {', '.join(supported_supply_types)}")
+    print(f"""Landscape other types are: {', '.join(supported_other_types)}""")
 
     # Parse and set nas to empty string
     landscape_card_list = excel_file.parse(sheet_name="Landscapes", header=0, index_col=None, dtype=str)
     landscape_card_list.fillna('', inplace=True)
-    print(f"Landscape card list has length {len(landscape_card_list)}, ", end='')
+
+    # Log if there are any unsupported entries
+    unsupported_expansions = landscape_card_list.loc[~landscape_card_list['Expansion'].isin(generator_config["supported_expansions"])]["Expansion"].unique()
+    print(f"Unsupported expansions found in landscape card list:", 'none' if not unsupported_expansions else ', '.join(unsupported_expansions))
+    unsupported_types = landscape_card_list.loc[~landscape_card_list['Type'].isin(supported_all_types)]["Type"].unique()
+    print(f"Unsupported types found in landscape card list:", 'none' if not unsupported_types else ', '.join(unsupported_types))
 
     # Don't view the rows with expansions that are not supported
-    unsupported_expansions = landscape_card_list.loc[~landscape_card_list['Expansion'].isin(generator_config["supported_expansions"])]["Expansion"].unique()
-    landscape_card_list = landscape_card_list.loc[landscape_card_list['Expansion'].isin(generator_config["supported_expansions"])]
-    print(f"of which {len(landscape_card_list)} are cards from currently supported expansions")
-    print(f"Unsupported expansions found in landscape card list:", 'none' if not unsupported_expansions else ', '.join(unsupported_expansions))
+    print(f"Landscape card list has length {len(landscape_card_list)}, ", end='')
+    landscape_card_list = landscape_card_list.loc[landscape_card_list['Expansion'].isin(generator_config["supported_expansions"]) & landscape_card_list['Type'].isin(supported_all_types)]
+    print(f"of which {len(landscape_card_list)} are cards from currently supported expansions and types")
 
     # Map special column to bool
     landscape_card_list["Special"] = landscape_card_list["Special"].map(lambda x: x.lower() == 'true')
 
     # Group by (count) the card types with same expansion, edition, cost group and tracked types
     groupby_cols = ["Expansion", "Type"]
-    supply_types = list(chain.from_iterable(landscape_group["strings"] for landscape_group in generator_config["supply_landscape_groups"]))
-    print(f"Landscape supply types are: {', '.join(supply_types)}")
-    supply_non_special = landscape_card_list.loc[~landscape_card_list["Special"] & landscape_card_list["Type"].isin(supply_types)][groupby_cols + ["Name"]].groupby(groupby_cols).count()
+    supply_non_special = landscape_card_list.loc[~landscape_card_list["Special"] & landscape_card_list["Type"].isin(supported_supply_types)][groupby_cols + ["Name"]].groupby(groupby_cols).count()
     supply_non_special.rename(columns={'Name': 'Count'}, inplace=True)
     result["landscapes_supply_regular"] = expansion_sort(supply_non_special)
-    result["landscapes_supply_special"] = landscape_card_list.loc[landscape_card_list["Special"] & landscape_card_list["Type"].isin(supply_types)][["Name", "Expansion"]]
+    result["landscapes_supply_special"] = landscape_card_list.loc[landscape_card_list["Special"] & landscape_card_list["Type"].isin(supported_supply_types)][["Name", "Expansion"]]
     result["landscapes_supply_queries"] = result["landscapes_supply_regular"].groupby(["Type"])['Count'].sum().reset_index().set_index('Type')
 
-    other_landscapes = landscape_card_list.loc[landscape_card_list["Type"].isin(generator_config["tracked_landscape_piles"])][groupby_cols + ["Name"]].groupby(groupby_cols).count()
+    other_landscapes = landscape_card_list.loc[landscape_card_list["Type"].isin(generator_config["other_landscape_types"])][groupby_cols + ["Name"]].groupby(groupby_cols).count()
     other_landscapes.rename(columns={'Name': 'Count'}, inplace=True)
     result["landscapes_other_table"] = expansion_sort(other_landscapes)
     result["landscapes_other_queries"] = result["landscapes_other_table"].groupby(["Type"])['Count'].sum().reset_index().set_index('Type')
@@ -135,7 +144,7 @@ def load_card_list(generator_config):
             df_reset["Types"] = df_reset["Types"].map(lambda t: " - ".join(t))
             df_reset.set_index(index, inplace=True)
             exported_df = df_reset
-        exported_df.to_excel(Path.cwd().parent / f"{k}.xlsx", index=(isinstance(exported_df.index, MultiIndex) or exported_df.index.name is not None))
+        exported_df.to_json(Path.cwd() / "output_tables" / f"{k}.json", orient='table', indent=4)
 
     return result
 

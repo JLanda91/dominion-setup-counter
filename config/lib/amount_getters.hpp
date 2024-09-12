@@ -1,17 +1,16 @@
-
 #pragma once
 
-#include "typedefs.hpp"
+#include "lib/typedefs.hpp"
 
 namespace config {
-    namespace kingdom{
+    namespace kingdom {
         template<AmountIndex ... E>
-        auto sum_tuple_on_enum_index(const amounts_t& t) noexcept -> coefficient_t {
+        auto enum_index_get_sum(const amounts_t& t) noexcept -> coefficient_t {
             return (... + (std::get<std::to_underlying(E)>(t)));
         }
-
+                
         template<AmountIndex ... E>
-        auto diff_tuple_on_enum_index(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+        auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
             return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
         }
 
@@ -33,16 +32,17 @@ namespace config {
         auto has_knights(const amounts_t& t) noexcept -> bool;
         auto has_druid(const amounts_t& t) noexcept -> bool;
         auto has_riverboat(const amounts_t& t) noexcept -> bool;
+
     }
 
     namespace landscapes {
         template<AmountIndex ... E>
-        auto sum_tuple_on_enum_index(const amounts_t& t) noexcept -> coefficient_t {
+        auto enum_index_get_sum(const amounts_t& t) noexcept -> coefficient_t {
             return (... + (std::get<std::to_underlying(E)>(t)));
         }
-
+                
         template<AmountIndex ... E>
-        auto diff_tuple_on_enum_index(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+        auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
             return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
         }
 
@@ -52,6 +52,6 @@ namespace config {
 
         auto has_obelisk(const amounts_t& t) noexcept -> bool;
         auto has_way_of_the_mouse(const amounts_t& t) noexcept -> bool;
-        auto has_approaching_army(const amounts_t& t) noexcept -> bool;
+
     }
 }

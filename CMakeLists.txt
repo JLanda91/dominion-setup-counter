@@ -29,9 +29,6 @@ add_executable(dominion_setup_counter
 
 include_directories(vcpkg_installed/x64-linux/include)
 
-include_directories(utils)
-include_directories(config)
-
 add_subdirectory(config)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_subdirectory(tst)

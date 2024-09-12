@@ -1,6 +1,6 @@
 #pragma once
 
-#include "card_amount_tables.save.hpp"
+#include "card_amount_tables.hpp"
 #include "enum_mask.hpp"
 
 namespace config {

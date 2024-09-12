@@ -1,0 +1,45 @@
+{
+    "schema":{
+        "fields":[
+            {
+                "name":"Expansion",
+                "type":"string"
+            },
+            {
+                "name":"Type",
+                "type":"string"
+            },
+            {
+                "name":"Count",
+                "type":"integer"
+            }
+        ],
+        "primaryKey":[
+            "Expansion",
+            "Type"
+        ],
+        "pandas_version":"1.4.0"
+    },
+    "data":[
+        {
+            "Expansion":"Nocturne",
+            "Type":"Boon",
+            "Count":12
+        },
+        {
+            "Expansion":"Nocturne",
+            "Type":"Hex",
+            "Count":12
+        },
+        {
+            "Expansion":"Allies",
+            "Type":"Ally",
+            "Count":23
+        },
+        {
+            "Expansion":"Rising Sun",
+            "Type":"Prophecy",
+            "Count":15
+        }
+    ]
+}
