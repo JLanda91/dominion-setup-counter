@@ -1,7 +1,5 @@
 #pragma once
 
-#include <magic_enum.hpp>
-
 #include <array>
 #include <ranges>
 #include <utility>
@@ -57,7 +55,7 @@ namespace utils::table{
         constexpr bool operator==(const EnumMask& other) const noexcept = default;
 
     private:
-        constexpr EnumMask(const mask_t& mask) noexcept : mask_(mask) {}
+        constexpr explicit EnumMask(const mask_t& mask) noexcept : mask_(mask) {}
 
         static constexpr std::array<std::size_t, sizeof...(SizedEnum)> sizes{SizedEnum::size ...};
 

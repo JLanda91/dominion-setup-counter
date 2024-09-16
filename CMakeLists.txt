@@ -12,12 +12,6 @@ set(Python_ROOT_DIR "${PROJECT_SOURCE_DIR}")
 
 message(STATUS "${Python_EXECUTABLE}")
 message(STATUS "${Python_ROOT_DIR}")
-
-#set(WARNINGS "-Wall -Wextra -Wsign-conversion -Wpedantic")
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 ${WARNINGS}")
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC ${WARNINGS} -Werror")
-#message(STATUS "${CMAKE_CXX_FLAGS_DEBUG}")
-#message(STATUS "${CMAKE_CXX_FLAGS_RELEASE}")
 message(STATUS "${CMAKE_CXX_FLAGS}")
 
 add_executable(dominion_setup_counter
@@ -29,9 +23,9 @@ add_executable(dominion_setup_counter
         utils/enum_mask.hpp
 )
 
-include_directories(vcpkg_installed/x64-linux/include)
+include_directories(${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/include)
 
-add_subdirectory(config)
+add_subdirectory(card_lists)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_subdirectory(tst)
 endif()

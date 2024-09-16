@@ -36,22 +36,32 @@ namespace config {
     }
 
     namespace landscapes {
-        template<AmountIndex ... E>
-        auto enum_index_get_sum(const amounts_t& t) noexcept -> coefficient_t {
-            return (... + (std::get<std::to_underlying(E)>(t)));
+        namespace supply {
+            template<AmountIndex ... E>
+            auto enum_index_get_sum(const amounts_t& t) noexcept -> coefficient_t {
+                return (... + (std::get<std::to_underlying(E)>(t)));
+            }
+                    
+            template<AmountIndex ... E>
+            auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+                return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
+            }
+
+            auto event_total(const amounts_t& t) noexcept -> coefficient_t;
+            auto trait_total(const amounts_t& t) noexcept -> coefficient_t;
+            auto other_supply_total(const amounts_t& t) noexcept -> coefficient_t;
+
+            auto has_obelisk(const amounts_t& t) noexcept -> bool;
+            auto has_way_of_the_mouse(const amounts_t& t) noexcept -> bool;
+
         }
-                
-        template<AmountIndex ... E>
-        auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
-            return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
+
+        namespace other {
+            auto hex_total(const amounts_t& t) noexcept -> coefficient_t;
+            auto boon_total(const amounts_t& t) noexcept -> coefficient_t;
+            auto ally_total(const amounts_t& t) noexcept -> coefficient_t;
+            auto prophecy_total(const amounts_t& t) noexcept -> coefficient_t;
+
         }
-
-        auto event_total(const amounts_t& t) noexcept -> coefficient_t;
-        auto trait_total(const amounts_t& t) noexcept -> coefficient_t;
-        auto other_supply_total(const amounts_t& t) noexcept -> coefficient_t;
-
-        auto has_obelisk(const amounts_t& t) noexcept -> bool;
-        auto has_way_of_the_mouse(const amounts_t& t) noexcept -> bool;
-
     }
 }

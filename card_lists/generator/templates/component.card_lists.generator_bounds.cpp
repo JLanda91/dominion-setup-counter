@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "lib/generator_bounds.hpp"
-#include "lib/default_expansion_editions.hpp"
+#include "generator_bounds.hpp"
+#include "default_expansion_editions.hpp"
 
 namespace {
     using config::coefficient_t;
@@ -16,8 +16,8 @@ namespace {
 
     /*[[[cog
     from config_io import generator_config, card_list
-    from generator_component_config_generator_bounds import ComponentConfigGeneratorBoundsGenerator
-    generator = ComponentConfigGeneratorBoundsGenerator(card_list, generator_config)
+    from generator_component_card_lists_generator_bounds import ComponentCardListsGeneratorBoundsGenerator
+    generator = ComponentCardListsGeneratorBoundsGenerator(card_list, generator_config)
     generator.create_tests()
     ]]]*/
     //[[[end]]]

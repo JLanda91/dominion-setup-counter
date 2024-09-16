@@ -32,7 +32,6 @@ namespace config {
         
     using SizedExpansion = utils::enums::SizedEnum<Expansion, 19uz>;
             
-
     namespace kingdom {
         enum class EditionModifier : uint8_t {
         	NONE,
@@ -67,19 +66,18 @@ namespace config {
             
         using SizedTrackedType = utils::enums::SizedEnum<TrackedType, 10uz>;
                 
-
         using TrackedTypeMask = utils::table::EnumMask<SizedTrackedType>;
 
-        struct row_t {
+        struct table_row_t {
             std::pair<Expansion, EditionModifier> expansion_edition_;
             TrackedTypeMask tracked_types_mask_;
             CostGroup cost_group_;
             uint8_t amount_;
 
-            constexpr bool operator==(const row_t& other) const noexcept = default;
+            constexpr bool operator==(const table_row_t& other) const noexcept = default;
         };
 
-        using table_t = std::array<row_t, 260uz>;
+        using table_t = std::array<table_row_t, 260uz>;
             
         static constexpr auto table() noexcept -> const table_t& {
             static constexpr table_t singleton {{
@@ -347,7 +345,6 @@ namespace config {
         	return singleton;
         }
             
-
         using ExpansionEditionFilter = utils::table::EnumMask<SizedExpansion, SizedEditionModifier>;
         using CostGroupFilter = utils::table::EnumMask<SizedCostGroup>;
 
@@ -526,83 +523,119 @@ namespace config {
     }
 
     namespace landscapes {
-        enum class Type : uint8_t {
-        	EVENT,
-        	TRAIT,
-        	LANDMARK,
-        	PROJECT,
-        	WAY,
-        	HEX,
-        	BOON,
-        	ALLY,
-        	PROPHECY
-        };
-            
-        using SizedType = utils::enums::SizedEnum<Type, 9uz>;
-                
-
-        struct row_t {
-            Expansion expansion_;
-            Type type_;
-            uint8_t amount_;
-
-            constexpr bool operator==(const row_t& other) const noexcept = default;
-        };
-
-        using supply_table_t = std::array<row_t, 10uz>;
-            
-        static constexpr auto supply_table() noexcept -> const supply_table_t& {
-            static constexpr supply_table_t singleton {{
-        		{ Expansion::ADVENTURES, Type::EVENT, 20 },
-        		{ Expansion::EMPIRES, Type::EVENT, 13 },
-        		{ Expansion::EMPIRES, Type::LANDMARK, 20 },
-        		{ Expansion::RENAISSANCE, Type::PROJECT, 20 },
-        		{ Expansion::MENAGERIE, Type::EVENT, 20 },
-        		{ Expansion::MENAGERIE, Type::WAY, 19 },
-        		{ Expansion::PLUNDER, Type::EVENT, 15 },
-        		{ Expansion::PLUNDER, Type::TRAIT, 15 },
-        		{ Expansion::RISING_SUN, Type::EVENT, 10 },
-        		{ Expansion::PROMOS, Type::EVENT, 1 },
-        	}};
-        	return singleton;
-        }
-            
-
         using ExpansionFilter = utils::table::EnumMask<SizedExpansion>;
-        using TypeFilter = utils::table::EnumMask<SizedType>;
 
-        struct TableQuery {
-            TypeFilter type_{};
-        };
+        namespace supply {
+            enum class Type : uint8_t {
+            	EVENT,
+            	TRAIT,
+            	LANDMARK,
+            	PROJECT,
+            	WAY
+            };
+                
+            using SizedType = utils::enums::SizedEnum<Type, 5uz>;
+                    
+            struct table_row_t {
+                Expansion expansion_;
+                Type type_;
+                uint8_t amount_;
 
-        using supply_amount_queries_t = std::array<TableQuery, 3uz>;
-            
-        static constexpr auto supply_amount_queries() noexcept -> const supply_amount_queries_t& {
-            static constexpr supply_amount_queries_t singleton {{
-        		{ { Type::EVENT, } },
-        		{ { Type::TRAIT, } },
-        		{ { Type::LANDMARK, Type::PROJECT, Type::WAY, } },
-        	}};
-        	return singleton;
+                constexpr bool operator==(const table_row_t& other) const noexcept = default;
+            };
+
+            using table_t = std::array<table_row_t, 10uz>;
+                
+            static constexpr auto table() noexcept -> const table_t& {
+                static constexpr table_t singleton {{
+            		{ Expansion::ADVENTURES, Type::EVENT, 20 },
+            		{ Expansion::EMPIRES, Type::EVENT, 13 },
+            		{ Expansion::EMPIRES, Type::LANDMARK, 20 },
+            		{ Expansion::RENAISSANCE, Type::PROJECT, 20 },
+            		{ Expansion::MENAGERIE, Type::EVENT, 20 },
+            		{ Expansion::MENAGERIE, Type::WAY, 19 },
+            		{ Expansion::PLUNDER, Type::EVENT, 15 },
+            		{ Expansion::PLUNDER, Type::TRAIT, 15 },
+            		{ Expansion::RISING_SUN, Type::EVENT, 10 },
+            		{ Expansion::PROMOS, Type::EVENT, 1 },
+            	}};
+            	return singleton;
+            }
+                
+            using TypeFilter = utils::table::EnumMask<SizedType>;
+
+            struct TableQuery {
+                TypeFilter type_{};
+            };
+
+            using amount_queries_t = std::array<TableQuery, 3uz>;
+                
+            static constexpr auto amount_queries() noexcept -> const amount_queries_t& {
+                static constexpr amount_queries_t singleton {{
+            		{ { Type::EVENT, } },
+            		{ { Type::TRAIT, } },
+            		{ { Type::LANDMARK, Type::PROJECT, Type::WAY, } },
+            	}};
+            	return singleton;
+            }
+                
+            using special_predicates_t = std::array<typename ExpansionFilter::enum_t, 2uz>;
+                
+            static constexpr auto special_predicates() noexcept -> const special_predicates_t& {
+                static constexpr special_predicates_t singleton {{
+            		Expansion::EMPIRES,	// OBELISK
+            		Expansion::MENAGERIE,	// WAY_OF_THE_MOUSE
+            	}};
+            	return singleton;
+            }
+                
+            enum class AmountIndex : std::size_t {
+            	EVENT,
+            	TRAIT,
+            	OTHER_SUPPLY,
+            	OBELISK,
+            	WAY_OF_THE_MOUSE
+            };
+                
         }
-            
-        using supply_special_predicates_t = std::array<typename ExpansionFilter::enum_t, 2uz>;
-            
-        static constexpr auto supply_special_predicates() noexcept -> const supply_special_predicates_t& {
-            static constexpr supply_special_predicates_t singleton {{
-        		Expansion::EMPIRES,	// OBELISK
-        		Expansion::MENAGERIE,	// WAY_OF_THE_MOUSE
-        	}};
-        	return singleton;
+
+        namespace other {
+            enum class Type : uint8_t {
+            	HEX,
+            	BOON,
+            	ALLY,
+            	PROPHECY
+            };
+                
+            using SizedType = utils::enums::SizedEnum<Type, 4uz>;
+                    
+            using SizedType = utils::enums::SizedEnum<Type, 4uz>;
+            using TypeFilter = utils::table::EnumMask<SizedType>;
+
+            struct TableQuery {
+                TypeFilter type_{};
+            };
+
+            struct table_row_t {
+                Expansion expansion_;
+                Type type_;
+                uint8_t amount_;
+
+                constexpr bool operator==(const table_row_t& other) const noexcept = default;
+            };
+
+            using table_t = std::array<table_row_t, 4uz>;
+                
+            static constexpr auto table() noexcept -> const table_t& {
+                static constexpr table_t singleton {{
+            		{ Expansion::NOCTURNE, Type::BOON, 12 },
+            		{ Expansion::NOCTURNE, Type::HEX, 12 },
+            		{ Expansion::ALLIES, Type::ALLY, 23 },
+            		{ Expansion::RISING_SUN, Type::PROPHECY, 15 },
+            	}};
+            	return singleton;
+            }
+                
         }
-            
-        enum class AmountIndex : std::size_t {
-        	EVENT,
-        	TRAIT,
-        	OTHER_SUPPLY,
-        	OBELISK,
-        	WAY_OF_THE_MOUSE
-        };
-            
     }
 }

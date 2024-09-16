@@ -1,5 +1,5 @@
 /.idea/
 /cmake-build-*/
-/vcpkg_installed/
+/build/
 **/__pycache__/
 **/~$*.xlsx

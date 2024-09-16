@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/typedefs.hpp"
+#include "typedefs.hpp"
 
 namespace config {
     namespace kingdom {
@@ -16,11 +16,20 @@ namespace config {
     }
 
     namespace landscapes {
-        /*[[[cog
-        AmountGetterGenerator.create_enum_sum_functions()
-        generator.create_landscapes_supply_amount_getter_declarations()
-        generator.create_landscapes_supply_special_getter_declarations()
-        ]]]*/
-        //[[[end]]]
+        namespace supply {
+            /*[[[cog
+            AmountGetterGenerator.create_enum_sum_functions()
+            generator.create_landscapes_supply_amount_getter_declarations()
+            generator.create_landscapes_supply_special_getter_declarations()
+            ]]]*/
+            //[[[end]]]
+        }
+
+        namespace other {
+            /*[[[cog
+            generator.create_landscapes_other_amount_getter_declarations()
+            ]]]*/
+            //[[[end]]]
+        }
     }
 }

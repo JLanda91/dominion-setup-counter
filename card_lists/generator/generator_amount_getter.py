@@ -145,3 +145,16 @@ auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept 
     return std::get<std::to_underlying(AmountIndex::{upper_snake_case(name)})>(t) > 0u;
 }}
 """)
+
+    def create_landscapes_other_amount_getter_declarations(self):
+        for landscape_type in self._landscapes_other_types:
+            cog.outl(f"""auto {lower_snake_case(landscape_type)}_total(const amounts_t& t) noexcept -> coefficient_t;""")
+        cog.outl()
+
+    def create_landscapes_other_amount_getter_definitions(self):
+        for landscape_type in self._landscapes_other_types:
+            cog.outl(f"""auto {lower_snake_case(landscape_type)}_total(const amounts_t& t) noexcept -> coefficient_t {{
+    return std::get<std::to_underlying(Type::{upper_snake_case(landscape_type)})>(t);
+}}
+""")
+        cog.outl()

@@ -1,15 +1,15 @@
 {
   "tracked_kingdom_card_types": [
-      "Action",
-      "Attack",
-      "Duration",
-      "Treasure",
-      "Looter",
-      "Fate",
-      "Doom",
-      "Liaison",
-      "Loot",
-      "Omen"
+    "Action",
+    "Attack",
+    "Duration",
+    "Treasure",
+    "Looter",
+    "Fate",
+    "Doom",
+    "Liaison",
+    "Loot",
+    "Omen"
   ],
   "supported_expansions": [
     "Dominion",
@@ -35,37 +35,60 @@
   "cost_groups": [
     {
       "name": "Two",
-      "strings": ["2"]
+      "strings": [
+        "2"
+      ]
     },
     {
       "name": "Three",
-      "strings": ["3"]
+      "strings": [
+        "3"
+      ]
     },
     {
       "name": "Four",
-      "strings": ["4"]
+      "strings": [
+        "4"
+      ]
     },
     {
       "name": "Five",
-      "strings": ["5"]
+      "strings": [
+        "5"
+      ]
     },
     {
       "name": "Other",
-      "strings": ["1", "6", "7", "8", "P", "D"]
+      "strings": [
+        "1",
+        "6",
+        "7",
+        "8",
+        "P",
+        "D"
+      ]
     }
   ],
   "supply_landscape_groups": [
     {
       "name": "Event",
-      "strings": ["Event"]
+      "strings": [
+        "Event"
+      ]
     },
     {
       "name": "Trait",
-      "strings": ["Trait"]
+      "strings": [
+        "Trait"
+      ]
     },
     {
       "name": "Other Supply",
-      "strings": ["Landmark", "Project", "Way"]
+      "strings": [
+        "Landmark",
+        "Project",
+        "Way"
+      ]
     }
   ],
   "other_landscape_types": [
@@ -88,6 +111,19 @@
         },
         {
           "expansion": "Menagerie",
+          "edition_modifier": "None"
+        }
+      ]
+    },
+    {
+      "name": "boon_hex_prophecy",
+      "expansion_editions": [
+        {
+          "expansion": "Nocturne",
+          "edition_modifier": "None"
+        },
+        {
+          "expansion": "Rising Sun",
           "edition_modifier": "None"
         }
       ]

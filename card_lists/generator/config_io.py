@@ -59,8 +59,10 @@ def load_card_list(generator_config):
     # Parse and set nas to empty string
     kingdom_card_list = excel_file.parse(sheet_name="Kingdom", header=0, index_col=None, dtype=str)
     kingdom_card_list.fillna('', inplace=True)
+    print("CARD DATA GENERATOR:")
+    print("====================\n")
     print("KINGDOM:")
-    print("==================")
+    print("--------------------")
     print(f"Card list has length {len(kingdom_card_list)}, ", end='')
 
     # Don't view the rows with expansions that are not supported
@@ -102,6 +104,8 @@ def load_card_list(generator_config):
     supported_supply_types = list(chain.from_iterable(landscape_group["strings"] for landscape_group in generator_config["supply_landscape_groups"]))
     supported_other_types = generator_config["other_landscape_types"]
     supported_all_types = supported_supply_types + supported_other_types
+    print("\nLANDSCAPES:")
+    print("--------------------")
     print(f"Landscape supply types are: {', '.join(supported_supply_types)}")
     print(f"""Landscape other types are: {', '.join(supported_other_types)}""")
 

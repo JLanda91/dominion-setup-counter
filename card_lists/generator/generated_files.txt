@@ -1,4 +1,4 @@
 templates/card_amount_tables.hpp -o ../lib/card_amount_tables.hpp -I .
 templates/amount_getters.hpp -o ../lib/amount_getters.hpp -I .
 templates/amount_getters.cpp -o ../lib/amount_getters.cpp -I .
-templates/component.config.generator_bounds.cpp -o ../../tst/component.config.generator_bounds.cpp -I .
+templates/component.card_lists.generator_bounds.cpp -o ../../tst/component.card_lists.generator_bounds.cpp -I .

@@ -96,13 +96,20 @@ namespace {
     		(coefficient_t)1u	// RIVERBOAT
     	));
 
-        ASSERT_THAT(actual.landscapes_, FieldsAre(
+        ASSERT_THAT(actual.landscapes_supply_, FieldsAre(
     		(coefficient_t)79u,	// EVENT
     		(coefficient_t)15u,	// TRAIT
     		(coefficient_t)59u,	// OTHER_SUPPLY
 
     		(coefficient_t)1u,	// OBELISK
     		(coefficient_t)1u	// WAY_OF_THE_MOUSE
+    	));
+
+        ASSERT_THAT(actual.landscapes_other_, FieldsAre(
+    		(coefficient_t)12u,	// HEX
+    		(coefficient_t)12u,	// BOON
+    		(coefficient_t)23u,	// ALLY
+    		(coefficient_t)15u	// PROPHECY
     	));
     }
 
@@ -192,13 +199,122 @@ namespace {
     		(coefficient_t)0u	// RIVERBOAT
     	));
 
-        ASSERT_THAT(actual.landscapes_, FieldsAre(
+        ASSERT_THAT(actual.landscapes_supply_, FieldsAre(
     		(coefficient_t)20u,	// EVENT
     		(coefficient_t)0u,	// TRAIT
     		(coefficient_t)19u,	// OTHER_SUPPLY
 
     		(coefficient_t)0u,	// OBELISK
     		(coefficient_t)1u	// WAY_OF_THE_MOUSE
+    	));
+
+        ASSERT_THAT(actual.landscapes_other_, FieldsAre(
+    		(coefficient_t)0u,	// HEX
+    		(coefficient_t)0u,	// BOON
+    		(coefficient_t)0u,	// ALLY
+    		(coefficient_t)0u	// PROPHECY
+    	));
+    }
+
+    TEST(generator_bounds, boon_hex_prophecy) {
+    	const auto expansion_edition_filter = ExpansionEditionFilter{
+    		{ Expansion::NOCTURNE, EditionModifier::NONE },
+    		{ Expansion::RISING_SUN, EditionModifier::NONE },
+    	};
+
+    	const auto actual = from_expansions_editions(expansion_edition_filter);
+        ASSERT_THAT(actual.kingdom_, FieldsAre(
+    		(coefficient_t)1u,	// NONE_TWO
+    		(coefficient_t)2u,	// NONE_THREE
+    		(coefficient_t)3u,	// NONE_FOUR
+    		(coefficient_t)0u,	// NONE_FIVE
+    		(coefficient_t)0u,	// NONE_OTHER
+    		(coefficient_t)2u,	// ACTION_TWO
+    		(coefficient_t)3u,	// ACTION_THREE
+    		(coefficient_t)5u,	// ACTION_FOUR
+    		(coefficient_t)8u,	// ACTION_FIVE
+    		(coefficient_t)2u,	// ACTION_OTHER
+    		(coefficient_t)1u,	// ACTION_ATTACK_TWO
+    		(coefficient_t)0u,	// ACTION_ATTACK_THREE
+    		(coefficient_t)1u,	// ACTION_ATTACK_FOUR
+    		(coefficient_t)0u,	// ACTION_ATTACK_FIVE
+    		(coefficient_t)0u,	// ACTION_ATTACK_OTHER
+    		(coefficient_t)1u,	// ACTION_ATTACK_DOOM_FOUR
+    		(coefficient_t)2u,	// ACTION_ATTACK_DOOM_FIVE
+    		(coefficient_t)0u,	// ACTION_ATTACK_DURATION_THREE
+    		(coefficient_t)0u,	// ACTION_ATTACK_DURATION_FOUR
+    		(coefficient_t)0u,	// ACTION_ATTACK_DURATION_FIVE
+    		(coefficient_t)1u,	// ACTION_ATTACK_DURATION_OTHER
+    		(coefficient_t)0u,	// ACTION_ATTACK_DURATION_LOOT_FIVE
+    		(coefficient_t)0u,	// ACTION_ATTACK_LOOTER_FOUR
+    		(coefficient_t)0u,	// ACTION_ATTACK_LOOTER_FIVE
+    		(coefficient_t)1u,	// ACTION_ATTACK_OMEN_FIVE
+    		(coefficient_t)1u,	// ACTION_DOOM_THREE
+    		(coefficient_t)1u,	// ACTION_DOOM_FIVE
+    		(coefficient_t)0u,	// ACTION_DURATION_TWO
+    		(coefficient_t)1u,	// ACTION_DURATION_THREE
+    		(coefficient_t)0u,	// ACTION_DURATION_FOUR
+    		(coefficient_t)0u,	// ACTION_DURATION_FIVE
+    		(coefficient_t)0u,	// ACTION_DURATION_OTHER
+    		(coefficient_t)0u,	// ACTION_DURATION_LIAISON_THREE
+    		(coefficient_t)0u,	// ACTION_DURATION_LOOT_TWO
+    		(coefficient_t)2u,	// ACTION_FATE_TWO
+    		(coefficient_t)1u,	// ACTION_FATE_THREE
+    		(coefficient_t)2u,	// ACTION_FATE_FOUR
+    		(coefficient_t)1u,	// ACTION_FATE_FIVE
+    		(coefficient_t)0u,	// ACTION_LIAISON_TWO
+    		(coefficient_t)0u,	// ACTION_LIAISON_THREE
+    		(coefficient_t)0u,	// ACTION_LIAISON_FOUR
+    		(coefficient_t)0u,	// ACTION_LIAISON_FIVE
+    		(coefficient_t)0u,	// ACTION_LOOT_FIVE
+    		(coefficient_t)0u,	// ACTION_LOOTER_FOUR
+    		(coefficient_t)3u,	// ACTION_OMEN_FOUR
+    		(coefficient_t)1u,	// ACTION_OMEN_FIVE
+    		(coefficient_t)1u,	// ACTION_OMEN_OTHER
+    		(coefficient_t)0u,	// ACTION_TREASURE_FIVE
+    		(coefficient_t)1u,	// ATTACK_DOOM_FIVE
+    		(coefficient_t)1u,	// ATTACK_DURATION_OTHER
+    		(coefficient_t)1u,	// ATTACK_FATE_TREASURE_FIVE
+    		(coefficient_t)0u,	// ATTACK_TREASURE_FIVE
+    		(coefficient_t)1u,	// DURATION_TWO
+    		(coefficient_t)1u,	// DURATION_THREE
+    		(coefficient_t)3u,	// DURATION_FIVE
+    		(coefficient_t)0u,	// DURATION_LIAISON_TREASURE_FIVE
+    		(coefficient_t)0u,	// DURATION_TREASURE_TWO
+    		(coefficient_t)0u,	// DURATION_TREASURE_THREE
+    		(coefficient_t)0u,	// DURATION_TREASURE_FOUR
+    		(coefficient_t)0u,	// DURATION_TREASURE_FIVE
+    		(coefficient_t)0u,	// LIAISON_TREASURE_TWO
+    		(coefficient_t)0u,	// LOOT_TREASURE_TWO
+    		(coefficient_t)0u,	// LOOT_TREASURE_FIVE
+    		(coefficient_t)0u,	// LOOT_TREASURE_OTHER
+    		(coefficient_t)0u,	// TREASURE_TWO
+    		(coefficient_t)0u,	// TREASURE_THREE
+    		(coefficient_t)0u,	// TREASURE_FOUR
+    		(coefficient_t)0u,	// TREASURE_FIVE
+    		(coefficient_t)1u,	// TREASURE_OTHER
+
+    		(coefficient_t)0u,	// YOUNG_WITCH
+    		(coefficient_t)0u,	// FERRYMAN
+    		(coefficient_t)0u,	// KNIGHTS
+    		(coefficient_t)1u,	// DRUID
+    		(coefficient_t)1u	// RIVERBOAT
+    	));
+
+        ASSERT_THAT(actual.landscapes_supply_, FieldsAre(
+    		(coefficient_t)10u,	// EVENT
+    		(coefficient_t)0u,	// TRAIT
+    		(coefficient_t)0u,	// OTHER_SUPPLY
+
+    		(coefficient_t)0u,	// OBELISK
+    		(coefficient_t)0u	// WAY_OF_THE_MOUSE
+    	));
+
+        ASSERT_THAT(actual.landscapes_other_, FieldsAre(
+    		(coefficient_t)12u,	// HEX
+    		(coefficient_t)12u,	// BOON
+    		(coefficient_t)0u,	// ALLY
+    		(coefficient_t)15u	// PROPHECY
     	));
     }
 

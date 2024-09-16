@@ -13,10 +13,19 @@ namespace config {
     }
 
     namespace landscapes {
-        /*[[[cog
-        generator.create_landscapes_supply_amount_getter_definitions()
-        generator.create_landscapes_supply_special_getter_definitions()
-        ]]]*/
-        //[[[end]]]
+        namespace supply {
+            /*[[[cog
+            generator.create_landscapes_supply_amount_getter_definitions()
+            generator.create_landscapes_supply_special_getter_definitions()
+            ]]]*/
+            //[[[end]]]
+        }
+
+        namespace other {
+            /*[[[cog
+            generator.create_landscapes_other_amount_getter_definitions()
+            ]]]*/
+            //[[[end]]]
+        }
     }
 }

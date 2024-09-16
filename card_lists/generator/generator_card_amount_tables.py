@@ -15,7 +15,7 @@ class CardAmountTablesGenerator(BaseGenerator):
             for tracked_type in tracked_types:
                 cog.out(f"TrackedType::{upper_snake_case(tracked_type)}, ")
             cog.outl(f"}}, CostGroup::{upper_snake_case(cost_group)}, {amount} }},")
-        create_singleton("table", "row_t", len(self._kingdom_regular_df), self._kingdom_regular_df.itertuples(), tuple_printer)
+        create_singleton("table", "table_row_t", len(self._kingdom_regular_df), self._kingdom_regular_df.itertuples(), tuple_printer)
 
     def create_kingdom_amount_queries(self):
         def tuple_printer(df_tup):
@@ -41,7 +41,13 @@ class CardAmountTablesGenerator(BaseGenerator):
         def tuple_printer(df_tup):
             (expansion, landscape_type), amount = df_tup
             cog.outl(f"\t\t{{ Expansion::{upper_snake_case(expansion)}, Type::{upper_snake_case(landscape_type)}, {amount} }},")
-        create_singleton("supply_table", "row_t", len(self._landscapes_supply_regular_df), self._landscapes_supply_regular_df.itertuples(), tuple_printer)
+        create_singleton("table", "table_row_t", len(self._landscapes_supply_regular_df), self._landscapes_supply_regular_df.itertuples(), tuple_printer)
+
+    def create_landscapes_other_table(self):
+        def tuple_printer(df_tup):
+            (expansion, landscape_type), amount = df_tup
+            cog.outl(f"\t\t{{ Expansion::{upper_snake_case(expansion)}, Type::{upper_snake_case(landscape_type)}, {amount} }},")
+        create_singleton("table", "table_row_t", len(self._landscapes_other_table_df), self._landscapes_other_table_df.itertuples(), tuple_printer)
 
     def create_landscapes_supply_queries(self):
         def tuple_printer(supply_landscape_group):
@@ -49,13 +55,13 @@ class CardAmountTablesGenerator(BaseGenerator):
             for landscape_type in supply_landscape_group["strings"]:
                 cog.out(f"Type::{upper_snake_case(landscape_type)}, ")
             cog.outl("} },")
-        create_singleton("supply_amount_queries", "TableQuery", len(self._landscapes_supply_config), self._landscapes_supply_config, tuple_printer)
+        create_singleton("amount_queries", "TableQuery", len(self._landscapes_supply_config), self._landscapes_supply_config, tuple_printer)
 
     def create_landscapes_supply_specials(self):
         def tuple_printer(df_tup):
             _, name, expansion = df_tup
             cog.outl(f"\t\tExpansion::{upper_snake_case(expansion)},\t// {upper_snake_case(name)}")
-        create_singleton("supply_special_predicates", "typename ExpansionFilter::enum_t", len(self._landscapes_supply_special_df), self._landscapes_supply_special_df.itertuples(), tuple_printer)
+        create_singleton("special_predicates", "typename ExpansionFilter::enum_t", len(self._landscapes_supply_special_df), self._landscapes_supply_special_df.itertuples(), tuple_printer)
 
     def create_landscapes_amount_index(self):
         amount_query_names = list(upper_snake_case(landscape_group["name"]) for landscape_group in self._landscapes_supply_config)

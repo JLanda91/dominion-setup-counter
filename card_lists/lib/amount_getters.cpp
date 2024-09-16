@@ -306,25 +306,47 @@ namespace config {
     }
 
     namespace landscapes {
-        auto event_total(const amounts_t& t) noexcept -> coefficient_t {
-            return std::get<std::to_underlying(AmountIndex::EVENT)>(t);
+        namespace supply {
+            auto event_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(AmountIndex::EVENT)>(t);
+            }
+
+            auto trait_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(AmountIndex::TRAIT)>(t);
+            }
+
+            auto other_supply_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(AmountIndex::OTHER_SUPPLY)>(t);
+            }
+
+            auto has_obelisk(const amounts_t& t) noexcept -> bool {
+                return std::get<std::to_underlying(AmountIndex::OBELISK)>(t) > 0u;
+            }
+
+            auto has_way_of_the_mouse(const amounts_t& t) noexcept -> bool {
+                return std::get<std::to_underlying(AmountIndex::WAY_OF_THE_MOUSE)>(t) > 0u;
+            }
+
         }
 
-        auto trait_total(const amounts_t& t) noexcept -> coefficient_t {
-            return std::get<std::to_underlying(AmountIndex::TRAIT)>(t);
-        }
+        namespace other {
+            auto hex_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(Type::HEX)>(t);
+            }
 
-        auto other_supply_total(const amounts_t& t) noexcept -> coefficient_t {
-            return std::get<std::to_underlying(AmountIndex::OTHER_SUPPLY)>(t);
-        }
+            auto boon_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(Type::BOON)>(t);
+            }
 
-        auto has_obelisk(const amounts_t& t) noexcept -> bool {
-            return std::get<std::to_underlying(AmountIndex::OBELISK)>(t) > 0u;
-        }
+            auto ally_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(Type::ALLY)>(t);
+            }
 
-        auto has_way_of_the_mouse(const amounts_t& t) noexcept -> bool {
-            return std::get<std::to_underlying(AmountIndex::WAY_OF_THE_MOUSE)>(t) > 0u;
-        }
+            auto prophecy_total(const amounts_t& t) noexcept -> coefficient_t {
+                return std::get<std::to_underlying(Type::PROPHECY)>(t);
+            }
 
+
+        }
     }
 }
