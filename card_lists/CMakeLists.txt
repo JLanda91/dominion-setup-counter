@@ -10,8 +10,6 @@
 #MESSAGE(STATUS "card list generator template dir = ${CARD_LISTS_GENERATOR_TEMPLATE_DIR}")
 #MESSAGE(STATUS "project test dir = ${TEST_DIR}")
 
-add_subdirectory(generator)
-
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 add_custom_command(
