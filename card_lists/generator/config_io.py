@@ -1,3 +1,4 @@
+import sys
 from json import load
 
 from pandas import ExcelFile
@@ -48,6 +49,9 @@ def load_card_list(generator_config):
         df_reset = df.reset_index()
         df_reset["Expansion sorted"] = df_reset["Expansion"].map(expansion_order)
         return df_reset.sort_values(by=["Expansion sorted"]).drop(columns=["Expansion sorted"]).set_index(index_names)
+
+    def is_in_configured_specials(name, special_dict):
+        return name.lower() in (special.lower() for special, special_attrs in special_dict.items())
 
 
     excel_file_name = Path.cwd() / "card_list.xlsx"
@@ -100,6 +104,12 @@ def load_card_list(generator_config):
     result["kingdom_special"] = kingdom_card_list.loc[kingdom_card_list["Special"]][["Name", "Expansion", "Edition"]]
     result["kingdom_queries"] = type_cost_sort(result["kingdom_regular"].groupby(["Types", "Cost Group"]).sum())
 
+    for _, name, _, _ in result["kingdom_special"].itertuples():
+        if not is_in_configured_specials(name, generator_config["kingdom_specials_and_getters"]):
+            print(f"ERROR: kingdom special {name} not configured")
+            sys.exit(1)
+
+
     # adding landscape cards list to the result dictionary.
     supported_supply_types = list(chain.from_iterable(landscape_group["strings"] for landscape_group in generator_config["supply_landscape_groups"]))
     supported_other_types = generator_config["other_landscape_types"]
@@ -134,6 +144,11 @@ def load_card_list(generator_config):
     result["landscapes_supply_regular"] = expansion_sort(supply_non_special)
     result["landscapes_supply_special"] = landscape_card_list.loc[landscape_card_list["Special"] & landscape_card_list["Type"].isin(supported_supply_types)][["Name", "Expansion"]]
     result["landscapes_supply_queries"] = result["landscapes_supply_regular"].groupby(["Type"])['Count'].sum().reset_index().set_index('Type')
+
+    for _, name, _ in result["landscapes_supply_special"].itertuples():
+        if not is_in_configured_specials(name, generator_config["kingdom_specials_and_getters"]):
+            print(f"ERROR: landscapes special {name} not configured")
+            sys.exit(1)
 
     other_landscapes = landscape_card_list.loc[landscape_card_list["Type"].isin(generator_config["other_landscape_types"])][groupby_cols + ["Name"]].groupby(groupby_cols).count()
     other_landscapes.rename(columns={'Name': 'Count'}, inplace=True)

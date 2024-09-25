@@ -11,3 +11,4 @@ class BaseGenerator:
         self._landscapes_supply_queries_df = card_lists["landscapes_supply_queries"]
         self._landscapes_supply_special_df = card_lists["landscapes_supply_special"]
         self._generator_bounds_tests = generator_config["generator_bounds_tests"]
+        self._kingdom_specials_and_getters = generator_config["kingdom_specials_and_getters"]

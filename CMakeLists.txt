@@ -23,6 +23,17 @@ add_executable(dominion_setup_counter
         utils/enum_mask.hpp
 )
 
+add_executable(pim
+        pim.cpp
+        config.hpp
+        utils/tuple.hpp
+        utils/constrained_product_generator.hpp
+        utils/math.hpp
+        utils/enum_mask.hpp
+)
+target_include_directories(pim PRIVATE utils card_lists/lib)
+target_link_libraries(pim PRIVATE card_lists)
+
 include_directories(${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/include)
 
 add_subdirectory(card_lists)

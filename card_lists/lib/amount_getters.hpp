@@ -19,8 +19,8 @@ namespace config {
         auto doom_total(const amounts_t& t) noexcept -> coefficient_t;
         auto liaison_total(const amounts_t& t) noexcept -> coefficient_t;
         auto loot_total(const amounts_t& t) noexcept -> coefficient_t;
-        auto two_three_total(const amounts_t& t) noexcept -> coefficient_t;
-        auto unused_three_four_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;
+        auto unused_two_or_three_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;
+        auto unused_three_or_four_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;
         auto unused_action_nonduration_five_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;
         auto action_total(const amounts_t& t) noexcept -> coefficient_t;
         auto unused_action_two_three_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;
@@ -37,16 +37,6 @@ namespace config {
 
     namespace landscapes {
         namespace supply {
-            template<AmountIndex ... E>
-            auto enum_index_get_sum(const amounts_t& t) noexcept -> coefficient_t {
-                return (... + (std::get<std::to_underlying(E)>(t)));
-            }
-                    
-            template<AmountIndex ... E>
-            auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
-                return (... + (std::get<std::to_underlying(E)>(max) - std::get<std::to_underlying(E)>(t)));
-            }
-
             auto event_total(const amounts_t& t) noexcept -> coefficient_t;
             auto trait_total(const amounts_t& t) noexcept -> coefficient_t;
             auto other_supply_total(const amounts_t& t) noexcept -> coefficient_t;

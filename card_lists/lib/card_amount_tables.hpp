@@ -520,6 +520,9 @@ namespace config {
         	RIVERBOAT
         };
             
+        using SizedAmountIndex = utils::enums::SizedEnum<AmountIndex, 74uz>;
+                
+        using AmountIndexMask = utils::table::EnumMask<SizedAmountIndex>;
     }
 
     namespace landscapes {

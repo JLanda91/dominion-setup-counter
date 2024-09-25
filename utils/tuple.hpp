@@ -5,6 +5,16 @@
 #include <format>
 
 namespace utils::tuple {
+    template<size_t I, typename T>
+    constexpr auto reverse_partial_sum(const T& t){
+        static_assert(I <= std::tuple_size_v<T>);
+        if constexpr(I == 0uz){
+            return 0u;
+        } else {
+            return std::get<std::tuple_size_v<T> - I>(t) + reverse_partial_sum<I - 1>(t);
+        }
+    }
+
     template<size_t I, typename ... Args>
     constexpr auto reverse_partial_sum(const std::tuple<Args...>& t){
         static_assert(I <= sizeof...(Args));

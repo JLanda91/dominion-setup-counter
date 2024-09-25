@@ -91,6 +91,78 @@
       ]
     }
   ],
+  "kingdom_specials_and_getters": {
+    "Looter": {
+      "predicate": "lambda tt, cg: 'Looter' in tt",
+      "count_unused": false,
+      "function": "Looter"
+    },
+    "Fate": {
+      "predicate": "lambda tt, cg: 'Fate' in tt",
+      "count_unused": false,
+      "function": "Fate"
+    },
+    "Doom": {
+      "predicate": "lambda tt, cg: 'Doom' in tt",
+      "count_unused": false,
+      "function": "Doom"
+    },
+    "Liaison": {
+      "predicate": "lambda tt, cg: 'Liaison' in tt",
+      "count_unused": false,
+      "function": "Liaison"
+    },
+    "Loot": {
+      "predicate": "lambda tt, cg: 'Loot' in tt",
+      "count_unused": false,
+      "function": "Loot"
+    },
+    "Young Witch": {
+      "predicate": "lambda tt, cg: cg in ('Two', 'Three')",
+      "count_unused": true,
+      "function": "Two Or Three"
+    },
+    "Ferryman": {
+      "predicate": "lambda tt, cg: cg in ('Three', 'Four')",
+      "count_unused": true,
+      "function": "Three Or Four"
+    },
+    "Knights": {
+      "predicate": null,
+      "count_unused": false,
+      "function": null
+    },
+    "Druid": {
+      "predicate": null,
+      "count_unused": false,
+      "function": null
+    },
+    "Riverboat": {
+      "predicate": "lambda tt, cg: (cg == 'Five') and ('Action' in tt) and ('Duration' not in tt)",
+      "count_unused": true,
+      "function": "Action Nonduration Five"
+    },
+    "Obelisk": {
+      "predicate": "lambda tt, cg: 'Action' in tt",
+      "count_unused": false,
+      "function": "Action"
+    },
+    "Way of the Mouse": {
+      "predicate": "lambda tt, cg: ('Action' in tt) and (cg in ('Two', 'Three'))",
+      "count_unused": true,
+      "function": "Action Two Three"
+    },
+    "Approaching Army": {
+      "predicate": "lambda tt, cg: 'Attack' in tt",
+      "count_unused": true,
+      "function": "Attack"
+    },
+    "Traits": {
+      "predicate": "lambda tt, cg: any(map(lambda t: t in tt, ('Action', 'Treasure',)))",
+      "count_unused": false,
+      "function": "Action Or Treasure"
+    }
+  },
   "other_landscape_types": [
     "Hex",
     "Boon",

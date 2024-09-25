@@ -53,8 +53,8 @@ namespace config {
         	>(t);
         }
 
-        auto two_three_total(const amounts_t& t) noexcept -> coefficient_t {
-            return enum_index_get_sum<
+        auto unused_two_or_three_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+            return enum_index_get_sum_diff<
         		AmountIndex::NONE_TWO,
         		AmountIndex::NONE_THREE,
         		AmountIndex::ACTION_TWO,
@@ -79,10 +79,10 @@ namespace config {
         		AmountIndex::LOOT_TREASURE_TWO,
         		AmountIndex::TREASURE_TWO,
         		AmountIndex::TREASURE_THREE
-        	>(t);
+        	>(t, max);
         }
 
-        auto unused_three_four_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
+        auto unused_three_or_four_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {
             return enum_index_get_sum_diff<
         		AmountIndex::NONE_THREE,
         		AmountIndex::NONE_FOUR,

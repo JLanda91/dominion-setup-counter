@@ -50,9 +50,10 @@ namespace config {
         /*[[[cog
         generator.create_kingdom_amount_queries()
         generator.create_kingdom_special_predicates()
-        generator.create_kingdom_amount_index()
+        generator.create_kingdom_amount_index(create_sized_enum=True)
         ]]]*/
         //[[[end]]]
+        using AmountIndexMask = utils::table::EnumMask<SizedAmountIndex>;
     }
 
     namespace landscapes {

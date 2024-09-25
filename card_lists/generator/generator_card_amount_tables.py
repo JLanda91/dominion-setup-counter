@@ -32,10 +32,10 @@ class CardAmountTablesGenerator(BaseGenerator):
             cog.outl(f"\t\t{{ Expansion::{upper_snake_case(expansion)}, EditionModifier::{upper_snake_case(edition_modifier)} }}, //\t{upper_snake_case(name)}")
         create_singleton("special_predicates", "typename ExpansionEditionFilter::enum_t", len(self._kingdom_special_df), self._kingdom_special_df.itertuples(), tuple_printer)
 
-    def create_kingdom_amount_index(self):
+    def create_kingdom_amount_index(self, create_sized_enum = False):
         amount_query_names = list(full_query_name(tracked_types, cost_group).upper() for (tracked_types, cost_group), _ in self._kingdom_queries_df.itertuples())
         special_names = list(upper_snake_case(name) for _, name, expansion, edition_modifier in self._kingdom_special_df.itertuples())
-        create_enum_class('AmountIndex', amount_query_names + special_names, 'std::size_t', False)
+        create_enum_class('AmountIndex', amount_query_names + special_names, 'std::size_t', create_sized_enum)
 
     def create_landscapes_supply_table(self):
         def tuple_printer(df_tup):

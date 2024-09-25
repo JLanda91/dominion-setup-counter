@@ -18,7 +18,6 @@ namespace config {
     namespace landscapes {
         namespace supply {
             /*[[[cog
-            AmountGetterGenerator.create_enum_sum_functions()
             generator.create_landscapes_supply_amount_getter_declarations()
             generator.create_landscapes_supply_special_getter_declarations()
             ]]]*/

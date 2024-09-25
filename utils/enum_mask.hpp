@@ -12,9 +12,9 @@ namespace utils::table{
     template<typename ... SizedEnum> requires (... && (std::is_scoped_enum_v<typename SizedEnum::type>))
     class EnumMask {
     public:
-        static constexpr std::size_t size = (... * SizedEnum::size);
-        static constexpr std::size_t num_enums = sizeof...(SizedEnum);
-        using mask_t = std::bitset<size>;
+        static constexpr std::size_t kSize = (... * SizedEnum::size);
+        static constexpr std::size_t kNumEnums = sizeof...(SizedEnum);
+        using mask_t = std::bitset<kSize>;
         using enum_t = std::tuple<typename SizedEnum::type ...>;
 
         constexpr EnumMask() noexcept = default;
@@ -49,7 +49,7 @@ namespace utils::table{
         }
 
         constexpr auto bool_view() const noexcept {
-            return std::views::iota(0uz, size) | std::views::transform([this](const auto i){return mask_.test(i);});
+            return std::views::iota(0uz, kSize) | std::views::transform([this](const auto i){return mask_.test(i);});
         }
 
         constexpr bool operator==(const EnumMask& other) const noexcept = default;
@@ -72,7 +72,7 @@ namespace utils::table{
             constexpr auto impl = []<std::size_t ... I>(std::index_sequence<I...>, const enum_t& e) -> std::size_t {
                 return (... + (std::to_underlying(std::get<I>(e)) * block_sizes[I+1uz]));
             };
-            return impl(std::make_index_sequence<num_enums>(), e);
+            return impl(std::make_index_sequence<kNumEnums>(), e);
         }
 
         mask_t mask_;

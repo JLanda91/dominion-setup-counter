@@ -21,14 +21,14 @@ namespace utils::math {
             return (U)0;
         }
         auto result = (U)1;
-        for(auto j = (U)0u; j < std::min(k, n-k); ++j){
+        for(auto j = (U)0u; j < std::min((U)k, (U)(n-k)); ++j){
             result *= (U)(n - j);
             result /= (j+1);
         }
         return result;
     }
 
-    template<typename U, utils::tuple::GenericRepeatedTuple T>
+    template<typename U, typename T>
     constexpr U binomial_product(const T& n_collection, const T& k_collection){
         auto impl = [&]<size_t ... I>(std::index_sequence<I...>) constexpr -> U {
             return (... * (binomial<U>(std::get<I>(n_collection), std::get<I>(k_collection))));

@@ -51,7 +51,7 @@
       "displayName": "Debug GCC-14",
       "inherits": ["vcpkg", "gcc-14", "debug"],
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-g -O0 -Wall -Wextra -Wsign-conversion -Wpedantic"
+        "CMAKE_CXX_FLAGS": "-g -O0 -Wall -Wextra"
       }
     },
     {
@@ -59,7 +59,7 @@
       "displayName": "Release GCC-14",
       "inherits": ["vcpkg", "gcc-14", "release"],
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -fPIC -Wall -Wextra -Wsign-conversion -Wpedantic -Werror"
+        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -fPIC -Wall -Wextra -Werror"
       }
     }
   ]

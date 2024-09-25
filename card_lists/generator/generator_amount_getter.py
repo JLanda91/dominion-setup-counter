@@ -1,3 +1,5 @@
+from itertools import product, compress
+
 import cog
 
 from generator_base import BaseGenerator
@@ -25,81 +27,28 @@ auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept 
         def filter_queries(q_filter):
             return list(full_query_name(tracked_types, cost_group).upper() for (tracked_types, cost_group), _ in self._kingdom_queries_df.itertuples() if q_filter(tracked_types, cost_group))
 
-        return [
-            {  # Looter
-                "name": "looter",
-                "tuple_index": filter_queries(lambda tt, cg: 'Looter' in tt),
-            },
-            {  # Fate
-                "name": "fate",
-                "tuple_index": filter_queries(lambda tt, cg: 'Fate' in tt),
-            },
-            {  # Doom
-                "name": "doom",
-                "tuple_index": filter_queries(lambda tt, cg: 'Doom' in tt),
-            },
-            {  # Liaison
-                "name": "liaison",
-                "tuple_index": filter_queries(lambda tt, cg: 'Liaison' in tt),
-            },
-            {  # Loot
-                "name": "loot",
-                "tuple_index": filter_queries(lambda tt, cg: 'Loot' in tt),
-            },
-            {  # Young Witch
-                "name": "two_three",
-                "tuple_index": filter_queries(lambda tt, cg: cg in ('Two', 'Three')),
-            },
-            {  # Ferryman
-                "name": "three_four",
-                "tuple_index": filter_queries(lambda tt, cg: cg in ('Three', 'Four')),
-                "count_unused": True,
-            },
-            {  # Riverboat
-                "name": "action_nonduration_five",
-                "tuple_index": filter_queries(
-                    lambda tt, cg: (cg == 'Five') and ('Action' in tt) and (
-                            'Duration' not in tt)),
-                "count_unused": True,
-            },
-            {  # Obelisk
-                "name": "action",
-                "tuple_index": filter_queries(lambda tt, cg: 'Action' in tt),
-            },
-            {  # Way Of The Mouse
-                "name": "action_two_three",
-                "tuple_index": filter_queries(
-                    lambda tt, cg: ('Action' in tt) and (cg in ('Two', 'Three'))),
-                "count_unused": True,
-            },
-            {  # Approaching Army
-                "name": "attack",
-                "tuple_index": filter_queries(lambda tt, cg: 'Attack' in tt),
-                "count_unused": True,
-            },
-            {  # Traits
-                "name": "action_or_treasure",
-                "tuple_index": filter_queries(
-                    lambda tt, cg: any(map(lambda t: t in tt, ("Action", "Treasure",)))),
-            },
-        ]
+        return dict((kingdom_amount_getter_name, {
+            "function_name": lower_snake_case(kingdom_amount_getter_attrs["function"]),
+            "tuple_index": filter_queries(eval(kingdom_amount_getter_attrs["predicate"])),
+            "count_unused": kingdom_amount_getter_attrs.get("count_unused", False)
+        }) for kingdom_amount_getter_name, kingdom_amount_getter_attrs in self._kingdom_specials_and_getters.items() if kingdom_amount_getter_attrs["predicate"] is not None)
 
     def create_kingdom_amount_getter_declarations(self):
-        for amount_getter in self._kingdom_amount_getters():
+        for amount_getter in self._kingdom_amount_getters().values():
             if amount_getter.get("count_unused", False):
-                cog.outl(f"""auto unused_{amount_getter["name"]}_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;""")
+                cog.outl(f"""auto unused_{amount_getter["function_name"]}_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t;""")
             else:
-                cog.outl(f"""auto {amount_getter["name"]}_total(const amounts_t& t) noexcept -> coefficient_t;""")
+                cog.outl(f"""auto {amount_getter["function_name"]}_total(const amounts_t& t) noexcept -> coefficient_t;""")
         cog.outl()
 
     def create_kingdom_amount_getter_definitions(self):
-        for amount_getter in self._kingdom_amount_getters():
+        for amount_getter in self._kingdom_amount_getters().values():
             if amount_getter.get("count_unused", False):
-                cog.outl(f"""auto unused_{amount_getter["name"]}_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {{
+                cog.outl(f"""auto unused_{amount_getter["function_name"]}_total(const amounts_t& t, const amounts_t& max) noexcept -> coefficient_t {{
     return enum_index_get_sum_diff<""")
 
             else:
-                cog.outl(f"""auto {amount_getter["name"]}_total(const amounts_t& t) noexcept -> coefficient_t {{
+                cog.outl(f"""auto {amount_getter["function_name"]}_total(const amounts_t& t) noexcept -> coefficient_t {{
     return enum_index_get_sum<""")
             for index in amount_getter["tuple_index"][:-1]:
                 cog.outl(f"\t\tAmountIndex::{upper_snake_case(index)},")
@@ -158,3 +107,22 @@ auto enum_index_get_sum_diff(const amounts_t& t, const amounts_t& max) noexcept 
 }}
 """)
         cog.outl()
+
+    # def create_ways_picking_unused_cards_definition(self):
+    #     special_names = [special for special in (self._kingdom_special_df["Name"].unique().tolist() + self._landscapes_supply_special_df["Name"].unique().tolist())]
+    #     special_getters = dict((getter_k, getter_v) for (getter_k, getter_v) in self._kingdom_amount_getters().items() if (getter_k.lower() in (s.lower() for s in special_names)) and getter_v["count_unused"])
+    #     print(special_names)
+    #     print(*special_getters,sep='\n')
+    #     special_arguments = ', '.join(f"""bool has_{lower_snake_case(special_getter_name)}""" for special_getter_name in special_getters.keys())
+    #     cog.outl(f"""auto ways_picking_unused_cards(const kingdom::amounts_t& t, const kingdom::amounts_t& max, {special_arguments}) noexcept -> bool {{""")
+    #     compressor_list = list(filter(lambda t: sum(t) >= 2, product((False, True), repeat=len(special_getters))))
+    #     compressor_list.sort(key=lambda x: sum(x))
+    #     for compressor in (tuple(reversed(c)) for c in compressor_list):
+    #         inverse = tuple(not x for x in compressor)
+    #         intersecting_sets = list(compress(special_getters.keys(), compressor))
+    #         single_sets = list(compress(special_getters.keys(), inverse))
+    #         print(f"intersecting names: {intersecting_sets}. Single names: {single_sets}")
+    #         intersection_index = set.intersection(*(set(special_getters[s]["tuple_index"]) for s in intersecting_sets))
+    #         print(f"\t{intersection_index}")
+    #
+    #     cog.outl("}")

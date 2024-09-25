@@ -1,17 +1,3 @@
-#SET(CARD_LISTS_DIR "${PROJECT_SOURCE_DIR}/card_lists/")
-#SET(CARD_LISTS_LIBRARY_DIR "${CARD_LISTS_DIR}/lib")
-#SET(CARD_LISTS_GENERATOR_DIR "${CARD_LISTS_DIR}/generator")
-#SET(CARD_LISTS_GENERATOR_TEMPLATE_DIR "${CARD_LISTS_GENERATOR_DIR}/templates")
-#SET(TEST_DIR "${CARD_LISTS_DIR}/../tst")
-#
-#MESSAGE(STATUS "card list dir = ${CARD_LISTS_DIR}")
-#MESSAGE(STATUS "card list library dir = ${CARD_LISTS_LIBRARY_DIR}")
-#MESSAGE(STATUS "card list generator dir = ${CARD_LISTS_GENERATOR_DIR}")
-#MESSAGE(STATUS "card list generator template dir = ${CARD_LISTS_GENERATOR_TEMPLATE_DIR}")
-#MESSAGE(STATUS "project test dir = ${TEST_DIR}")
-
-set(CMAKE_VERBOSE_MAKEFILE on)
-
 add_custom_command(
         COMMAND
         "cogapp"
