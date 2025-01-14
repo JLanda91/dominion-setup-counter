@@ -35,4 +35,5 @@ namespace utils::math {
         };
         return impl(std::make_index_sequence<std::tuple_size<T>::value>{});
     }
+
 }

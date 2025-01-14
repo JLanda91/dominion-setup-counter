@@ -1,0 +1,3 @@
+templates/kingdom/card_type_tally.hpp -o ../card_data/kingdom/card_type_tally.hpp -I ..
+templates/kingdom/membership_mask.hpp -o ../card_data/kingdom/membership_mask.hpp -I ..
+templates/kingdom/venn_region.hpp -o ../card_data/kingdom/venn_region.hpp -I ..

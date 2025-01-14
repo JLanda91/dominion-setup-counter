@@ -1,177 +1,71 @@
-#include <print>
-#include <chrono>
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/ranges.h>
 
-#include "config.hpp"
-#include "utils/constrained_product_generator.hpp"
+#include <sstream>
+#include <vector>
 
-auto identity_with_map(auto&& mapper) {
-    return [&mapper](const auto& elem) {
-        return std::make_pair(elem, mapper(elem));
-    };
-}
+#include <card_data/kingdom/venn_region.hpp>
 
-result_t non_card_factor(const non_card_type_amounts_t& non_card_combination) {
-    return utils::math::binomial<result_t>(std::get<0>(kNonCardAmounts), std::get<0>(non_card_combination));
-}
+template<>
+struct fmt::formatter<card_data::kingdom::MembershipMask> : formatter<uint8_t> {
+    auto format(const card_data::kingdom::MembershipMask& obj, fmt::format_context& ctx) const {
+        return formatter<uint8_t>::format(card_data::kingdom::MembershipMask::ToUnsigned(obj), ctx);
+    }
+};
 
-using non_card_amount_factor_t = std::pair<non_card_type_amounts_t, result_t>;
+template<>
+struct fmt::formatter<card_data::kingdom::CardTypeTally> : formatter<std::string> {
+    auto format(const card_data::kingdom::CardTypeTally& obj, fmt::format_context& ctx) const {
+        auto member_stream = [&obj]<std::size_t ... I>(std::ostringstream& out, std::index_sequence<I...>){
+            (..., (out << card_data::kingdom::card_type_name<I>() << '=' << fmt::format("{:{}}{}", card_data::kingdom::card_type_amount<I>(obj), (I == card_data::kingdom::kNumCardTypes - 1 ? 2 : 1),(I == card_data::kingdom::kNumCardTypes - 1 ? "" : ", "))));
+        };
+        std::ostringstream oss{};
+        oss << "CardTypeTally(";
+        member_stream(oss, std::make_index_sequence<card_data::kingdom::kNumCardTypes>{});
+        oss << ')';
+        return formatter<std::string>::format(oss.str(), ctx);
+    }
+};
 
-const auto& non_card_factor_vector() {
-    static const auto result = []() {
-        using utils::generators::constrained_product;
-        using utils::generators::Constraint::LE;
+template<>
+struct fmt::formatter<card_data::kingdom::VennRegion> : formatter<std::string> {
+    auto format(const card_data::kingdom::VennRegion& obj, fmt::format_context& ctx) const {
+        std::ostringstream oss{};
+        oss << "VennRegion(membership_mask=" << fmt::format("{:0{}b}", obj.membership_mask, card_data::kingdom::kNumMembershipRegions) << ", " << fmt::format("{}", obj.card_type_tally) << ')';
+        return formatter<std::string>::format(oss.str(), ctx);
+    }
+};
 
-        std::vector<non_card_amount_factor_t> result{};
-        for (const auto& [tup, f] : constrained_product<LE>(kNonCardAmounts, 2u) |
-                                    std::views::transform(identity_with_map(non_card_factor))) {
-            result.emplace_back(std::piecewise_construct, std::forward_as_tuple(tup), std::forward_as_tuple(f));
+using CardTypeTallyVector = std::vector<card_data::kingdom::CardTypeTally>;
+
+auto sub_tallies(const card_data::kingdom::CardTypeTally& ctt) -> CardTypeTallyVector{
+    auto impl = [&ctt]<std::size_t I>(this auto&& self, CardTypeTallyVector& result, card_data::kingdom::CardTypeTally& card_type_tally, uint8_t total) -> void {
+        if constexpr(I == card_data::kingdom::kNumCardTypes){
+            result.push_back(card_type_tally);
+        } else {
+            for(uint8_t k = 0; k <= std::min(total, card_data::kingdom::card_type_amount<I>(ctt)); ++k){
+                card_data::kingdom::card_type_amount<I>(card_type_tally) = k;
+                self.template operator()<I + 1>(result, card_type_tally, static_cast<uint8_t>(total - k));
+            }
         }
-        return result;
-    }();
+    };
+    std::vector<card_data::kingdom::CardTypeTally> result{};
+    card_data::kingdom::CardTypeTally card_type_tally{};
+    const auto total = std::min(card_data::kingdom::card_type_total(ctt), static_cast<uint8_t>(10u));
+    impl.template operator()<0>(result, card_type_tally, total);
+    std::ranges::sort(result, std::less{}, card_data::kingdom::card_type_total);
     return result;
-}
-
-result_pair_t kingdom_card_factor(const kingdom_card_type_amounts_t& kingdom_card_combination) {
-    using utils::math::binomial_product;
-
-    const auto& [
-            action_low,
-            other_low,
-            action_liaison_low,
-            other_liaison_low,
-            action_fate_low,
-            action_doom_low,
-            druid,
-            action_high,
-            other_high,
-            action_liaison_high,
-            action_looter_high,
-            action_fate_high,
-            other_fate_high,
-            action_doom_high,
-            other_doom_high,
-            knights
-    ] = kingdom_card_combination;
-
-    const auto binomial_factors = binomial_product<result_t>(kKingdomCardAmounts, kingdom_card_combination);
-
-    const auto liaison_total = (result_t) action_liaison_low +
-                               other_liaison_low +
-                               action_liaison_high;
-
-    const auto fate_total = (result_t) action_fate_low +
-                            action_fate_high +
-                            other_fate_high;
-
-    const auto doom_total = (result_t) action_doom_low +
-                            action_doom_high +
-                            other_doom_high;
-
-    const auto result_unordered = binomial_factors *
-            (druid ? kDruidBoonCombinations : 1u) *
-            (liaison_total ? kLiaisonAllyCombinations : 1u);
-
-    const auto result_ordered = result_unordered
-        * (fate_total > 0 ? (druid ? kBoonShufflesDruid : kBoonShufflesNoDruid) : 1u)
-        * (doom_total > 0 ? kHexShuffles : 1u)
-        * (knights > 0 ? kKnightShuffles : 1u)
-        * (action_looter_high > 0 ? kRuinsCombinations : 1u);
-
-    return {result_unordered, result_ordered};
-}
-
-result_t joint_factor(const kingdom_card_type_amounts_t& kingdom_card_combination
-                      , const non_card_type_amounts_t& non_card_combination
-                      ) {
-    const auto& [
-            action_low,
-            other_low,
-            action_liaison_low,
-            other_liaison_low,
-            action_fate_low,
-            action_doom_low,
-            druid,
-            action_high,
-            other_high,
-            action_liaison_high,
-            action_looter_high,
-            action_fate_high,
-            other_fate_high,
-            action_doom_high,
-            other_doom_high,
-            knights
-    ] = kingdom_card_combination;
-
-    const auto& [
-            regular_landscapes,
-            obelisk,
-            way_of_the_mouse
-    ] = non_card_combination;
-
-    result_t result = 1u;
-
-    const auto action_low_total = (result_t) action_low +
-           action_liaison_low +
-           action_fate_low +
-           action_doom_low +
-           druid;
-
-    const auto low_total = (result_t) action_low_total +
-        other_low +
-        other_liaison_low;
-
-    const auto action_high_total = (result_t) action_high +
-                        action_liaison_high +
-                        action_fate_high +
-                        action_looter_high +
-                        action_doom_high +
-                        knights;
-
-    const auto obelisk_choices = action_low_total + action_high_total;
-
-    if (way_of_the_mouse) {
-        result *= kActionLowMax - action_low_total;
-    }
-
-    if (obelisk && obelisk_choices){
-        result *= obelisk_choices +                  // No young witch: only obelisk chooses
-                  low_total * (obelisk_choices + 1); // With young witch: obelisk can also choose the young witch, and young witch also chooses
-    } else {
-        result *= 1 +           // No young witch
-                  low_total;    // Young witch
-    }
-
-    return result;
-}
-
-void calculate_total(){
-    using utils::generators::constrained_product;
-    using utils::generators::Constraint::EQ;
-    using std::chrono::steady_clock;
-
-    const auto t1 = steady_clock::now();
-    auto unordered_total = (result_t) 0u;
-    auto ordered_total = (result_t) 0u;
-
-    for(const auto& kingdom_card_amounts : constrained_product<EQ>(kKingdomCardAmounts, 10u)){
-//        auto incr = (result_t) 0u;
-        auto incr2 = std::ranges::fold_left(non_card_factor_vector() | std::views::transform([&kingdom_card_amounts](const auto& pair) -> result_t {
-            const auto& [non_card_amounts, non_card_multiplier] = pair;
-            return non_card_multiplier * joint_factor(kingdom_card_amounts, non_card_amounts);}
-        ), result_t{}, std::plus{});
-
-        const auto [kingdom_card_multiplier_unordered,kingdom_card_multiplier_ordered]  = kingdom_card_factor(kingdom_card_amounts);
-        unordered_total += incr2 * kingdom_card_multiplier_unordered;
-        ordered_total += incr2 * kingdom_card_multiplier_ordered;
-    }
-
-    const auto t2 = steady_clock::now();
-    std::println("Total unique kingdoms:");
-    std::println("Not considering deck orderings: {}", unordered_total);
-    std::println("    Considering deck orderings: {}", ordered_total);
-    std::println("Elapsed time: {:.3f} s", std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()/1e3);
 }
 
 int main() {
-    calculate_total();
+//    fmt::println("{}", fmt::join(card_data::kingdom::kKingdomVennRegions, "\n"));
+//    fmt::println("");
+//    fmt::println("{}", std::ranges::fold_left(card_data::kingdom::kKingdomVennRegions, 0u, [](auto acc, const auto& venn_region){
+//        return acc + std::size(sub_tallies(venn_region.card_type_tally));
+//    }));
+
+    for (const auto& venn_region : card_data::kingdom::kKingdomVennRegions){
+        fmt::println("{}\tsubtallies: {:>3}", venn_region, std::size(sub_tallies(venn_region.card_type_tally)));
+    }
 }

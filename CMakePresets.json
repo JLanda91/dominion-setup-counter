@@ -25,8 +25,8 @@
       "name": "gcc-14",
       "displayName": "GCC 14",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "gcc-14",
-        "CMAKE_CXX_COMPILER": "g++-14"
+        "CMAKE_C_COMPILER": "/usr/bin/gcc-14",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++-14"
       },
       "hidden": true
     },
@@ -59,7 +59,7 @@
       "displayName": "Release GCC-14",
       "inherits": ["vcpkg", "gcc-14", "release"],
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -fPIC -Wall -Wextra -Werror"
+        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -Wall -Wextra -Werror"
       }
     }
   ]

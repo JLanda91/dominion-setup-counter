@@ -1,0 +1,143 @@
+{
+  "supported_expansions": [
+    "Dominion",
+    "Intrigue",
+    "Seaside",
+    "Alchemy",
+    "Prosperity",
+    "Cornucopia",
+    "Hinterlands",
+    "Dark Ages",
+    "Guilds",
+    "Adventures",
+    "Cornucopia Guilds",
+    "Empires",
+    "Nocturne",
+    "Renaissance",
+    "Menagerie",
+    "Allies",
+    "Plunder",
+    "Rising Sun",
+    "Promos"
+  ],
+  "tracked_kingdom_card_types": [
+    "Action",
+    "Attack",
+    "Duration",
+    "Treasure",
+    "Looter",
+    "Fate",
+    "Doom",
+    "Liaison",
+    "Loot",
+    "Omen"
+  ],
+  "supply_landscape_groups": [
+    {
+      "name": "Event",
+      "strings": [
+        "Event"
+      ]
+    },
+    {
+      "name": "Trait",
+      "strings": [
+        "Trait"
+      ]
+    },
+    {
+      "name": "Other Supply",
+      "strings": [
+        "Landmark",
+        "Project",
+        "Way"
+      ]
+    }
+  ],
+  "supply_kingdom_venn_predicates": [
+    {
+      "name": "Young Witch",
+      "predicate": "lambda row: row['Cost'] in ('2', '3')"
+    },
+    {
+      "name": "Approaching Army",
+      "predicate": "lambda row: 'Attack' in row['Types']"
+    },
+    {
+      "name": "Way of the Mouse",
+      "predicate": "lambda row: (row['Cost'] in ('2', '3')) and ('Action' in row['Types'])"
+    },
+    {
+      "name": "Ferryman",
+      "predicate": "lambda row: row['Cost'] in ('3', '4')"
+    },
+    {
+      "name": "Riverboat",
+      "predicate": "lambda row: (row['Cost'] == '5') and ('Action' in row['Types']) and ('Duration' not in row['Types'])"
+    },
+    {
+      "name": "Obelisk",
+      "predicate": "lambda row: 'Action' in row['Types']"
+    },
+    {
+      "name": "Action or Treasure",
+      "predicate": "lambda row: any(t in row['Types'] for t in ('Action', 'Treasure'))"
+    }
+  ],
+  "supply_kingdom_card_type_predicates": [
+    {
+      "name": "Young Witch",
+      "predicate": "lambda row: row['Name'] == 'Young Witch'"
+    },
+    {
+      "name": "Knights",
+      "predicate": "lambda row: row['Name'] == 'Knights'"
+    },
+    {
+      "name": "Druid",
+      "predicate": "lambda row: row['Name'] == 'Druid'"
+    },
+    {
+      "name": "Ferryman",
+      "predicate": "lambda row: row['Name'] == 'Ferryman'"
+    },
+    {
+      "name": "Riverboat",
+      "predicate": "lambda row: row['Name'] == 'Riverboat'"
+    },
+    {
+      "name": "Looter",
+      "predicate": "lambda row: 'Looter' in row['Types']"
+    },
+    {
+      "name": "Fate",
+      "predicate": "lambda row: 'Fate' in row['Types']"
+    },
+    {
+      "name": "Doom",
+      "predicate": "lambda row: 'Doom' in row['Types']"
+    },
+    {
+      "name": "Liaison",
+      "predicate": "lambda row: 'Liaison' in row['Types']"
+    },
+    {
+      "name": "Omen",
+      "predicate": "lambda row: 'Omen' in row['Types']"
+    },
+    {
+      "name": "Loot",
+      "predicate": "lambda row: 'Loot' in row['Types']"
+    },
+    {
+      "name": "None",
+      "predicate": "lambda row: True"
+    }
+  ],
+  "other_landscape_types": [
+    "Hex",
+    "Boon",
+    "Ally",
+    "Prophecy"
+  ]
+}
