@@ -1,3 +1,5 @@
+// GENERATED CODE - DO NOT MODIFY
+
 #pragma once
 
 #include <cstdint>
@@ -12,6 +14,8 @@ namespace card_data::kingdom {
     };
 
     /*[[[cog
+    instance.generate_enum_class()
+    cog.outl()
     instance.generate_num_members()
     cog.outl()
     instance.generate_member_name()

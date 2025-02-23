@@ -1,7 +1,7 @@
 import cog
 from math import ceil
 
-from generator.util import lower_snake_case
+from generator.util import lower_snake_case, pascal_case
 import generator.kingdom_venn_region_data as kingdom_venn_region_data
 
 class KingdomCardTypeTallyGenerator:
@@ -62,6 +62,12 @@ class KingdomCardTypeTallyGenerator:
         for i, card_type_predicate in enumerate(self._predicates):
             cog.outl(f"""\t\ttally.amount_{lower_snake_case(card_type_predicate.name)} {'+' if i < len(self._predicates) - 1 else ';'}""")
         cog.outl("}")
+
+    def generate_enum_class(self):
+        cog.outl("enum class CardType : uint8_t {")
+        for i, card_type_predicate in enumerate(self._predicates):
+            cog.outl(f"\t{pascal_case(card_type_predicate.name)} = {i},")
+        cog.outl("};")
         
     def _generate_member_get(self):
         for i, card_type_predicate in enumerate(self._predicates):

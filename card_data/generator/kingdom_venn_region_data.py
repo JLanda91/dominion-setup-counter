@@ -24,7 +24,7 @@ class KingdomVennRegionData:
         types_columns = list(col for col in df.columns if col.startswith("Type"))
         df["Types"] = list(KingdomVennRegionData._tracked_type_tuple(t, code_generator_config.tracked_kingdom_card_types) for t in zip(*(df[col] for col in types_columns)))
         untracked_types = set(t for t in chain.from_iterable((df[col] for col in types_columns)) if len(t) > 0 and t not in code_generator_config.tracked_kingdom_card_types)
-        code_generator_log.info(f"\tUntracked card types in card list: {", ".join(untracked_types)}")
+        code_generator_log.info(f"\tUntracked card types in card list: {", ".join(sorted(untracked_types))}")
 
         # Delete Type<n> columns
         df.drop(columns=types_columns, inplace=True)

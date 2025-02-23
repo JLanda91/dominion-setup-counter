@@ -1,3 +1,5 @@
+// GENERATED CODE - DO NOT MODIFY
+
 #pragma once
 
 #include <cstdint>

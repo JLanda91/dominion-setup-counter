@@ -1,8 +1,12 @@
+// GENERATED CODE - DO NOT MODIFY
+
 #pragma once
 
 #include <cstdint>
+#include <bitset>
+#include <fmt/format.h>
 
-namespace card_data::kingdom{
+namespace card_data::kingdom {
     struct MembershipMask {
         bool is_young_witch_region : 1;
         bool is_approaching_army_region : 1;
@@ -39,3 +43,10 @@ namespace card_data::kingdom{
     inline constexpr std::size_t kNumMembershipRegions = 7uz;
 
 }
+
+template<>
+struct fmt::formatter<card_data::kingdom::MembershipMask> : formatter<std::string> {
+    auto format(const card_data::kingdom::MembershipMask& obj, fmt::format_context& ctx) const {
+        return formatter<std::string>::format(std::bitset<card_data::kingdom::kNumMembershipRegions>{card_data::kingdom::MembershipMask::ToUnsigned(obj)}.to_string(), ctx);
+    }
+};

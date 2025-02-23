@@ -1,7 +1,8 @@
 {
   "dependencies": [
     "boost-multiprecision",
-    "gtest",
-    "fmt"
+    "boost-functional",
+    "fmt",
+    "gtest"
   ]
 }

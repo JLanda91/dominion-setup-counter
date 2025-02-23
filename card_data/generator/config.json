@@ -64,7 +64,7 @@
       "predicate": "lambda row: 'Attack' in row['Types']"
     },
     {
-      "name": "Way of the Mouse",
+      "name": "Way Of The Mouse",
       "predicate": "lambda row: (row['Cost'] in ('2', '3')) and ('Action' in row['Types'])"
     },
     {
@@ -80,7 +80,7 @@
       "predicate": "lambda row: 'Action' in row['Types']"
     },
     {
-      "name": "Action or Treasure",
+      "name": "Action Or Treasure",
       "predicate": "lambda row: any(t in row['Types'] for t in ('Action', 'Treasure'))"
     }
   ],

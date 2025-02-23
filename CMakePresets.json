@@ -16,7 +16,7 @@
         "CMAKE_CXX_STANDARD": "23",
         "VCPKG_MANIFEST_INSTALL": {
           "type": "BOOL",
-          "value": "ON"
+          "value": "OFF"
         }
       },
       "hidden": true
