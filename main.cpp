@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include <card_data/kingdom/card_type_major_table.hpp>
+#include <card_data/extra_setup/state.hpp>
 #include <card_data/combination_modifiers.hpp>
 
 #include <utils/math.hpp>
@@ -135,7 +136,7 @@ struct SubArrayCombinationState {
 };
 
 template<card_data::kingdom::CardType C, bool AddApproachingArmy>
-auto new_sub_array_combination_state_from(const SubArrayCombinationState& state, const SubArray& nonzero_sa) -> SubArrayCombinationState {
+constexpr auto new_sub_array_combination_state_from(const SubArrayCombinationState& state, const SubArray& nonzero_sa) -> SubArrayCombinationState {
     static_assert((C == card_data::kingdom::CardType::Omen) || !AddApproachingArmy);
 
     SubArrayCombinationState new_state = state;
@@ -144,49 +145,15 @@ auto new_sub_array_combination_state_from(const SubArrayCombinationState& state,
     return new_state;
 }
 
-struct TableCoordinate{
-    std::size_t row;
-    card_data::kingdom::CardType column;
-};
-
-struct ExtraSetupPicksState{
-    struct AddToSupply {
-        std::optional<TableCoordinate> young_witch = std::nullopt;
-        std::optional<TableCoordinate> approaching_army = std::nullopt;
-    } add_to_supply ;
-    struct SetAside {
-        std::optional<TableCoordinate> way_of_the_mouse = std::nullopt;
-        std::optional<TableCoordinate> ferryman = std::nullopt;
-        std::optional<TableCoordinate> riverboat = std::nullopt;
-    } set_aside;
-    struct FromSupply {
-        std::optional<TableCoordinate> obelisk = std::nullopt;
-    } from_supply;
-    
-    uint8_t num_added_to_supply() const {
-        return (uint8_t)(add_to_supply.young_witch.has_value()) +
-               (uint8_t)(add_to_supply.approaching_army.has_value());
-    }
-
-    uint8_t num_already_picked_at(uint8_t row, card_data::kingdom::CardType col) const {
-        return
-        (uint8_t)(add_to_supply.young_witch.has_value() && add_to_supply.young_witch->row == row && add_to_supply.young_witch->column == col) +
-        (uint8_t)(add_to_supply.approaching_army.has_value() && add_to_supply.approaching_army->row == row && add_to_supply.approaching_army->column == col) +
-        (uint8_t)(set_aside.way_of_the_mouse.has_value() && set_aside.way_of_the_mouse->row == row && set_aside.way_of_the_mouse->column == col) +
-        (uint8_t)(set_aside.ferryman.has_value() && set_aside.ferryman->row == row && set_aside.ferryman->column == col) +
-        (uint8_t)(set_aside.riverboat.has_value() && set_aside.riverboat->row == row && set_aside.riverboat->column == col) ;
-    }
-};
-
 template<typename Index>
 struct UnusedTableElements {
     template<typename F>
-    static result_t fold(const sub_array_combination_t& subArrayCombination, const ExtraSetupPicksState& picks_state, F&& op){
+    static result_t fold(const sub_array_combination_t& subArrayCombination, const card_data::extra_setup::State& picks_state, F&& op){
         return col_impl(subArrayCombination, picks_state, std::forward<F>(op), card_data::kingdom::make_card_type_sequence{});
     }
 private:
     template<typename F, std::size_t I, card_data::kingdom::CardType C>
-    static result_t element_impl(const sub_array_combination_t& subArrayCombination, const ExtraSetupPicksState& picks_state, F&& op){
+    static result_t element_impl(const sub_array_combination_t& subArrayCombination, const card_data::extra_setup::State& picks_state, F&& op){
         constexpr std::size_t J = std::to_underlying(C);
         const auto total = card_data::kingdom::card_type_major_table().column(J)[I];
         const auto subtotal = subArrayCombination[J]->data[I];
@@ -197,73 +164,24 @@ private:
     }
 
     template<typename F, card_data::kingdom::CardType C, std::size_t ... I>
-    static result_t row_impl(const sub_array_combination_t& subArrayCombination, const ExtraSetupPicksState& picks_state, F&& op, std::index_sequence<I...>){
+    static result_t row_impl(const sub_array_combination_t& subArrayCombination, const card_data::extra_setup::State& picks_state, F&& op, std::index_sequence<I...>){
         return (... + (element_impl<F, I, C>(subArrayCombination, picks_state, std::forward<F>(op))));
     }
 
     template<typename F, card_data::kingdom::CardType ... C>
-    static result_t col_impl(const sub_array_combination_t& subArrayCombination, const ExtraSetupPicksState& picks_state, F&& op, card_data::kingdom::card_type_sequence<C...>){
+    static result_t col_impl(const sub_array_combination_t& subArrayCombination, const card_data::extra_setup::State& picks_state, F&& op, card_data::kingdom::card_type_sequence<C...>){
         return (... + (row_impl<F, C>(subArrayCombination, picks_state, std::forward<F>(op), Index{})));
     }
 };
 
-enum class ExtraSetupCardType : uint8_t {
-    YoungWitch,
-    ApproachingArmy,
-    WayOfTheMouse,
-    Ferryman,
-    Riverboat,
-    Obelisk
-};
-
-using dispatch_vector_t = std::vector<ExtraSetupCardType>;
-
-template<card_data::kingdom::CardType C, bool AddApproachingArmy>
-dispatch_vector_t new_dispatch(const dispatch_vector_t& dispatch){
-    static_assert((C == card_data::kingdom::CardType::Omen) || !AddApproachingArmy);
-
-    std::vector<ExtraSetupCardType> result = dispatch | std::views::drop(1) | std::ranges::to<std::vector>();
-    if constexpr(AddApproachingArmy){
-        result.push_back(ExtraSetupCardType::ApproachingArmy); // approaching army picker card index
-    }
-    if constexpr(C == card_data::kingdom::CardType::YoungWitch){ // young witch column
-        result.push_back(ExtraSetupCardType::YoungWitch); // young witch picker card index
-    } else if constexpr(C == card_data::kingdom::CardType::Ferryman) { // ferryman column
-        result.push_back(ExtraSetupCardType::Ferryman); // ferryman picker card index
-    } else if constexpr(C == card_data::kingdom::CardType::Riverboat) { // riverboat column
-        result.push_back(ExtraSetupCardType::Riverboat); // riverboat picker card index
-    }
-    std::ranges::sort(result);
-    return result;
-}
-
-template<ExtraSetupCardType P>
-ExtraSetupPicksState new_picks_state(const ExtraSetupPicksState& picks_state, std::size_t i, card_data::kingdom::CardType c){
-    ExtraSetupPicksState result = picks_state;
-    if constexpr (P == ExtraSetupCardType::YoungWitch){ // young witch
-        result.add_to_supply.young_witch.emplace(i, c);
-    } else if constexpr (P == ExtraSetupCardType::ApproachingArmy){ // approaching army
-        result.add_to_supply.approaching_army.emplace(i, c);
-    } else if constexpr (P == ExtraSetupCardType::WayOfTheMouse){ // way of the mouse
-        result.set_aside.way_of_the_mouse.emplace(i, c);
-    } else if constexpr (P == ExtraSetupCardType::Ferryman){ // ferryman
-        result.set_aside.ferryman.emplace(i, c);
-    } else if constexpr (P == ExtraSetupCardType::Riverboat){ // riverboat
-        result.set_aside.riverboat.emplace(i, c);
-    } else { // obelisk
-        result.from_supply.obelisk.emplace(i, c);
-    }
-    return result;
-}
-
-auto extra_setup_pick_impl(const sub_array_combination_t& subArrayCombination, const dispatch_vector_t& dispatch, const card_data::CombinationModifiers& modifiers, const ExtraSetupPicksState& picks_state)-> result_t {
+auto extra_setup_pick_impl(const sub_array_combination_t& subArrayCombination, const card_data::extra_setup::dispatch_vector_t& dispatch, const card_data::CombinationModifiers& modifiers, const card_data::extra_setup::State& picks_state)-> result_t {
     if (std::empty(dispatch)){
         return 1u;
     }
     const auto current_card = dispatch.front();
-    if (current_card == ExtraSetupCardType::YoungWitch) { // young witch
+    if (current_card == card_data::extra_setup::CardType::YoungWitch) { // young witch
         return UnusedTableElements<card_data::kingdom::row_index_sequence_young_witch_t>::fold(subArrayCombination, picks_state, [&]<size_t I, card_data::kingdom::CardType C>(auto num_picks){
-            const auto new_pick_state = new_picks_state<ExtraSetupCardType::YoungWitch>(picks_state, I, C); // update which table cell young witch picks from
+            const auto new_pick_state = picks_state.with_added_picker<card_data::extra_setup::CardType::YoungWitch>(I, C); // update which table cell young witch picks from
             const auto factor = !modifiers.get_from_kingdom_column<C>() ? card_data::kingdom::column_factor<C>() : 1u; // assign pile factor if not already in kingdom
             const auto new_disp = new_dispatch<C, false>(dispatch); // update dispatch without approaching army
             const auto new_modifiers = modifiers.with_set_column<C, false>(); // update modifiers: set column bool to true
@@ -279,18 +197,18 @@ auto extra_setup_pick_impl(const sub_array_combination_t& subArrayCombination, c
             return num_picks * factor * extra_setup_pick_impl(subArrayCombination, new_disp, new_modifiers, new_pick_state);
         });
 
-    } else if (current_card == ExtraSetupCardType::ApproachingArmy) { // approaching army
+    } else if (current_card == card_data::extra_setup::CardType::ApproachingArmy) { // approaching army
         return UnusedTableElements<card_data::kingdom::row_index_sequence_approaching_army_t>::fold(subArrayCombination, picks_state, [&]<std::size_t I, card_data::kingdom::CardType C>(auto num_picks){
-            const auto new_pick_state = new_picks_state<ExtraSetupCardType::ApproachingArmy>(picks_state, I, C); // update which table cell approaching army picks from
+            const auto new_pick_state = picks_state.with_added_picker<card_data::extra_setup::CardType::ApproachingArmy>(I, C); // update which table cell approaching army picks from
             const auto factor = !modifiers.get_from_kingdom_column<C>() ? card_data::kingdom::column_factor<C>() : 1u; // assign pile factor if not already in kingdom
             const auto new_disp = new_dispatch<C, false>(dispatch); // update dispatch without approaching army
             const auto new_modifiers = modifiers.with_set_column<C, false>(); // update modifiers: set column bool to true
             // compile time if for J == 9 removed because we only handle approaching army here if we already picked omen
             return num_picks * factor * extra_setup_pick_impl(subArrayCombination, new_disp, new_modifiers, new_pick_state);
         });
-    } else if (current_card == ExtraSetupCardType::WayOfTheMouse) { // way of the mouse
+    } else if (current_card == card_data::extra_setup::CardType::WayOfTheMouse) { // way of the mouse
         return UnusedTableElements<card_data::kingdom::row_index_sequence_way_of_the_mouse_t>::fold(subArrayCombination, picks_state, [&]<std::size_t I, card_data::kingdom::CardType C>(auto num_picks){
-            const auto new_pick_state = new_picks_state<ExtraSetupCardType::WayOfTheMouse>(picks_state, I, C); // update which table cell way of the mouse picks from
+            const auto new_pick_state = picks_state.with_added_picker<card_data::extra_setup::CardType::WayOfTheMouse>(I, C); // update which table cell way of the mouse picks from
             const auto factor = !modifiers.get_from_kingdom_column<C>() ? card_data::kingdom::column_factor<C>() : 1u; // assign pile factor if not already in kingdom
             const auto new_disp = new_dispatch<C, false>(dispatch); // update dispatch without approaching army
             const auto new_modifiers = modifiers.with_set_column<C, false>(); // update modifiers: set column bool to true
@@ -305,9 +223,9 @@ auto extra_setup_pick_impl(const sub_array_combination_t& subArrayCombination, c
             }
             return num_picks * factor * extra_setup_pick_impl(subArrayCombination, new_disp, new_modifiers, new_pick_state);
         });
-    } else if (current_card == ExtraSetupCardType::Ferryman) { // ferryman
+    } else if (current_card == card_data::extra_setup::CardType::Ferryman) { // ferryman
         return UnusedTableElements<card_data::kingdom::row_index_sequence_ferryman_t>::fold(subArrayCombination, picks_state, [&]<std::size_t I, card_data::kingdom::CardType C>(auto num_picks){
-            const auto new_pick_state = new_picks_state<ExtraSetupCardType::Ferryman>(picks_state, I, C); // update which table cell ferryman picks from
+            const auto new_pick_state = picks_state.with_added_picker<card_data::extra_setup::CardType::Ferryman>(I, C); // update which table cell ferryman picks from
             const auto factor = !modifiers.get_from_kingdom_column<C>() ? card_data::kingdom::column_factor<C>() : 1u; // assign pile factor if not already in kingdom
             const auto new_disp = new_dispatch<C, false>(dispatch); // update dispatch without approaching army
             const auto new_modifiers = modifiers.with_set_column<C, false>(); // update modifiers: set column bool to true
@@ -322,9 +240,9 @@ auto extra_setup_pick_impl(const sub_array_combination_t& subArrayCombination, c
             }
             return num_picks * factor * extra_setup_pick_impl(subArrayCombination, new_disp, new_modifiers, new_pick_state);
         });
-    } else if (current_card == ExtraSetupCardType::Riverboat) { // riverboat
+    } else if (current_card == card_data::extra_setup::CardType::Riverboat) { // riverboat
         return UnusedTableElements<card_data::kingdom::row_index_sequence_riverboat_t>::fold(subArrayCombination, picks_state, [&]<std::size_t I, card_data::kingdom::CardType C>(auto num_picks){
-            const auto new_pick_state = new_picks_state<ExtraSetupCardType::Riverboat>(picks_state, I, C); // update which table cell riverboat picks from
+            const auto new_pick_state = picks_state.with_added_picker<card_data::extra_setup::CardType::Riverboat>(I, C); // update which table cell riverboat picks from
             const auto factor = !modifiers.get_from_kingdom_column<C>() ? card_data::kingdom::column_factor<C>() : 1u; // assign pile factor if not already in kingdom
             const auto new_disp = new_dispatch<C, false>(dispatch); // update dispatch without approaching army
             const auto new_modifiers = modifiers.with_set_column<C, false>(); // update modifiers: set column bool to true
@@ -354,29 +272,33 @@ auto extra_setup_pick_impl(const sub_array_combination_t& subArrayCombination, c
 }
 
 auto num_ways_to_pick_extra_setup_cards(const sub_array_combination_t& subArrayCombination, const card_data::CombinationModifiers& state) -> result_t {
-    dispatch_vector_t dispatch{};
+    card_data::extra_setup::dispatch_vector_t dispatch{};
     dispatch.reserve(6);
     if (state.has_young_witch) {
-        dispatch.push_back(ExtraSetupCardType::YoungWitch);
+        dispatch.push_back(card_data::extra_setup::CardType::YoungWitch);
     }
     if (state.has_approaching_army) {
-        dispatch.push_back(ExtraSetupCardType::ApproachingArmy);
+        dispatch.push_back(card_data::extra_setup::CardType::ApproachingArmy);
     }
     if (state.has_way_of_the_mouse) {
-        dispatch.push_back(ExtraSetupCardType::WayOfTheMouse);
+        dispatch.push_back(card_data::extra_setup::CardType::WayOfTheMouse);
     }
     if (state.has_ferryman) {
-        dispatch.push_back(ExtraSetupCardType::Ferryman);
+        dispatch.push_back(card_data::extra_setup::CardType::Ferryman);
     }
     if (state.has_riverboat) {
-        dispatch.push_back(ExtraSetupCardType::Riverboat);
+        dispatch.push_back(card_data::extra_setup::CardType::Riverboat);
     }
     if (state.has_obelisk) {
-        dispatch.push_back(ExtraSetupCardType::Obelisk);
+        dispatch.push_back(card_data::extra_setup::CardType::Obelisk);
     }
 
     return extra_setup_pick_impl(subArrayCombination, dispatch, state, {});
 }
+
+static unsigned num_leaf_calls = 0u;
+static constexpr unsigned kNumLeafCalls = 10000000u;
+static std::chrono::steady_clock::duration total{};
 
 auto landscape_and_picker_factors(const sub_array_combination_t& subArrayCombination, const SubArrayCombinationState& state) -> result_t {
     const auto& n_at = state.action_treasure_subtotal;
@@ -431,72 +353,113 @@ auto landscape_and_picker_factors(const sub_array_combination_t& subArrayCombina
     }
 }
 
-template<card_data::kingdom::CardType C>
-auto comb_total(uint8_t s, sub_array_combination_t& subArrayCombination, const SubArrayCombinationState& state)-> result_t {
-    if constexpr (C == card_data::kingdom::CardType::None) {
-//        result_t result = 0u;
-//        for (const auto& sa : sub_array_vectors().at(J).sub_arrays_with_subtotal(s)) {
-//            subArrayCombination[J] = &sa;
-//            result += sa.binom_product * factor_from_column<J>() * landscape_and_picker_factors(subArrayCombination, state);
-//        }
-//        return result;
+//#define COMB_ONLY 0
 
-        return std::ranges::fold_left(sub_array_vectors().at(std::to_underlying(C)).sub_arrays_with_subtotal(s) | std::views::transform([](const auto& sa){return sa.binom_product;}), result_t{}, std::plus<result_t>{});
+template<card_data::kingdom::CardType C>
+#ifndef COMB_ONLY
+auto comb_total(uint8_t s, sub_array_combination_t& subArrayCombination, const SubArrayCombinationState& state)-> result_t {
+#else
+auto comb_total(uint8_t s) -> result_t {
+#endif
+    constexpr std::size_t J = std::to_underlying(C);
+    if constexpr (C == card_data::kingdom::CardType::None) {
+        result_t result = 0u;
+
+        for (const auto& sa : sub_array_vectors().at(J).sub_arrays_with_subtotal(s)) {
+            num_leaf_calls++;
+            subArrayCombination[J] = &sa;
+            const auto t1 = std::chrono::steady_clock::now();
+            result += sa.binom_product * card_data::kingdom::column_factor<C>() * landscape_and_picker_factors(subArrayCombination, state);
+            const auto t2 = std::chrono::steady_clock::now();
+            total += t2 - t1;
+            if (num_leaf_calls >= kNumLeafCalls){
+                fmt::println("Elapsed time for {} leaf calls: {} s", num_leaf_calls, std::chrono::duration_cast<std::chrono::seconds>(total).count());
+                exit(0);
+            }
+        }
+
+
+
+        return result;
+
+//        return std::ranges::fold_left(sub_array_vectors().at(std::to_underlying(C)).sub_arrays_with_subtotal(s) | std::views::transform([](const auto& sa){return sa.binom_product;}), result_t{}, std::plus<result_t>{});
     } else {
         constexpr auto NextC = card_data::kingdom::next_card_type(C);
-        constexpr std::size_t J = std::to_underlying(C);
-
         const auto& sub_array_vector = sub_array_vectors().at(std::to_underlying(C));
         const auto max_subtotal = sub_array_vector.max_subtotal();
         result_t result = 0u;
 
-        for (const auto& sa : sub_array_vector.sub_arrays_with_subtotal(0)) {
-            subArrayCombination[J] = &sa;
-            result += comb_total<NextC>(static_cast<uint8_t>(s), subArrayCombination, state);
-        }
+#ifndef COMB_ONLY
+        subArrayCombination[J] = &(*sub_array_vector.sub_arrays_with_subtotal(0).begin());
+        result += comb_total<NextC>(static_cast<uint8_t>(s), subArrayCombination, state);
+#else
+        result += comb_total<NextC>(static_cast<uint8_t>(s));
+#endif
 
         for (auto k = 1uz; k <= std::min(max_subtotal, s); ++k) {
             const uint8_t new_s = static_cast<uint8_t>(s - k);
             for (const auto& sa : sub_array_vector.sub_arrays_with_subtotal(k)) {
-                subArrayCombination[std::to_underlying(C)] = &sa;
+#ifndef COMB_ONLY
+                const auto new_state_without_aa = new_sub_array_combination_state_from<C, false>(state, sa);
+                subArrayCombination[J] = &sa;
                 if constexpr(C == card_data::kingdom::CardType::Omen) { // omen
                     // two possibilities: 14x no Approaching Army, 1x with Approaching Army
-                    const auto new_state_without_aa = new_sub_array_combination_state_from<C, false>(state, sa);
                     auto new_state_with_aa = new_sub_array_combination_state_from<C, true>(state, sa);
-                    result += sa.binom_product * card_data::kingdom::column_factor<C>() * (14u * comb_total<NextC>(static_cast<uint8_t>(new_s), subArrayCombination, new_state_without_aa) +
-                            comb_total<NextC>(static_cast<uint8_t>(new_s), subArrayCombination, new_state_with_aa));
+                    result += sa.binom_product * card_data::kingdom::column_factor<C>() *
+                            (14u * comb_total<NextC>(static_cast<uint8_t>(new_s), subArrayCombination, new_state_without_aa) +
+                                   comb_total<NextC>(static_cast<uint8_t>(new_s), subArrayCombination, new_state_with_aa));
                 } else {
-                    result += sa.binom_product * card_data::kingdom::column_factor<C>() * comb_total<NextC>(static_cast<uint8_t>(new_s), subArrayCombination,
-                                                                                      new_sub_array_combination_state_from<C, false>(state, sa));
+                    result += sa.binom_product * card_data::kingdom::column_factor<C>() * comb_total<NextC>(static_cast<uint8_t>(new_s), subArrayCombination, new_state_without_aa);
                 }
-
+#else
+                result += sa.binom_product * comb_total<NextC>(static_cast<uint8_t>(new_s));
+#endif
             }
         }
         return result;
     }
 }
 
+struct Nonzero{
+    card_data::kingdom::MembershipMask mask;
+    card_data::kingdom::CardType card_type;
+    uint8_t amount;
+};
+
+using nonzeros_t = std::vector<Nonzero>;
+
+static const nonzeros_t kNonZeros = []{
+    nonzeros_t nonzeros{};
+
+    for (const auto& [i, row] : card_data::kingdom::card_type_major_table().rows() | std::views::enumerate){
+        for (const auto& [j, amount] : row | std::views::enumerate){
+            if(amount > 0) {
+                nonzeros.emplace_back(card_data::kingdom::card_type_major_table().row_labels().at(i), card_data::kingdom::CardType(j), amount);
+            }
+        }
+    }
+
+    return nonzeros;
+}();
+
 auto main() -> int {
     fmt::println("{}", card_data::kingdom::card_type_major_table());
 
-    {
-        const auto t1 = std::chrono::steady_clock::now();
-        sub_array_combination_t sub_array_combination{};
-        SubArrayCombinationState sub_array_combination_modifiers{};
-        const auto result = comb_total<card_data::kingdom::CardType::YoungWitch>(10, sub_array_combination, sub_array_combination_modifiers);
-        const auto t2 = std::chrono::steady_clock::now();
-        fmt::println("Result: {}", result);
-        fmt::println("Elapsed time: {} s", std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() / static_cast<double>(1s / 1ms));
+    for (const auto& [mask, card_type, amount] : kNonZeros){
+        fmt::println("{} {:>10} {:>2}", mask, card_type, amount);
     }
 
 //    {
 //        const auto t1 = std::chrono::steady_clock::now();
+//#ifndef COMB_ONLY
 //        sub_array_combination_t sub_array_combination{};
 //        SubArrayCombinationState sub_array_combination_modifiers{};
-//        const auto result = 4 * comb_total<0>(10, sub_array_combination, sub_array_combination_modifiers);
+//        const auto result = comb_total<card_data::kingdom::CardType::YoungWitch>(10, sub_array_combination, sub_array_combination_modifiers);
+//#else
+//        const auto result = comb_total<card_data::kingdom::CardType::YoungWitch>(10);
+//#endif
 //        const auto t2 = std::chrono::steady_clock::now();
 //        fmt::println("Result: {}", result);
 //        fmt::println("Elapsed time: {} s", std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() / static_cast<double>(1s / 1ms));
 //    }
-
 }

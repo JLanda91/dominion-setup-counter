@@ -6,6 +6,7 @@ add_library(utils INTERFACE
         filtered_index_sequence.hpp
         column_major_table.hpp
         result_type.hpp
+        byte_sequence.hpp
 )
 
 target_include_directories(utils INTERFACE
