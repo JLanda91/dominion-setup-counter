@@ -4,23 +4,25 @@
 
 namespace card_data {
     struct CombinationModifiers {
-        bool has_looter: 1;
-        bool has_fate: 1;
-        bool has_doom: 1;
-        bool has_liaison: 1;
-        bool has_omen: 1;
-        bool has_approaching_army: 1;
-        bool has_loot: 1;
         bool has_young_witch: 1;
         bool has_knights: 1;
         bool has_druid: 1;
         bool has_ferryman: 1;
         bool has_riverboat: 1;
+        bool has_looter: 1;
+        bool has_fate: 1;
+        bool has_doom: 1;
+        bool has_liaison: 1;
+        bool has_omen: 1;
+        bool has_loot: 1;
+        bool has_approaching_army: 1;
         bool has_obelisk: 1;
         bool has_way_of_the_mouse: 1;
 
+        constexpr auto operator==(const CombinationModifiers& other) const noexcept -> bool = default;
+
         template<kingdom::CardType C>
-        constexpr auto get_from_kingdom_column() const noexcept {
+        constexpr auto get_from_kingdom_column() const noexcept -> bool {
             if constexpr (C == kingdom::CardType::YoungWitch) {
                 return has_young_witch;
             } else if constexpr (C == kingdom::CardType::Knights) {
@@ -110,6 +112,25 @@ namespace card_data {
 
             return result;
         };
+
+        static constexpr CombinationModifiers from_card_type_mask(uint16_t m){
+            return CombinationModifiers{
+                .has_young_witch = (m & 0x1u) > 0,
+                .has_knights = (m & 0x2u) > 0,
+                .has_druid = (m & 0x4u) > 0,
+                .has_ferryman = (m & 0x8u) > 0,
+                .has_riverboat = (m & 0x10u) > 0,
+                .has_looter = (m & 0x20u) > 0,
+                .has_fate = (m & 0x40u) > 0,
+                .has_doom = (m & 0x80u) > 0,
+                .has_liaison = (m & 0x100u) > 0,
+                .has_omen = (m & 0x200u) > 0,
+                .has_loot = (m & 0x400u) > 0,
+                .has_approaching_army = (m & 0x800u) > 0,
+                .has_obelisk = false,
+                .has_way_of_the_mouse = false
+            };
+        }
 
     };
 }

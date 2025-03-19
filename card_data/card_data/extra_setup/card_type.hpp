@@ -36,4 +36,22 @@ namespace card_data::extra_setup {
         std::ranges::sort(result);
         return result;
     }
+
+
 }
+
+template<>
+struct fmt::formatter<card_data::extra_setup::CardType> : formatter<std::string> {
+    static constexpr std::array<std::string_view, 6> kCardTypeStrings = {
+        "YoungWitch",
+        "ApproachingArmy",
+        "WayOfTheMouse",
+        "Ferryman",
+        "Riverboat",
+        "Obelisk"
+    };
+
+    auto format(const card_data::extra_setup::CardType& obj, fmt::format_context& ctx) const {
+        return formatter<std::string>::format(kCardTypeStrings[static_cast<uint8_t>(obj)], ctx);
+    }
+};

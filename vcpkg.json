@@ -2,6 +2,7 @@
   "dependencies": [
     "boost-multiprecision",
     "boost-functional",
+    "tbb",
     "fmt",
     "gtest"
   ]

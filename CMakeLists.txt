@@ -9,7 +9,7 @@ find_package(boost_functional CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 find_package(OpenMP)
-find_package(TBB)
+find_package(TBB CONFIG REQUIRED)
 
 set(Python_ROOT_DIR "${PROJECT_SOURCE_DIR}")
 
@@ -21,7 +21,7 @@ add_executable(main
         main.cpp
 )
 
-target_link_libraries(main PRIVATE card_data utils)
+target_link_libraries(main PRIVATE TBB::tbb card_data utils)
 
 add_executable(sandbox
         sandbox.cpp
