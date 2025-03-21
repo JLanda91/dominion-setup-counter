@@ -15,74 +15,83 @@ namespace card_data {
         bool has_liaison: 1;
         bool has_omen: 1;
         bool has_loot: 1;
-        bool has_approaching_army: 1;
         bool has_obelisk: 1;
         bool has_way_of_the_mouse: 1;
 
         constexpr auto operator==(const CombinationModifiers& other) const noexcept -> bool = default;
 
-        template<kingdom::CardType C>
-        constexpr auto get_from_kingdom_column() const noexcept -> bool {
-            if constexpr (C == kingdom::CardType::YoungWitch) {
+        constexpr auto get_from_kingdom_column(kingdom::CardType kingdom_card_type) const noexcept -> bool {
+            if (kingdom_card_type == kingdom::CardType::YoungWitch) {
                 return has_young_witch;
-            } else if constexpr (C == kingdom::CardType::Knights) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Knights) {
                 return has_knights;
-            } else if constexpr (C == kingdom::CardType::Druid) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Druid) {
                 return has_druid;
-            } else if constexpr (C == kingdom::CardType::Ferryman) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Ferryman) {
                 return has_ferryman;
-            } else if constexpr (C == kingdom::CardType::Riverboat) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Riverboat) {
                 return has_riverboat;
-            } else if constexpr (C == kingdom::CardType::Looter) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Looter) {
                 return has_looter;
-            } else if constexpr (C == kingdom::CardType::Fate) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Fate) {
                 return has_fate;
-            } else if constexpr (C == kingdom::CardType::Doom) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Doom) {
                 return has_doom;
-            } else if constexpr (C == kingdom::CardType::Liaison) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Liaison) {
                 return has_liaison;
-            } else if constexpr (C == kingdom::CardType::Omen) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Omen) {
                 return has_omen;
-            } else if constexpr (C == kingdom::CardType::Loot) {
+            }
+            if (kingdom_card_type == kingdom::CardType::Loot) {
                 return has_loot;
-            } else {
-                return false;
             }
-        };
+            return false;
+        }
 
-        template<kingdom::CardType C, bool AddApproachingArmy>
-        constexpr auto with_set_column() const noexcept {
-            static_assert((C == kingdom::CardType::Omen) || !AddApproachingArmy);
-
-            auto result = *this;
-            if constexpr (C == kingdom::CardType::YoungWitch) {
-                result.has_young_witch = true;
-            } else if constexpr (C == kingdom::CardType::Knights) {
-                result.has_knights = true;
-            } else if constexpr (C == kingdom::CardType::Druid) {
-                result.has_druid = true;
-            } else if constexpr (C == kingdom::CardType::Ferryman) {
-                result.has_ferryman = true;
-            } else if constexpr (C == kingdom::CardType::Riverboat) {
-                result.has_riverboat = true;
-            } else if constexpr (C == kingdom::CardType::Looter) {
-                result.has_looter = true;
-            } else if constexpr (C == kingdom::CardType::Fate) {
-                result.has_fate = true;
-            } else if constexpr (C == kingdom::CardType::Doom) {
-                result.has_doom = true;
-            } else if constexpr (C == kingdom::CardType::Liaison) {
-                result.has_liaison = true;
-            } else if constexpr (C == kingdom::CardType::Omen) {
-                result.has_omen = true;
-                if constexpr (AddApproachingArmy) {
-                    result.has_approaching_army = true;
-                }
-            } else if constexpr (C == kingdom::CardType::Loot) {
-                result.has_loot = true;
+        constexpr void set_kingdom_column(kingdom::CardType kingdom_card_type) noexcept {
+            if (kingdom_card_type == kingdom::CardType::YoungWitch) {
+                has_young_witch = true;
             }
-            return result;
-        };
+            if (kingdom_card_type == kingdom::CardType::Knights) {
+                has_knights = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Druid) {
+                has_druid = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Ferryman) {
+                has_ferryman = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Riverboat) {
+                has_riverboat = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Looter) {
+                has_looter = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Fate) {
+                has_fate = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Doom) {
+                has_doom = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Liaison) {
+                has_liaison = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Omen) {
+                has_omen = true;
+            }
+            if (kingdom_card_type == kingdom::CardType::Loot) {
+                has_loot = true;
+            }
+        }
 
         constexpr auto loot_states() const noexcept {
             std::array<CombinationModifiers, 4> result{};
@@ -113,23 +122,15 @@ namespace card_data {
             return result;
         };
 
-        static constexpr CombinationModifiers from_card_type_mask(uint16_t m){
-            return CombinationModifiers{
-                .has_young_witch = (m & 0x1u) > 0,
-                .has_knights = (m & 0x2u) > 0,
-                .has_druid = (m & 0x4u) > 0,
-                .has_ferryman = (m & 0x8u) > 0,
-                .has_riverboat = (m & 0x10u) > 0,
-                .has_looter = (m & 0x20u) > 0,
-                .has_fate = (m & 0x40u) > 0,
-                .has_doom = (m & 0x80u) > 0,
-                .has_liaison = (m & 0x100u) > 0,
-                .has_omen = (m & 0x200u) > 0,
-                .has_loot = (m & 0x400u) > 0,
-                .has_approaching_army = (m & 0x800u) > 0,
-                .has_obelisk = false,
-                .has_way_of_the_mouse = false
-            };
+        constexpr std::size_t to_pile_mask() const noexcept {
+            return
+                (has_knights << 0u) |
+                (has_druid << 1u) |
+                (has_looter << 2u) |
+                (has_fate << 3u) |
+                (has_doom << 4u) |
+                (has_liaison << 5u) |
+                (has_loot << 6u);
         }
 
     };

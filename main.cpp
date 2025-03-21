@@ -3,30 +3,26 @@
 #include <fmt/chrono.h>
 #include <boost/multiprecision/integer.hpp>
 #include <boost/functional/hash.hpp>
-
-#include <tbb/parallel_pipeline.h>
+#include <tbb/parallel_for.h>
+#include <tbb/global_control.h>
+#include <tbb/blocked_range.h>
 
 #include <vector>
 #include <ranges>
 #include <cstdint>
 #include <chrono>
-#include <unordered_map>
-#include <generator>
 
 #include <card_data/kingdom/card_type_major_table.hpp>
 #include <card_data/extra_setup/state.hpp>
 #include <card_data/combination_modifiers.hpp>
 
 #include <utils/math.hpp>
-#include <utils/filtered_index_sequence.hpp>
 #include <utils/constrained_product_generator.hpp>
 #include <utils/result_type.hpp>
-#include <stack>
 #include <array>
-#include <build/debug-gcc-14/vcpkg_installed/x64-linux/include/gtest/internal/gtest-type-util.h>
 
-static constexpr auto kNumIterations = 1'000'000ul;
-static constexpr auto kNumLiveTokens = 11u;
+static constexpr auto kNumIterations = 10'000'000ul;
+static constexpr auto kNumThreads = 10u;
 
 struct Nonzero{
     card_data::kingdom::MembershipMask mask;
@@ -38,6 +34,7 @@ static constexpr std::size_t kNumNonZeros = 53uz;
 using nonzeros_t = std::array<Nonzero, kNumNonZeros>;
 using nonzero_card_type_offsets_t = std::array<std::size_t, card_data::kingdom::kNumCardTypes + 1uz>;
 
+//TODO: GENERATE NONZEROS DIRECTLY INSTEAD OF DERIVING FROM TABLE
 constexpr auto nonzeros() -> const nonzeros_t& {
     static constexpr nonzeros_t instance = [] static {
         nonzeros_t nonzeros{};
@@ -53,6 +50,11 @@ constexpr auto nonzeros() -> const nonzeros_t& {
 
         return nonzeros;
     }();
+    return instance;
+}
+
+const auto binomial_store64() -> const utils::math::BinomialStore64& {
+    static const utils::math::BinomialStore64 instance(nonzeros() | std::views::transform([](const auto& non_zero){ return non_zero.amount; }));
     return instance;
 }
 
@@ -77,261 +79,302 @@ constexpr auto search_table() -> const search_table_t& {
     return instance;
 }
 
-using tuple_t = std::array<uint8_t, kNumNonZeros>;
+struct KingdomTuple {
+    using data_t = std::array<uint8_t, kNumNonZeros>;
 
-constexpr auto from_n(uint64_t n) -> tuple_t {
-    tuple_t result{};
+    data_t data = {};
+    card_data::CombinationModifiers combination_modifiers;
+    uint8_t number_action_or_treasure = 0u;
+    uint64_t binom_product = 1ul;
+};
+
+constexpr auto from_n(uint64_t n) -> KingdomTuple {
+    KingdomTuple result{};
     uint8_t s = 0u;
     for (auto i = 0uz; i < kNumNonZeros - 1uz; ++i) {
         const auto max_amount = nonzeros()[i].amount;
+        const auto kingdom_card_type = nonzeros()[i].card_type;
         if (s == 10u) {
             return result;
         }
         for (uint8_t j = 0u; j <= max_amount && s + j <= 10u; ++j) {
             if (search_table()[i][j] > n) {
-                result[i] = j;
+                result.data[i] = j;
+                if (j > 0) {
+                    result.combination_modifiers.set_kingdom_column(kingdom_card_type);
+                }
                 s += j;
                 break;
             }
             n -= search_table()[i][j];
         }
     }
-    result.back() = 10u - s;
+    result.data.back() = 10u - s;
+    result.number_action_or_treasure = std::ranges::fold_left(std::views::iota(0u, kNumNonZeros) | std::views::transform([&result](auto i) {
+        return nonzeros()[i].mask.is_action_or_treasure_region * result.data[i];
+    }), 0u, std::plus<uint8_t>());
+    result.binom_product = std::ranges::fold_left(std::views::iota(0u, kNumNonZeros) | std::views::transform([&result](auto i) {
+        return binomial_store64()[nonzeros()[i].amount, result.data[i]];
+    }), 1ul, std::multiplies<uint64_t>());
     return result;
 }
 
-template<uint8_t V>
-using integral_byte_constant = std::integral_constant<uint8_t, V>;
+static constexpr std::size_t kNumModifierCombinations = (1u << 7u);
+using compute_result_type_t = uint32_t;
+using compute_result_t = std::array<compute_result_type_t, kNumModifierCombinations>;
 
-template<card_data::kingdom::CardType KCT>
-using span_size = integral_byte_constant<std::ranges::count(nonzeros(), KCT, &Nonzero::card_type)>;
-
-template<card_data::kingdom::CardType KCT>
-using span_offset = integral_byte_constant<std::ranges::distance(std::cbegin(nonzeros()), std::ranges::find(nonzeros(), KCT, &Nonzero::card_type))>;
-
-template<card_data::kingdom::CardType KCT>
-constexpr auto nonzero_span() -> const std::span<const Nonzero>& {
-    static constexpr auto result = std::span(nonzeros()).subspan(span_offset<KCT>::value, span_size<KCT>::value);
+constexpr auto new_combination_modifiers(const card_data::CombinationModifiers& combination_modifiers, card_data::kingdom::CardType kingdom_card_type) -> card_data::CombinationModifiers {
+    card_data::CombinationModifiers result = combination_modifiers;
+    result.set_kingdom_column(kingdom_card_type);
     return result;
 }
 
-const auto binomial_store64() -> const utils::math::BinomialStore64& {
-    static const utils::math::BinomialStore64 instance(nonzeros() | std::views::transform([](const auto& non_zero){ return non_zero.amount; }));
-    return instance;
+constexpr auto new_dispatch(uint8_t dispatch, std::size_t extra_setup_index, card_data::kingdom::CardType c) -> uint8_t {
+    const auto result = dispatch ^ (1u << extra_setup_index);
+    if (c == card_data::kingdom::CardType::YoungWitch) {
+        return result | (1u << std::to_underlying(card_data::extra_setup::CardType::YoungWitch));
+    }
+    if (c == card_data::kingdom::CardType::Ferryman) {
+        return result | (1u << std::to_underlying(card_data::extra_setup::CardType::Ferryman));
+    }
+    if (c == card_data::kingdom::CardType::Riverboat) {
+        return result | (1u << std::to_underlying(card_data::extra_setup::CardType::Riverboat));
+    }
+    return result;
 }
 
-template<card_data::kingdom::CardType KCT>
-static const auto num_subtuples_per_subtotal() -> const std::array<std::size_t, 11uz>& {
-    static const std::array<std::size_t, 11uz> instance = [] static {
-        auto impl = [](this auto&& self, uint8_t s, std::size_t i) {
-            if (i == nonzero_span<KCT>().size()) {
-                return s == 0uz ? 1uz : 0uz;
-            }
-            std::size_t result = 0u;
-            for (auto k = 0uz; k <= std::min(s, nonzero_span<KCT>()[i].amount); ++k) {
-                result += self(s - k, i + 1);
-            }
-            return result;
-        };
+void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTuple::data_t& tuple_data, const card_data::CombinationModifiers& combination_modifiers, compute_result_type_t f, compute_result_t& result) {
+    if (dispatch == 0u) {
+        const auto pile_mask = combination_modifiers.to_pile_mask();
+        // if ( f > (std::numeric_limits<compute_result_type_t>::max() - result[pile_mask])) {
+        //     std::cout << "Overflow in addition" << std::endl;
+        //     exit(1);
+        // }
+        result[pile_mask] += f;
 
-        std::array<std::size_t, 11uz> result;
-        for (uint8_t s = 0u; s < 11uz; ++s) {
-            result[s] = impl(s, 0uz);
+    } else {
+        const std::size_t extra_setup_index = std::countr_zero(dispatch);
+        const auto extra_setup_card_type = static_cast<card_data::extra_setup::CardType>(extra_setup_index);
+
+        // TODO: make function in extra setup ns
+        const bool is_picking_unused = (extra_setup_card_type != card_data::extra_setup::CardType::Obelisk);
+
+        if (is_picking_unused) {
+            bool has_choice = false;
+
+            for ( const auto& [i, tuple_elem] : tuple_data | std::views::enumerate) {
+                if (card_data::kingdom::MembershipMask::ToUnsigned(nonzeros()[i].mask) & (1u << extra_setup_index)) {
+                    if (const auto available_amount = nonzeros()[i].amount - tuple_elem - picks.num_unused_added_from(i); available_amount > 0) {
+                        has_choice = true;
+                        const auto kingdom_card_type = nonzeros()[i].card_type;
+                        const auto new_cm = new_combination_modifiers(combination_modifiers, kingdom_card_type);
+                        const auto new_disp = new_dispatch(dispatch, extra_setup_index, kingdom_card_type);
+
+                        // if ( f > (std::numeric_limits<compute_result_type_t>::max() / available_amount)) {
+                        //     std::cout << "Overflow in multiplication" << std::endl;
+                        //     exit(1);
+                        // }
+
+                        const auto new_f = f * available_amount;
+                        const auto new_picks = picks.with_added_picker(extra_setup_card_type, i);
+
+                        impl(new_disp, new_picks, tuple_data, new_cm, new_f, result);
+                    }
+                }
+            }
+
+            if (!has_choice) {
+                const auto new_disp = dispatch ^ (1u << extra_setup_index);
+                impl(new_disp, picks, tuple_data, combination_modifiers, f, result);
+            }
+
+        } else {
+
+            auto num_obelisk_choices = 0u;
+
+            for ( const auto& [i, tuple_elem] : tuple_data | std::views::enumerate) {
+                if (card_data::kingdom::MembershipMask::ToUnsigned(nonzeros()[i].mask) & (1u << extra_setup_index)) {
+                    num_obelisk_choices += tuple_elem + picks.num_used_added_at(i);
+                }
+            }
+
+            if (num_obelisk_choices == 0) { // if no obelisk choices, then we don't let obelisk pick
+                num_obelisk_choices = 1;
+            }
+
+            // if ( f > (std::numeric_limits<compute_result_type_t>::max() / num_obelisk_choices)) {
+            //     std::cout << "Overflow in multiplication" << std::endl;
+            //     exit(1);
+            // }
+
+            const auto new_f = f * num_obelisk_choices;
+            const auto new_dispatch = dispatch ^ (1u << extra_setup_index);
+
+            impl(new_dispatch, picks, tuple_data, combination_modifiers, new_f, result);
+        }
+    }
+}
+
+void bar(const KingdomTuple::data_t& tuple_data, const card_data::CombinationModifiers& combination_modifiers, compute_result_type_t f, compute_result_t& result) {
+    uint8_t dispatch = 0u;
+    if (combination_modifiers.has_young_witch) {
+        dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::YoungWitch));
+    }
+    if (combination_modifiers.has_way_of_the_mouse) {
+        dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::WayOfTheMouse));
+    }
+    if (combination_modifiers.has_ferryman) {
+        dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::Ferryman));
+    }
+    if (combination_modifiers.has_riverboat) {
+        dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::Riverboat));
+    }
+    if (combination_modifiers.has_obelisk) {
+        dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::Obelisk));
+    }
+
+    compute_result_t incr{};
+
+    impl(dispatch, {}, tuple_data, combination_modifiers, f, incr);
+
+    if (combination_modifiers.has_omen) {
+        dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::ApproachingArmy));
+        std::ranges::for_each(result, [](auto& elem){elem *= 14;});
+        impl(dispatch, {}, tuple_data, combination_modifiers, f, incr);
+    }
+
+    for (auto i = 0uz; i < kNumModifierCombinations; ++i) {
+        result[i] += incr[i];
+    }
+}
+
+using non_loot_factors_t = std::array<unsigned, 5>;
+using loot_factors_t = std::array<unsigned, 3>;
+using modifier_combination_index_factors_t = std::array<result_t, kNumModifierCombinations>;
+
+constexpr auto non_loot_factors(const unsigned n) -> const non_loot_factors_t& {
+    static constexpr std::array<non_loot_factors_t, 11uz> store = [] {
+        std::array<non_loot_factors_t, 11uz> result{};
+        result[0] = {11027u, 149u, 1u, 755u, 5u};
+        result[1] = {10984u, 148u, 1u, 903u, 6u};
+        for (auto i = 2u; i < 11u; ++i) {
+            const auto i2 = i*(i-1);
+            result[i] = {8912u + 1876u*i + 91u*i2, 134u + 14u*i, 1u, 680u + 209u*i + 14*i2, 5u + i};
+        }
+        return result;
+    }();
+    return store[n];
+}
+
+constexpr auto loot_factors(const unsigned n) -> const loot_factors_t& {
+    static constexpr std::array<loot_factors_t, 11uz> store = [] {
+        std::array<loot_factors_t, 11uz> result{};
+        result[1] = {11887u, 154u, 1u};
+        for (auto i = 2u; i < 11u; ++i) {
+            const auto i2 = i*(i-1);
+            result[i] = {9592u  + 2085u*i + 105u*i2, 139u + 15u*i, 1u};
+        }
+        return result;
+    }();
+    if (n == 0) {
+        throw std::runtime_error("Loot factors without action or treasure shouldn't happen");
+    }
+    return store[n];
+}
+
+auto modifier_combination_index_factors() -> const modifier_combination_index_factors_t& {
+    static const modifier_combination_index_factors_t instance = [] {
+        modifier_combination_index_factors_t result{};
+        result.fill(1u);
+        for (auto i = 0u; i < kNumModifierCombinations; ++i) {
+            if (i & 0x1u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Knights>();
+            }
+            if (i & 0x2u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Druid>();
+            }
+            if (i & 0x4u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Looter>();
+            }
+            if (i & 0x8u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Fate>();
+            }
+            if (i & 0x10u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Doom>();
+            }
+            if (i & 0x20u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Liaison>();
+            }
+            if (i & 0x40u) {
+                result[i] *= card_data::kingdom::column_factor<card_data::kingdom::CardType::Loot>();
+            }
         }
         return result;
     }();
     return instance;
 }
 
-template<card_data::kingdom::CardType KCT>
-static const auto num_subtuples() -> std::size_t {
-    static const std::size_t instance = std::ranges::fold_left(num_subtuples_per_subtotal<KCT>(), 0uz, std::plus<std::size_t>{});
-    return instance;
-}
+auto foo(const KingdomTuple& kingdom_tuple) -> result_t {
+    const unsigned n = kingdom_tuple.number_action_or_treasure;
+    compute_result_t result_per_modifier_combination{};
 
-// consteval uint64_t foo_val(std::size_t i, uint8_t s) {
-//     if (i == std::size(nonzeros())) {
-//         return s == 10ul ? 1ul : 0ul;
-//     }
-//     const auto max_amount = nonzeros()[i].amount;
-//
-// }
-//
-// template<std::size_t I, std::size_t S>
-// struct Foo : std::integral_constant<uint64_t, foo_val(I, S)> {};
+    if (!kingdom_tuple.combination_modifiers.has_loot) {
+        const auto& [nl0, nl1, nl2, nl3, l0, l1, l2] = kingdom_tuple.combination_modifiers.non_loot_states();
+        auto& [f_nl0, f_nl12, f_nl3, f_l0, f_l12] = non_loot_factors(n);
 
-template<card_data::kingdom::CardType KCT>
-struct Subtuple {
-    uint64_t binomial_product;
-    uint8_t num_action_or_treasure;
-    std::array<uint8_t, span_size<KCT>::value> data;
-};
+        bar(kingdom_tuple.data, nl0, f_nl0, result_per_modifier_combination);
+        bar(kingdom_tuple.data, nl1, f_nl12, result_per_modifier_combination);
+        bar(kingdom_tuple.data, nl2, f_nl12, result_per_modifier_combination);
+        bar(kingdom_tuple.data, nl3, f_nl3, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l0, f_l0, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l1, f_l12, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l2, f_l12, result_per_modifier_combination);
 
-template<card_data::kingdom::CardType KCT>
-struct fmt::formatter<Subtuple<KCT>> : public fmt::formatter<std::string> {
-    auto format(const Subtuple<KCT>& st, fmt::format_context& ctx) const {
-        return fmt::format_to(ctx.out(), "({}, binom_product={}, num_at={})", st.data, st.binomial_product, st.num_action_or_treasure);
-    }
-};
-
-template<card_data::kingdom::CardType KCT>
-class SubtupleVector {
-    using subtuple_data_t = decltype(Subtuple<KCT>::data);
-    using data_t = std::vector<Subtuple<KCT>>;
-    using offsets_t = std::vector<std::size_t>;
-
-    data_t data_{};
-    offsets_t offsets_{};
-
-    void populator_impl(data_t& this_data, subtuple_data_t& subtuple_data, uint64_t binomial_product, uint8_t n_at, uint8_t s, std::size_t i) {
-        static std::vector<typename data_t::iterator> insert_iterators = [this] {
-            std::vector<typename data_t::iterator> result{};
-            result.reserve(12uz);
-            for (const auto& offset : offsets_) {
-                result.push_back(std::begin(data_) + static_cast<std::ptrdiff_t>(offset));
-            }
-            return result;
-        }();
-        if (i == span_size<KCT>::value) {
-            *insert_iterators[10-s]++ = {binomial_product, n_at, subtuple_data};
-        } else {
-            const auto max_amount = nonzero_span<KCT>()[i].amount;
-            for (uint8_t k = 0u; k <= std::min(s, max_amount); ++k) {
-                subtuple_data[i] = k;
-                const uint8_t new_n_at = nonzero_span<KCT>()[i].mask.is_action_or_treasure_region ? n_at + k : n_at;
-                populator_impl(this_data, subtuple_data, binomial_product * binomial_store64()[max_amount, k], new_n_at, s - k, i + 1);
-            }
-        }
+    } else {
+        const auto& [l0, l1, l2, l3] = kingdom_tuple.combination_modifiers.loot_states();
+        const auto& [f_l0, f_l12, f_l3] = loot_factors(n);
+        bar(kingdom_tuple.data, l0, f_l0, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l1, f_l12, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l2, f_l12, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l3, f_l3, result_per_modifier_combination);
     }
 
-public:
-    SubtupleVector() : data_() {
-        const auto t1 = std::chrono::steady_clock::now();
-        offsets_.reserve(12uz);
-        offsets_.push_back(0uz);
-        for (const auto& offset_incr : num_subtuples_per_subtotal<KCT>()) {
-            if (offset_incr == 0) {
-                break;
-            }
-            offsets_.push_back(offsets_.back() + offset_incr);
-        }
-
-        data_.resize(num_subtuples<KCT>());
-        subtuple_data_t subtuple{};
-        subtuple.fill(0u);
-        populator_impl(data_, subtuple, 1u, 0u, 10u, 0uz);
-        const auto t2 = std::chrono::steady_clock::now();
-        fmt::println("Generated subtuples for kingdom Card Type {} in: {} us",
-            KCT,
-            std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count());
+    result_t result = 0u;
+    for (auto i = 0u; i < kNumModifierCombinations; ++i) {
+        result += result_per_modifier_combination[i] * modifier_combination_index_factors()[i];
     }
-
-    const auto size() const noexcept -> std::size_t {
-        return std::size(data_);
-    }
-
-    constexpr auto offsets() const noexcept -> const offsets_t& {
-        return offsets_;
-    }
-
-    constexpr auto max_subtotal() const -> uint8_t {
-        return std::size(offsets_) - 2uz;
-    }
-
-    constexpr auto with_subtotal(const uint8_t k) const {
-        if (k + 1u >= offsets_.size()) {
-            const auto end = std::ranges::cend(data_);
-            return std::ranges::subrange(end, end, 0uz);
-        }
-        const auto begin = std::ranges::begin(data_) + static_cast<std::ptrdiff_t>(offsets_[k]);
-        const auto end = std::ranges::begin(data_) + static_cast<std::ptrdiff_t>(offsets_[k+1]);
-        const auto n = std::ranges::distance(begin, end);
-        return std::ranges::subrange(begin, end, n);
-    }
-
-};
-
-template<card_data::kingdom::CardType KCT>
-const auto subtuples() -> const SubtupleVector<KCT>& {
-    static const SubtupleVector<KCT> instance{};
-    return instance;
-}
-
-template<card_data::kingdom::CardType KCT>
-void check_all() {
-    fmt::println("{}:", KCT);
-    for (auto k = 0uz; k <= subtuples<KCT>().max_subtotal(); ++k) {
-        fmt::print("\tSubtotal = {}...", k);
-        for (const auto& st : subtuples<KCT>().with_subtotal(k)) {
-            const auto subtotal = std::ranges::fold_left(st.data, static_cast<uint8_t>(0), std::plus<uint8_t>{});
-            auto binom_product = 1ul;
-            auto num_action_or_treasure = 0u;
-            for (auto i = 0uz; i < std::size(st.data); ++i) {
-                binom_product *= binomial_store64()[nonzero_span<KCT>()[i].amount, st.data[i]];
-                if (nonzero_span<KCT>()[i].mask.is_action_or_treasure_region) {
-                    num_action_or_treasure += st.data[i];
-                }
-            }
-
-            if (subtotal != k) {
-                fmt::print("{}\tSubtotal mismatch: {} != {}\n", st, subtotal, k);
-                exit(1);
-            }
-            if (binom_product != st.binomial_product) {
-                fmt::print("{}\tBinom product mismatch: {} != {}\n", st, binom_product, st.binomial_product);
-                exit(1);
-            }
-            if (num_action_or_treasure != st.num_action_or_treasure) {
-                fmt::print("{}\tNum A|T mismatch: {} != {}\n", st, num_action_or_treasure, st.num_action_or_treasure);
-                exit(1);
-            }
-        }
-        fmt::println("OK!");
-    }
-}
-
-template<card_data::kingdom::CardType ... KCT>
-void unrolled_check_all(card_data::kingdom::card_type_sequence<KCT...>) {
-    (check_all<KCT>(), ...);
+    return kingdom_tuple.binom_product * result;
 }
 
 auto main() -> int {
-    for (const auto& nonzero : nonzeros()) {
-        fmt::println("{}", nonzero.amount);
-    }
+    tbb::global_control control(tbb::global_control::max_allowed_parallelism, kNumThreads);
 
-    fmt::println("");
+    std::array<result_t, kNumThreads> result{};
 
-    for (const auto& [i, row] : search_table() | std::views::enumerate) {
-        fmt::println("{:2}: {}", i, row);
-    }
+    // auto dt = std::chrono::steady_clock::duration{};
+    //
+    // for (uint64_t i = 0ul; i < kNumIterations; ++i) {
+    //     const auto t1 = std::chrono::steady_clock::now();
+    //     const auto kingdom_tuple = from_n(i);
+    //     result += foo(kingdom_tuple);
+    //     const auto t2 = std::chrono::steady_clock::now();
+    //     dt += t2 - t1;
+    // }
 
-    fmt::println("");
+    std::atomic<std::size_t> thread_counter;
 
-    auto dt = std::chrono::steady_clock::duration{};
+    const auto t1 = std::chrono::steady_clock::now();
 
-    for (const auto i : std::views::iota(0uz, kNumIterations)) {
-        const auto t1 = std::chrono::steady_clock::now();
-        from_n(i);
-        const auto t2 = std::chrono::steady_clock::now();
-        dt += t2 - t1;
-    }
+    tbb::parallel_for(tbb::blocked_range<std::size_t>(0uz, kNumIterations), [&result, &thread_counter](const auto& range) {
+        thread_local std::size_t tid = thread_counter.fetch_add(1);
+        for (auto i = range.begin(); i < range.end(); ++i) {
+            const auto kingdom_tuple = from_n(i);
+            result[tid] += foo(kingdom_tuple);
+        }
+    });
 
-    fmt::println("Generated {} tuples in {} ms", kNumIterations, std::chrono::duration_cast<std::chrono::milliseconds>(dt).count());
+    const auto t2 = std::chrono::steady_clock::now();
+    const auto dt = t2 - t1;
 
-//    {
-//        const auto t1 = std::chrono::steady_clock::now();
-//        const auto result = first_iterations_serial();
-//        const auto t2 = std::chrono::steady_clock::now();
-//        fmt::print("result = {}\n", result);
-//        fmt::print("Elapsed time: {}\n", std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
-//    }
-
-//    {
-//        const auto t1 = std::chrono::steady_clock::now();
-//        const auto result = first_iterations_pipelined();
-//        const auto t2 = std::chrono::steady_clock::now();
-//        fmt::print("result = {}\n", result);
-//        fmt::print("Elapsed time: {}\n", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
-//    }
+    fmt::println("Processed {} tuples in {} ms", kNumIterations, std::chrono::duration_cast<std::chrono::milliseconds>(dt).count());
 }
