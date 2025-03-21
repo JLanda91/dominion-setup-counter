@@ -53,6 +53,15 @@ constexpr auto nonzeros() -> const nonzeros_t& {
     return instance;
 }
 
+void print_nonzeros() {
+    for (const auto& [i, nonzero] : nonzeros() | std::views::enumerate) {
+        const auto& [mask, card_type, amount] = nonzero;
+        fmt::print("Nonzero {:>2}: mask: {}, card_type: {:>10}, amount: {:>2}\n", i, mask, card_type, amount);
+    }
+    fmt::print("");
+    std::fflush(stdout);
+}
+
 const auto binomial_store64() -> const utils::math::BinomialStore64& {
     static const utils::math::BinomialStore64 instance(nonzeros() | std::views::transform([](const auto& non_zero){ return non_zero.amount; }));
     return instance;
@@ -83,19 +92,20 @@ struct KingdomTuple {
     using data_t = std::array<uint8_t, kNumNonZeros>;
 
     data_t data = {};
-    card_data::CombinationModifiers combination_modifiers;
+    card_data::CombinationModifiers combination_modifiers {};
     uint8_t number_action_or_treasure = 0u;
     uint64_t binom_product = 1ul;
 };
 
 constexpr auto from_n(uint64_t n) -> KingdomTuple {
     KingdomTuple result{};
+    result.data.fill(0);
     uint8_t s = 0u;
     for (auto i = 0uz; i < kNumNonZeros - 1uz; ++i) {
         const auto max_amount = nonzeros()[i].amount;
         const auto kingdom_card_type = nonzeros()[i].card_type;
         if (s == 10u) {
-            return result;
+            break;
         }
         for (uint8_t j = 0u; j <= max_amount && s + j <= 10u; ++j) {
             if (search_table()[i][j] > n) {
@@ -110,12 +120,13 @@ constexpr auto from_n(uint64_t n) -> KingdomTuple {
         }
     }
     result.data.back() = 10u - s;
-    result.number_action_or_treasure = std::ranges::fold_left(std::views::iota(0u, kNumNonZeros) | std::views::transform([&result](auto i) {
-        return nonzeros()[i].mask.is_action_or_treasure_region * result.data[i];
-    }), 0u, std::plus<uint8_t>());
-    result.binom_product = std::ranges::fold_left(std::views::iota(0u, kNumNonZeros) | std::views::transform([&result](auto i) {
-        return binomial_store64()[nonzeros()[i].amount, result.data[i]];
-    }), 1ul, std::multiplies<uint64_t>());
+
+    for (auto i = 0uz; i < kNumNonZeros; ++i) {
+        result.binom_product *= binomial_store64()[nonzeros()[i].amount, result.data[i]];
+        if (nonzeros()[i].mask.is_action_or_treasure_region) {
+            result.number_action_or_treasure += result.data[i];
+        }
+    }
     return result;
 }
 
@@ -146,10 +157,10 @@ constexpr auto new_dispatch(uint8_t dispatch, std::size_t extra_setup_index, car
 void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTuple::data_t& tuple_data, const card_data::CombinationModifiers& combination_modifiers, compute_result_type_t f, compute_result_t& result) {
     if (dispatch == 0u) {
         const auto pile_mask = combination_modifiers.to_pile_mask();
-        // if ( f > (std::numeric_limits<compute_result_type_t>::max() - result[pile_mask])) {
-        //     std::cout << "Overflow in addition" << std::endl;
-        //     exit(1);
-        // }
+        if ( f > (std::numeric_limits<compute_result_type_t>::max() - result[pile_mask])) {
+            std::cout << "Overflow in addition" << std::endl;
+            exit(1);
+        }
         result[pile_mask] += f;
 
     } else {
@@ -170,10 +181,10 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
                         const auto new_cm = new_combination_modifiers(combination_modifiers, kingdom_card_type);
                         const auto new_disp = new_dispatch(dispatch, extra_setup_index, kingdom_card_type);
 
-                        // if ( f > (std::numeric_limits<compute_result_type_t>::max() / available_amount)) {
-                        //     std::cout << "Overflow in multiplication" << std::endl;
-                        //     exit(1);
-                        // }
+                        if ( f > (std::numeric_limits<compute_result_type_t>::max() / available_amount)) {
+                            std::cout << "Overflow in multiplication" << std::endl;
+                            exit(1);
+                        }
 
                         const auto new_f = f * available_amount;
                         const auto new_picks = picks.with_added_picker(extra_setup_card_type, i);
@@ -202,10 +213,10 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
                 num_obelisk_choices = 1;
             }
 
-            // if ( f > (std::numeric_limits<compute_result_type_t>::max() / num_obelisk_choices)) {
-            //     std::cout << "Overflow in multiplication" << std::endl;
-            //     exit(1);
-            // }
+            if ( f > (std::numeric_limits<compute_result_type_t>::max() / num_obelisk_choices)) {
+                std::cout << "Overflow in multiplication" << std::endl;
+                exit(1);
+            }
 
             const auto new_f = f * num_obelisk_choices;
             const auto new_dispatch = dispatch ^ (1u << extra_setup_index);
@@ -347,6 +358,8 @@ auto foo(const KingdomTuple& kingdom_tuple) -> result_t {
 }
 
 auto main() -> int {
+    print_nonzeros();
+
     tbb::global_control control(tbb::global_control::max_allowed_parallelism, kNumThreads);
 
     std::array<result_t, kNumThreads> result{};
