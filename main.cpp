@@ -3,6 +3,8 @@
 #include <fmt/chrono.h>
 #include <boost/multiprecision/integer.hpp>
 #include <boost/functional/hash.hpp>
+
+#include <omp.h>
 #include <tbb/parallel_for.h>
 #include <tbb/global_control.h>
 #include <tbb/blocked_range.h>
@@ -21,8 +23,7 @@
 #include <utils/result_type.hpp>
 #include <array>
 
-static constexpr auto kNumIterations = 10'000'000ul;
-static constexpr auto kNumThreads = 10u;
+
 
 struct Nonzero{
     card_data::kingdom::MembershipMask mask;
@@ -32,7 +33,6 @@ struct Nonzero{
 
 static constexpr std::size_t kNumNonZeros = 53uz;
 using nonzeros_t = std::array<Nonzero, kNumNonZeros>;
-using nonzero_card_type_offsets_t = std::array<std::size_t, card_data::kingdom::kNumCardTypes + 1uz>;
 
 //TODO: GENERATE NONZEROS DIRECTLY INSTEAD OF DERIVING FROM TABLE
 constexpr auto nonzeros() -> const nonzeros_t& {
@@ -62,7 +62,7 @@ void print_nonzeros() {
     std::fflush(stdout);
 }
 
-const auto binomial_store64() -> const utils::math::BinomialStore64& {
+auto binomial_store64() -> const utils::math::BinomialStore64& {
     static const utils::math::BinomialStore64 instance(nonzeros() | std::views::transform([](const auto& non_zero){ return non_zero.amount; }));
     return instance;
 }
@@ -122,7 +122,7 @@ constexpr auto from_n(uint64_t n) -> KingdomTuple {
     result.data.back() = 10u - s;
 
     for (auto i = 0uz; i < kNumNonZeros; ++i) {
-        result.binom_product *= binomial_store64()[nonzeros()[i].amount, result.data[i]];
+        result.binom_product *= utils::math::binomial<uint64_t>(nonzeros()[i].amount, result.data[i]);
         if (nonzeros()[i].mask.is_action_or_treasure_region) {
             result.number_action_or_treasure += result.data[i];
         }
@@ -131,7 +131,7 @@ constexpr auto from_n(uint64_t n) -> KingdomTuple {
 }
 
 static constexpr std::size_t kNumModifierCombinations = (1u << 7u);
-using compute_result_type_t = uint32_t;
+using compute_result_type_t = uint64_t;
 using compute_result_t = std::array<compute_result_type_t, kNumModifierCombinations>;
 
 constexpr auto new_combination_modifiers(const card_data::CombinationModifiers& combination_modifiers, card_data::kingdom::CardType kingdom_card_type) -> card_data::CombinationModifiers {
@@ -157,10 +157,12 @@ constexpr auto new_dispatch(uint8_t dispatch, std::size_t extra_setup_index, car
 void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTuple::data_t& tuple_data, const card_data::CombinationModifiers& combination_modifiers, compute_result_type_t f, compute_result_t& result) {
     if (dispatch == 0u) {
         const auto pile_mask = combination_modifiers.to_pile_mask();
+#ifdef OVERFLOW_CHECKED
         if ( f > (std::numeric_limits<compute_result_type_t>::max() - result[pile_mask])) {
             std::cout << "Overflow in addition" << std::endl;
             exit(1);
         }
+#endif
         result[pile_mask] += f;
 
     } else {
@@ -181,10 +183,12 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
                         const auto new_cm = new_combination_modifiers(combination_modifiers, kingdom_card_type);
                         const auto new_disp = new_dispatch(dispatch, extra_setup_index, kingdom_card_type);
 
+#ifdef OVERFLOW_CHECKED
                         if ( f > (std::numeric_limits<compute_result_type_t>::max() / available_amount)) {
                             std::cout << "Overflow in multiplication" << std::endl;
                             exit(1);
                         }
+#endif
 
                         const auto new_f = f * available_amount;
                         const auto new_picks = picks.with_added_picker(extra_setup_card_type, i);
@@ -213,10 +217,12 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
                 num_obelisk_choices = 1;
             }
 
+#ifdef OVERFLOW_CHECKED
             if ( f > (std::numeric_limits<compute_result_type_t>::max() / num_obelisk_choices)) {
                 std::cout << "Overflow in multiplication" << std::endl;
                 exit(1);
             }
+#endif
 
             const auto new_f = f * num_obelisk_choices;
             const auto new_dispatch = dispatch ^ (1u << extra_setup_index);
@@ -226,7 +232,7 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
     }
 }
 
-void bar(const KingdomTuple::data_t& tuple_data, const card_data::CombinationModifiers& combination_modifiers, compute_result_type_t f, compute_result_t& result) {
+void bar(const KingdomTuple::data_t& tuple_data, const card_data::CombinationModifiers& combination_modifiers, compute_result_type_t f, compute_result_type_t* result) {
     uint8_t dispatch = 0u;
     if (combination_modifiers.has_young_witch) {
         dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::YoungWitch));
@@ -246,11 +252,17 @@ void bar(const KingdomTuple::data_t& tuple_data, const card_data::CombinationMod
 
     compute_result_t incr{};
 
+    if((dispatch & 0b011011)  != 0u){
+        #pragma omp critical
+        {
+            fmt::println("Non-trivial dispatch {:6b} at thread {}", dispatch, omp_get_thread_num());
+        }
+    }
     impl(dispatch, {}, tuple_data, combination_modifiers, f, incr);
 
     if (combination_modifiers.has_omen) {
         dispatch |= (1u << std::to_underlying(card_data::extra_setup::CardType::ApproachingArmy));
-        std::ranges::for_each(result, [](auto& elem){elem *= 14;});
+        std::ranges::for_each(incr, [](auto& elem){elem *= 14;});
         impl(dispatch, {}, tuple_data, combination_modifiers, f, incr);
     }
 
@@ -325,69 +337,119 @@ auto modifier_combination_index_factors() -> const modifier_combination_index_fa
     return instance;
 }
 
-auto foo(const KingdomTuple& kingdom_tuple) -> result_t {
+void foo(const KingdomTuple& kingdom_tuple, compute_result_type_t* output, uint64_t* binom_product){
     const unsigned n = kingdom_tuple.number_action_or_treasure;
-    compute_result_t result_per_modifier_combination{};
+
+    for(auto i = 0ul; i < kNumModifierCombinations; ++i){
+        output[i] = 0ul;
+    }
 
     if (!kingdom_tuple.combination_modifiers.has_loot) {
         const auto& [nl0, nl1, nl2, nl3, l0, l1, l2] = kingdom_tuple.combination_modifiers.non_loot_states();
         auto& [f_nl0, f_nl12, f_nl3, f_l0, f_l12] = non_loot_factors(n);
 
-        bar(kingdom_tuple.data, nl0, f_nl0, result_per_modifier_combination);
-        bar(kingdom_tuple.data, nl1, f_nl12, result_per_modifier_combination);
-        bar(kingdom_tuple.data, nl2, f_nl12, result_per_modifier_combination);
-        bar(kingdom_tuple.data, nl3, f_nl3, result_per_modifier_combination);
-        bar(kingdom_tuple.data, l0, f_l0, result_per_modifier_combination);
-        bar(kingdom_tuple.data, l1, f_l12, result_per_modifier_combination);
-        bar(kingdom_tuple.data, l2, f_l12, result_per_modifier_combination);
+        bar(kingdom_tuple.data, nl0, f_nl0, output);
+        bar(kingdom_tuple.data, nl1, f_nl12, output);
+        bar(kingdom_tuple.data, nl2, f_nl12, output);
+        bar(kingdom_tuple.data, nl3, f_nl3, output);
+        bar(kingdom_tuple.data, l0, f_l0, output);
+        bar(kingdom_tuple.data, l1, f_l12, output);
+        bar(kingdom_tuple.data, l2, f_l12, output);
 
     } else {
         const auto& [l0, l1, l2, l3] = kingdom_tuple.combination_modifiers.loot_states();
         const auto& [f_l0, f_l12, f_l3] = loot_factors(n);
-        bar(kingdom_tuple.data, l0, f_l0, result_per_modifier_combination);
-        bar(kingdom_tuple.data, l1, f_l12, result_per_modifier_combination);
-        bar(kingdom_tuple.data, l2, f_l12, result_per_modifier_combination);
-        bar(kingdom_tuple.data, l3, f_l3, result_per_modifier_combination);
+        bar(kingdom_tuple.data, l0, f_l0, output);
+        bar(kingdom_tuple.data, l1, f_l12, output);
+        bar(kingdom_tuple.data, l2, f_l12, output);
+        bar(kingdom_tuple.data, l3, f_l3, output);
     }
 
-    result_t result = 0u;
-    for (auto i = 0u; i < kNumModifierCombinations; ++i) {
-        result += result_per_modifier_combination[i] * modifier_combination_index_factors()[i];
-    }
-    return kingdom_tuple.binom_product * result;
+    *binom_product = kingdom_tuple.binom_product;
 }
 
-auto main() -> int {
-    print_nonzeros();
+static constexpr auto kBatchSize = 1'000'000ul;
+static constexpr auto kNumBatchChunks = 100u;
+//static constexpr auto kBatchChunkSize = kBatchSize / kNumBatchChunks;
 
-    tbb::global_control control(tbb::global_control::max_allowed_parallelism, kNumThreads);
-
-    std::array<result_t, kNumThreads> result{};
-
-    // auto dt = std::chrono::steady_clock::duration{};
-    //
-    // for (uint64_t i = 0ul; i < kNumIterations; ++i) {
-    //     const auto t1 = std::chrono::steady_clock::now();
-    //     const auto kingdom_tuple = from_n(i);
-    //     result += foo(kingdom_tuple);
-    //     const auto t2 = std::chrono::steady_clock::now();
-    //     dt += t2 - t1;
-    // }
-
-    std::atomic<std::size_t> thread_counter;
+auto do_batch(const uint64_t batch_num, const uint64_t batch_size, std::vector<uint64_t>& output_per_modifier_combination, std::vector<uint64_t>& binom_products, std::vector<result_t>& result, std::chrono::steady_clock::duration& total_time) {
+    fmt::println("Batch {}:", batch_num);
 
     const auto t1 = std::chrono::steady_clock::now();
+    const auto batch_chunk_size = std::max( 1ul, batch_size / kNumBatchChunks );
 
-    tbb::parallel_for(tbb::blocked_range<std::size_t>(0uz, kNumIterations), [&result, &thread_counter](const auto& range) {
-        thread_local std::size_t tid = thread_counter.fetch_add(1);
-        for (auto i = range.begin(); i < range.end(); ++i) {
-            const auto kingdom_tuple = from_n(i);
-            result[tid] += foo(kingdom_tuple);
-        }
-    });
+    #pragma omp parallel for schedule(dynamic,batch_chunk_size) default(none) shared(output_per_modifier_combination, binom_products, batch_chunk_size, batch_size, batch_num)
+    for (auto i = 0ul; i < batch_size; ++i) {
+        const auto n = kBatchSize * batch_num + i;
+        foo(from_n(n), output_per_modifier_combination.data() + kNumModifierCombinations * i, binom_products.data() + i);
+    }
 
     const auto t2 = std::chrono::steady_clock::now();
-    const auto dt = t2 - t1;
+    const auto populate_dt = t2 - t1;
+    total_time += populate_dt;
+    fmt::println("\tPopulated: {}", std::chrono::duration_cast<std::chrono::milliseconds>(populate_dt).count() / 1e3);
 
-    fmt::println("Processed {} tuples in {} ms", kNumIterations, std::chrono::duration_cast<std::chrono::milliseconds>(dt).count());
+    const auto t3 = std::chrono::steady_clock::now();
+    #pragma omp parallel for schedule(dynamic,batch_chunk_size) default(none) shared(output_per_modifier_combination, result, batch_size, batch_chunk_size)
+    for(auto i = 0ul; i < batch_size; ++i){
+        result_t incr{0u};
+        for(auto j = 0ul; j < kNumModifierCombinations; ++j){
+            incr += output_per_modifier_combination[i * kNumModifierCombinations + j] * modifier_combination_index_factors()[j];
+        }
+        const auto tid = omp_get_thread_num();
+        result[tid] += incr;
+    }
+    const auto t4 = std::chrono::steady_clock::now();
+    const auto reduce_dt = t4 - t3;
+    total_time += reduce_dt;
+    fmt::println("\tReduced: {}", std::chrono::duration_cast<std::chrono::milliseconds>(reduce_dt).count() / 1e3);
+}
+
+auto main(int argc, const char** argv) -> int {
+    static constexpr auto kMaxIterations = search_table()[0][0] + search_table()[0][1];
+
+
+    const auto argspan = std::span(argv, argc);
+
+    auto num_iterations = kMaxIterations;
+    if(argspan.size() > 1){
+        try {
+            num_iterations = std::stoull(argspan[1]);
+            if (num_iterations > kMaxIterations){
+                throw std::out_of_range("");
+            }
+        } catch (const std::invalid_argument& e){
+            fmt::println("First parameter is not a number.");
+            exit(2);
+        } catch (const std::out_of_range& e){
+            fmt::println("Number of iterations out of range");
+            exit(2);
+        }
+    }
+
+    std::vector<result_t> result{};
+    result.resize(omp_get_max_threads());
+
+    const auto num_batches = num_iterations / kBatchSize;
+    const auto remainder_batch_size = num_iterations - kBatchSize * num_batches;
+    std::vector<compute_result_type_t> output_per_modifier_combination(kNumModifierCombinations * kBatchSize, 0ul);
+    std::vector<uint64_t> binom_products(kBatchSize, 0ul);
+
+    std::chrono::steady_clock::duration total_time{};
+
+    for (auto b = 0u; b < num_batches; ++b){
+        do_batch(b, kBatchSize, output_per_modifier_combination, binom_products, result, total_time);
+    }
+    if (remainder_batch_size > 0){
+        do_batch(num_batches, remainder_batch_size, output_per_modifier_combination, binom_products, result, total_time);
+    }
+
+    const auto answer = std::ranges::fold_left(result, result_t{}, std::plus<result_t>{});
+
+    if(num_iterations == kMaxIterations){
+        fmt::println("Solution found in {:%H hours %M minutes %S seconds}", std::chrono::duration_cast<std::chrono::seconds>(total_time));
+        fmt::println("Answer: {}", answer);
+    } else {
+        fmt::println("Processed {} tuples in {} s", num_iterations, std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() / 1e3);
+    }
 }

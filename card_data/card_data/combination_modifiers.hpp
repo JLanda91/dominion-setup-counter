@@ -20,7 +20,7 @@ namespace card_data {
 
         constexpr auto operator==(const CombinationModifiers& other) const noexcept -> bool = default;
 
-        constexpr auto get_from_kingdom_column(kingdom::CardType kingdom_card_type) const noexcept -> bool {
+        [[nodiscard]] constexpr auto get_from_kingdom_column(kingdom::CardType kingdom_card_type) const noexcept -> bool {
             if (kingdom_card_type == kingdom::CardType::YoungWitch) {
                 return has_young_witch;
             }
@@ -93,7 +93,7 @@ namespace card_data {
             }
         }
 
-        constexpr auto loot_states() const noexcept {
+        [[nodiscard]] constexpr auto loot_states() const noexcept {
             std::array<CombinationModifiers, 4> result{};
             result.fill(*this);
 
@@ -105,7 +105,7 @@ namespace card_data {
             return result;
         };
 
-        constexpr auto non_loot_states() const noexcept {
+        [[nodiscard]] constexpr auto non_loot_states() const noexcept {
             std::array<CombinationModifiers, 7> result{};
             result.fill(*this);
 
@@ -122,7 +122,7 @@ namespace card_data {
             return result;
         };
 
-        constexpr std::size_t to_pile_mask() const noexcept {
+        [[nodiscard]] constexpr std::size_t to_pile_mask() const noexcept {
             return
                 (has_knights << 0u) |
                 (has_druid << 1u) |

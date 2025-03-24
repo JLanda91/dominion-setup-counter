@@ -22,6 +22,15 @@
       "hidden": true
     },
     {
+      "name": "gcc-13",
+      "displayName": "GCC 13",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/gcc-13",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++-13"
+      },
+      "hidden": true
+    },
+    {
       "name": "gcc-14",
       "displayName": "GCC 14",
       "cacheVariables": {
@@ -34,7 +43,8 @@
       "name": "debug",
       "displayName": "Debug",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS": "-g -O0 -Wall -Wextra"
       },
       "hidden": true
     },
@@ -42,25 +52,30 @@
       "name": "release",
       "displayName": "Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -Wall -Wextra -Werror"
       },
       "hidden": true
     },
     {
+      "name": "debug-gcc-13",
+      "displayName": "Debug GCC-13",
+      "inherits": ["vcpkg", "gcc-13", "debug"]
+    },
+    {
+      "name": "release-gcc-13",
+      "displayName": "Release GCC-13",
+      "inherits": ["vcpkg", "gcc-13", "release"]
+    },
+    {
       "name": "debug-gcc-14",
       "displayName": "Debug GCC-14",
-      "inherits": ["vcpkg", "gcc-14", "debug"],
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-g -O0 -Wall -Wextra"
-      }
+      "inherits": ["vcpkg", "gcc-14", "debug"]
     },
     {
       "name": "release-gcc-14",
       "displayName": "Release GCC-14",
-      "inherits": ["vcpkg", "gcc-14", "release"],
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -Wall -Wextra -Werror"
-      }
+      "inherits": ["vcpkg", "gcc-14", "release"]
     }
   ]
 }

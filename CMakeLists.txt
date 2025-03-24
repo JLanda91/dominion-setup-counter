@@ -17,16 +17,14 @@ message(STATUS "${Python_EXECUTABLE}")
 message(STATUS "${Python_ROOT_DIR}")
 message(STATUS "${CMAKE_CXX_FLAGS}")
 
-add_executable(main
-        main.cpp
-)
+add_executable(main main.cpp)
+target_link_libraries(main PRIVATE OpenMP::OpenMP_CXX card_data utils)
 
-target_link_libraries(main PRIVATE TBB::tbb card_data utils)
+add_executable(main_checked main.cpp)
+target_compile_definitions(main_checked PRIVATE OVERFLOW_CHECKED)
+target_link_libraries(main_checked PRIVATE OpenMP::OpenMP_CXX card_data utils)
 
-add_executable(sandbox
-        sandbox.cpp
-)
-
+add_executable(sandbox sandbox.cpp)
 target_link_libraries(sandbox PRIVATE card_data utils)
 
 
