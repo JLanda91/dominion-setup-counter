@@ -193,7 +193,17 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
                         const auto new_f = f * available_amount;
                         const auto new_picks = picks.with_added_picker(extra_setup_card_type, i);
 
-                        impl(new_disp, new_picks, tuple_data, new_cm, new_f, result);
+                        if (kingdom_card_type == card_data::kingdom::CardType::Omen && !combination_modifiers.has_omen) {
+                            // no approaching army
+                            impl(new_disp, new_picks, tuple_data, new_cm, new_f * 14u, result);
+
+                            // with approaching army
+                            impl(new_disp | (1u << std::to_underlying(card_data::extra_setup::CardType::ApproachingArmy)), new_picks, tuple_data, new_cm, new_f, result);
+                        } else {
+                            impl(new_disp, new_picks, tuple_data, new_cm, new_f, result);
+                        }
+
+
                     }
                 }
             }
@@ -205,16 +215,16 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
 
         } else {
 
-            auto num_obelisk_choices = 0u;
+            auto num_choices = 0u;
 
             for ( const auto& [i, tuple_elem] : tuple_data | std::views::enumerate) {
                 if (card_data::kingdom::MembershipMask::ToUnsigned(nonzeros()[i].mask) & (1u << extra_setup_index)) {
-                    num_obelisk_choices += tuple_elem + picks.num_used_added_at(i);
+                    num_choices += tuple_elem + picks.num_used_added_at(i);
                 }
             }
 
-            if (num_obelisk_choices == 0) { // if no obelisk choices, then we don't let obelisk pick
-                num_obelisk_choices = 1;
+            if (num_choices == 0) { // if no choices, then we don't let it choose
+                num_choices = 1;
             }
 
 #ifdef OVERFLOW_CHECKED
@@ -224,7 +234,7 @@ void impl(uint8_t dispatch, card_data::extra_setup::State picks, const KingdomTu
             }
 #endif
 
-            const auto new_f = f * num_obelisk_choices;
+            const auto new_f = f * num_choices;
             const auto new_dispatch = dispatch ^ (1u << extra_setup_index);
 
             impl(new_dispatch, picks, tuple_data, combination_modifiers, new_f, result);
@@ -251,13 +261,6 @@ void bar(const KingdomTuple::data_t& tuple_data, const card_data::CombinationMod
     }
 
     compute_result_t incr{};
-
-    if((dispatch & 0b011011)  != 0u){
-        #pragma omp critical
-        {
-            fmt::println("Non-trivial dispatch {:6b} at thread {}", dispatch, omp_get_thread_num());
-        }
-    }
     impl(dispatch, {}, tuple_data, combination_modifiers, f, incr);
 
     if (combination_modifiers.has_omen) {
@@ -370,7 +373,6 @@ void foo(const KingdomTuple& kingdom_tuple, compute_result_type_t* output, uint6
 
 static constexpr auto kBatchSize = 1'000'000ul;
 static constexpr auto kNumBatchChunks = 100u;
-//static constexpr auto kBatchChunkSize = kBatchSize / kNumBatchChunks;
 
 auto do_batch(const uint64_t batch_num, const uint64_t batch_size, std::vector<uint64_t>& output_per_modifier_combination, std::vector<uint64_t>& binom_products, std::vector<result_t>& result, std::chrono::steady_clock::duration& total_time) {
     fmt::println("Batch {}:", batch_num);
@@ -405,12 +407,11 @@ auto do_batch(const uint64_t batch_num, const uint64_t batch_size, std::vector<u
     fmt::println("\tReduced: {}", std::chrono::duration_cast<std::chrono::milliseconds>(reduce_dt).count() / 1e3);
 }
 
+
+
 auto main(int argc, const char** argv) -> int {
     static constexpr auto kMaxIterations = search_table()[0][0] + search_table()[0][1];
-
-
     const auto argspan = std::span(argv, argc);
-
     auto num_iterations = kMaxIterations;
     if(argspan.size() > 1){
         try {

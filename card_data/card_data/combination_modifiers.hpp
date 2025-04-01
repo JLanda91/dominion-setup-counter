@@ -18,6 +18,22 @@ namespace card_data {
         bool has_obelisk: 1;
         bool has_way_of_the_mouse: 1;
 
+        constexpr uint16_t to_mask() const noexcept {
+            return (has_young_witch << 0u) |
+                   (has_knights << 1u) |
+                   (has_druid << 2u) |
+                   (has_ferryman << 3u) |
+                   (has_riverboat << 4u) |
+                   (has_looter << 5u) |
+                   (has_fate << 6u) |
+                   (has_doom << 7u) |
+                   (has_liaison << 8u) |
+                   (has_omen << 9u) |
+                   (has_loot << 10u) |
+                   (has_obelisk << 11u) |
+                   (has_way_of_the_mouse << 12u);
+        }
+
         constexpr auto operator==(const CombinationModifiers& other) const noexcept -> bool = default;
 
         [[nodiscard]] constexpr auto get_from_kingdom_column(kingdom::CardType kingdom_card_type) const noexcept -> bool {

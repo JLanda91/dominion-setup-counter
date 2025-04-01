@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 project(DominionSetupCounter)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-
 find_package(boost_multiprecision CONFIG REQUIRED)
 find_package(boost_functional CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
