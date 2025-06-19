@@ -1,11 +1,14 @@
 #pragma once
 
+#include <fmt/format.h>
+
 #include <cstdint>
 #include <array>
 #include <string_view>
 #include <string>
 
-#include "utils/result_type.hpp"
+#include <card_data/kingdom/card_type.hpp>
+#include <utils/result_type.hpp>
 
 namespace card_data::kingdom {
     enum class CardType : uint8_t {
@@ -26,11 +29,16 @@ namespace card_data::kingdom {
     inline constexpr std::size_t kNumCardTypes = 12uz;
 
     constexpr CardType next_card_type (CardType ct) noexcept {
+        #ifdef __cpp_lib_to_underlying
         return static_cast<CardType>(std::to_underlying(ct) + 1);
+        #else
+        return static_cast<CardType>(static_cast<std::underlying_type_t<CardType>>(ct) + 1);
+        #endif
     };
 
     template<CardType C>
-    constexpr auto column_factor() noexcept {
+    constexpr boost::multiprecision::uint128_t column_factor() noexcept {
+        using namespace boost::multiprecision::literals;
         if constexpr (C == CardType::YoungWitch) {
             return 1ul; // does not add a pile
         } else if constexpr (C == CardType::Knights) {
@@ -57,15 +65,6 @@ namespace card_data::kingdom {
             return 1u; // None adds nothing
         }
     };
-
-    template<CardType ... C>
-    struct card_type_sequence {
-        static constexpr std::size_t size() noexcept {
-            return sizeof...(C);
-        }
-    };
-
-    using make_card_type_sequence = card_type_sequence<CardType::YoungWitch, CardType::Knights, CardType::Druid, CardType::Ferryman, CardType::Riverboat, CardType::Looter, CardType::Fate, CardType::Doom, CardType::Liaison, CardType::Omen, CardType::Loot, CardType::None>;
 }
 
 template<>
@@ -74,7 +73,11 @@ private:
     static constexpr std::array<std::string_view, card_data::kingdom::kNumCardTypes> kCardTypeNames = { "YoungWitch", "Knights", "Druid", "Ferryman", "Riverboat", "Looter", "Fate", "Doom", "Liaison", "Omen", "Loot", "None" };
 
 public:
-    constexpr auto format(const card_data::kingdom::CardType& obj, fmt::format_context& ctx) const {
+    auto format(const card_data::kingdom::CardType& obj, fmt::format_context& ctx) const {
+        #ifdef __cpp_lib_to_underlying
         return formatter<std::string_view>::format(kCardTypeNames.at(std::to_underlying(obj)), ctx);
+        #else
+        return formatter<std::string_view>::format(kCardTypeNames.at(static_cast<std::underlying_type_t<card_data::kingdom::CardType>>(obj)), ctx);
+        #endif
     }
 };

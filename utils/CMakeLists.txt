@@ -3,7 +3,6 @@ add_library(utils INTERFACE
         format.hpp
         math.hpp
         sized_enum.hpp
-        filtered_index_sequence.hpp
         column_major_table.hpp
         result_type.hpp
         byte_sequence.hpp

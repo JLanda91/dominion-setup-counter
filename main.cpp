@@ -14,14 +14,15 @@
 #include <cstdint>
 #include <chrono>
 
-#include <card_data/kingdom/card_type_major_table.hpp>
 #include <card_data/extra_setup/state.hpp>
 #include <card_data/combination_modifiers.hpp>
+#include <card_data/kingdom/membership_mask.hpp>
 
 #include <utils/math.hpp>
 #include <utils/constrained_product_generator.hpp>
 #include <utils/result_type.hpp>
 #include <array>
+
 
 
 
@@ -36,27 +37,69 @@ using nonzeros_t = std::array<Nonzero, kNumNonZeros>;
 
 //TODO: GENERATE NONZEROS DIRECTLY INSTEAD OF DERIVING FROM TABLE
 constexpr auto nonzeros() -> const nonzeros_t& {
-    static constexpr nonzeros_t instance = [] static {
-        nonzeros_t nonzeros{};
-
-        std::size_t n = 0;
-        for (const auto& [j, col] : card_data::kingdom::card_type_major_table().columns() | std::views::enumerate){
-            for (const auto& [i, amount] : col | std::views::enumerate){
-                if(amount > 0) {
-                    nonzeros[n++] = {card_data::kingdom::card_type_major_table().row_labels().at(i), static_cast<card_data::kingdom::CardType>(j), amount};
-                }
-            }
-        }
-
-        return nonzeros;
-    }();
+    using namespace card_data;
+    static constexpr nonzeros_t instance = {{
+        {kingdom::MembershipMask::FromUnsigned(0b1101010), kingdom::CardType::YoungWitch, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110010), kingdom::CardType::Knights, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100101), kingdom::CardType::Druid, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::Ferryman, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101101), kingdom::CardType::Riverboat, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101000), kingdom::CardType::Looter, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101010), kingdom::CardType::Looter, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110010), kingdom::CardType::Looter, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000010), kingdom::CardType::Fate, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100101), kingdom::CardType::Fate, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101000), kingdom::CardType::Fate, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101101), kingdom::CardType::Fate, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::Fate, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b0000010), kingdom::CardType::Doom, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101010), kingdom::CardType::Doom, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101101), kingdom::CardType::Doom, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::Doom, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110010), kingdom::CardType::Doom, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000000), kingdom::CardType::Liaison, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000001), kingdom::CardType::Liaison, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100101), kingdom::CardType::Liaison, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101000), kingdom::CardType::Liaison, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101101), kingdom::CardType::Liaison, 3u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::Liaison, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100000), kingdom::CardType::Omen, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101000), kingdom::CardType::Omen, 3u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::Omen, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110010), kingdom::CardType::Omen, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000000), kingdom::CardType::Loot, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000001), kingdom::CardType::Loot, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100010), kingdom::CardType::Loot, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100101), kingdom::CardType::Loot, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::Loot, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b0000000), kingdom::CardType::None, 8u},
+        {kingdom::MembershipMask::FromUnsigned(0b0000001), kingdom::CardType::None, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b0000010), kingdom::CardType::None, 1u},
+        {kingdom::MembershipMask::FromUnsigned(0b0001000), kingdom::CardType::None, 6u},
+        {kingdom::MembershipMask::FromUnsigned(0b0001001), kingdom::CardType::None, 5u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000000), kingdom::CardType::None, 26u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000001), kingdom::CardType::None, 5u},
+        {kingdom::MembershipMask::FromUnsigned(0b1000010), kingdom::CardType::None, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1001000), kingdom::CardType::None, 9u},
+        {kingdom::MembershipMask::FromUnsigned(0b1001001), kingdom::CardType::None, 5u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100000), kingdom::CardType::None, 43u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100010), kingdom::CardType::None, 12u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100101), kingdom::CardType::None, 37u},
+        {kingdom::MembershipMask::FromUnsigned(0b1100111), kingdom::CardType::None, 2u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101000), kingdom::CardType::None, 93u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101010), kingdom::CardType::None, 13u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101101), kingdom::CardType::None, 65u},
+        {kingdom::MembershipMask::FromUnsigned(0b1101111), kingdom::CardType::None, 8u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110000), kingdom::CardType::None, 88u},
+        {kingdom::MembershipMask::FromUnsigned(0b1110010), kingdom::CardType::None, 26u}
+        }};
     return instance;
 }
 
 void print_nonzeros() {
     for (const auto& [i, nonzero] : nonzeros() | std::views::enumerate) {
         const auto& [mask, card_type, amount] = nonzero;
-        fmt::print("Nonzero {:>2}: mask: {}, card_type: {:>10}, amount: {:>2}\n", i, mask, card_type, amount);
+        fmt::print("{}, {:>10}, {:>2}\n", mask, card_type, amount);
     }
     fmt::print("");
     std::fflush(stdout);
@@ -108,7 +151,7 @@ constexpr auto from_n(uint64_t n) -> KingdomTuple {
             break;
         }
         for (uint8_t j = 0u; j <= max_amount && s + j <= 10u; ++j) {
-            if (search_table()[i][j] > n) {
+            if (search_table()[i][j + s] > n) {
                 result.data[i] = j;
                 if (j > 0) {
                     result.combination_modifiers.set_kingdom_column(kingdom_card_type);
@@ -410,47 +453,74 @@ auto do_batch(const uint64_t batch_num, const uint64_t batch_size, std::vector<u
 
 
 auto main(int argc, const char** argv) -> int {
-    static constexpr auto kMaxIterations = search_table()[0][0] + search_table()[0][1];
     const auto argspan = std::span(argv, argc);
-    auto num_iterations = kMaxIterations;
-    if(argspan.size() > 1){
-        try {
-            num_iterations = std::stoull(argspan[1]);
-            if (num_iterations > kMaxIterations){
-                throw std::out_of_range("");
-            }
-        } catch (const std::invalid_argument& e){
-            fmt::println("First parameter is not a number.");
-            exit(2);
-        } catch (const std::out_of_range& e){
-            fmt::println("Number of iterations out of range");
-            exit(2);
-        }
+    print_nonzeros();
+
+    result_t result{0};
+
+    constexpr auto maxiter = search_table()[0][0] + search_table()[0][1];
+
+    static_assert(maxiter == 49643004243);
+
+    std::vector<result_t> results;
+    results.resize(omp_get_max_threads());
+
+    const auto t1 = std::chrono::steady_clock::now();
+
+    #pragma omp parallel for default(none) shared(results, maxiter) schedule(dynamic,100'000'000)
+    for (std::size_t i = 0u; i < maxiter; ++i) {
+        results[omp_get_thread_num()] += from_n(i).binom_product;
     }
 
-    std::vector<result_t> result{};
-    result.resize(omp_get_max_threads());
+    const auto t2 = std::chrono::steady_clock::now();
 
-    const auto num_batches = num_iterations / kBatchSize;
-    const auto remainder_batch_size = num_iterations - kBatchSize * num_batches;
-    std::vector<compute_result_type_t> output_per_modifier_combination(kNumModifierCombinations * kBatchSize, 0ul);
-    std::vector<uint64_t> binom_products(kBatchSize, 0ul);
-
-    std::chrono::steady_clock::duration total_time{};
-
-    for (auto b = 0u; b < num_batches; ++b){
-        do_batch(b, kBatchSize, output_per_modifier_combination, binom_products, result, total_time);
+    for (const auto& x : results) {
+        result += x;
     }
-    if (remainder_batch_size > 0){
-        do_batch(num_batches, remainder_batch_size, output_per_modifier_combination, binom_products, result, total_time);
-    }
+    fmt::println("Result: {}", result);
+    fmt::println("Time ms: {} ms", std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
 
-    const auto answer = std::ranges::fold_left(result, result_t{}, std::plus<result_t>{});
-
-    if(num_iterations == kMaxIterations){
-        fmt::println("Solution found in {:%H hours %M minutes %S seconds}", std::chrono::duration_cast<std::chrono::seconds>(total_time));
-        fmt::println("Answer: {}", answer);
-    } else {
-        fmt::println("Processed {} tuples in {} s", num_iterations, std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() / 1e3);
-    }
+//    static constexpr auto kMaxIterations = search_table()[0][0] + search_table()[0][1];
+//    const auto argspan = std::span(argv, argc);
+//    auto num_iterations = kMaxIterations;
+//    if(argspan.size() > 1){
+//        try {
+//            num_iterations = std::stoull(argspan[1]);
+//            if (num_iterations > kMaxIterations){
+//                throw std::out_of_range("");
+//            }
+//        } catch (const std::invalid_argument& e){
+//            fmt::println("First parameter is not a number.");
+//            exit(2);
+//        } catch (const std::out_of_range& e){
+//            fmt::println("Number of iterations out of range");
+//            exit(2);
+//        }
+//    }
+//
+//    std::vector<result_t> result{};
+//    result.resize(omp_get_max_threads());
+//
+//    const auto num_batches = num_iterations / kBatchSize;
+//    const auto remainder_batch_size = num_iterations - kBatchSize * num_batches;
+//    std::vector<compute_result_type_t> output_per_modifier_combination(kNumModifierCombinations * kBatchSize, 0ul);
+//    std::vector<uint64_t> binom_products(kBatchSize, 0ul);
+//
+//    std::chrono::steady_clock::duration total_time{};
+//
+//    for (auto b = 0u; b < num_batches; ++b){
+//        do_batch(b, kBatchSize, output_per_modifier_combination, binom_products, result, total_time);
+//    }
+//    if (remainder_batch_size > 0){
+//        do_batch(num_batches, remainder_batch_size, output_per_modifier_combination, binom_products, result, total_time);
+//    }
+//
+//    const auto answer = std::ranges::fold_left(result, result_t{}, std::plus<result_t>{});
+//
+//    if(num_iterations == kMaxIterations){
+//        fmt::println("Solution found in {:%H hours %M minutes %S seconds}", std::chrono::duration_cast<std::chrono::seconds>(total_time));
+//        fmt::println("Answer: {}", answer);
+//    } else {
+//        fmt::println("Processed {} tuples in {} s", num_iterations, std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() / 1e3);
+//    }
 }

@@ -1,4 +1,5 @@
-find_package(gtest CONFIG REQUIRED)
+set(GTest_DIR /usr/lib/x86_64-linux-gnu/cmake/GTest)
+find_package(GTest REQUIRED)
 
 message(STATUS "Including tests")
 enable_testing()

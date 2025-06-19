@@ -1,24 +1,36 @@
-#include <fmt/core.h>
-#include <fmt/ranges.h>
-#include <fmt/chrono.h>
-#include <omp.h>
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include <gmpxx.h>
 
-#include <vector>
-#include <ranges>
-#include <cstdint>
+#include <boost/multiprecision/integer.hpp>
+
+#include <iostream>
 #include <chrono>
 
-#include <card_data/kingdom/card_type_major_table.hpp>
-
-
-static_assert(card_data::kingdom::card_type_major_table().row_labels().size() == 20);
 
 int main() {
-    std::chrono::steady_clock::duration d{};
+    std::cout << "Bits per limb: " << mp_bits_per_limb << "\n";
 
-    d += std::chrono::hours(2u);
-    d += std::chrono::minutes(3u);
-    d += std::chrono::seconds(137u);
-
-    fmt::println("Solution found in {:%H hours %M minutes %S seconds}", std::chrono::duration_cast<std::chrono::seconds>(d));
+    {
+        const auto t1 = std::chrono::steady_clock::now();
+        mpz_class big_num = 1;
+        for (std::size_t i = 0; i < 15; ++i) {
+            big_num *= (2*i + 1) * (i+1);
+        }
+        const auto t2 = std::chrono::steady_clock::now();
+        std::cout << big_num << "\n";
+        std::cout << "Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << "ns\n\n";
+    }
+    {
+        using result_t = boost::multiprecision::uint256_t;
+        const auto t1 = std::chrono::steady_clock::now();
+        result_t big_num = 1;
+        for (std::size_t i = 0; i < 15; ++i) {
+            big_num *= (2*i + 1) * (i+1);
+        }
+        const auto t2 = std::chrono::steady_clock::now();
+        std::cout << big_num << "\n";
+        std::cout << "Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << "ns\n";
+    }
+    return 0;
 }

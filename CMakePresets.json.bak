@@ -1,0 +1,101 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 27,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "displayName": "VCPKG",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "toolchainFile": "/home/jasper/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_VERBOSE_MAKEFILE": "OFF",
+        "CMAKE_CXX_EXTENSIONS": "OFF",
+        "VCPKG_MANIFEST_INSTALL": {
+          "type": "BOOL",
+          "value": "OFF"
+        }
+      },
+      "hidden": true
+    },
+    {
+      "name": "gcc-14",
+      "displayName": "GCC 14",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/gcc-14",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++-14",
+        "CMAKE_CUDA_COMPILER": "/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/compilers/bin/nvcc",
+        "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-14",
+        "CMAKE_CUDA_STANDARD": 14
+      },
+      "hidden": true
+    },
+    {
+      "name": "nvhpc-25.3",
+      "displayName": "NVIDIA HPC 25.3",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/compilers/bin/nvc",
+        "CMAKE_CXX_COMPILER": "/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/compilers/bin/nvc++",
+        "CMAKE_CUDA_COMPILER": "/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/compilers/bin/nvcc",
+        "CMAKE_CUDA_STANDARD": 23,
+        "NVIDIA_COMPILED": "ON"
+      },
+      "hidden": true
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "hidden": true
+    },
+    {
+      "name": "debug-gcc-14",
+      "displayName": "Debug GCC-14",
+      "inherits": ["vcpkg", "gcc-14", "debug"],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-g -O0 -Wall -Wextra",
+        "CMAKE_CUDA_FLAGS": "-G"
+      }
+    },
+    {
+      "name": "release-gcc-14",
+      "displayName": "Release GCC-14",
+      "inherits": ["vcpkg", "gcc-14", "release"],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-std=c++23 -O3 -DNDEBUG -Wall -Wextra -Werror",
+        "CMAKE_CUDA_FLAGS": "-arch=sm_86 -dopt=on -O3"
+      }
+    },
+    {
+      "name": "debug-nvhpc-25.3",
+      "displayName": "Debug NVIDIA HPC 25.3",
+      "inherits": ["vcpkg", "nvhpc-25.3", "debug"],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-std=c++23 -O0 -Minfo -acc -gpu=cc86 -std=c++23"
+      }
+    },
+    {
+      "name": "release-nvhpc-25.3",
+      "displayName": "Release NVIDIA HPC 25.3",
+      "inherits": ["vcpkg", "nvhpc-25.3", "release"],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fast -Minfo -acc -gpu=cc86 -std=c++23"
+      }
+    }
+  ]
+}
