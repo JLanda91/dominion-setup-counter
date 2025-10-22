@@ -1,11 +1,8 @@
 add_library(utils INTERFACE
-        constrained_product_generator.hpp
         format.hpp
         math.hpp
         sized_enum.hpp
-        column_major_table.hpp
         result_type.hpp
-        byte_sequence.hpp
 )
 
 target_include_directories(utils INTERFACE

@@ -17,5 +17,10 @@ function(gtest)
     add_test(${TEST_NAME} ${TEST_NAME})
 endfunction(gtest)
 
-gtest(NAME unit.utils.column_major_table LIBS utils)
+if (DEFINED CMAKE_CUDA_COMPILER)
+    add_executable(example_test example_test.cu)
+    target_link_libraries(example_test PRIVATE GTest::gtest_main GTest::gmock_main cuda_utils)
+endif()
+
+#gtest(NAME unit.utils.column_major_table LIBS utils)
 #gtest(NAME component.card_data.generator_bounds INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/card_data/lib" "${PROJECT_SOURCE_DIR}/utils" LIBS card_data)
