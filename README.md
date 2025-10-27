@@ -8,7 +8,7 @@ setup required by some of the cards that may introduce it.
 ### Kingdom Phase
 Kingdom cards have two attributes:
 - One or more **Types**.
-- A **Cost**: 1-8 or P (potions). 
+- A **Cost**: 1-8, P (potions). 
 
 We try to group the 498 cards in as few equivalence classes as possible, according to what makes the cards in them unique to the
 computation. 
@@ -22,7 +22,7 @@ therefore introduce the **Effective Type (ET)**:
 - Doom: add and shuffle the 12 Hex cards (12! = 479001600 ways). This is *not* added to the supply.
 - Liaison: add one of the 23 Ally cards. This is *not* one of the Setup Landscapes.
 - Omen: add one of the 15 Prophecy cards. This is *not* one of the Setup Landscapes.
-- Loot: can also be entered by Events (Setup Landscapes) and a Trait (Cursed). There are 2 each of 15 unique cards. All 30 are shuffled, giving (30!)/(2!)^15 = 8094874872198213459360000000 combinations.
+- GainsLoot: add a pile of Loot cards. This pile can also be entered by Events (Setup Landscapes) and a Trait (Cursed). There are 2 each of 15 unique Loot cards. All 30 are shuffled, giving (30!)/(2!)^15 = 8094874872198213459360000000 combinations.
 - Young Witch: add an *unused* kingdom card to the kingdom with a cost of 2 or 3 to form a pile of Bane cards. This is added to the supply.
 - Knights: the pile of 10 different knights is added.
 - Druid: it is also a Fate card but a special case. After adding the Boons, set aside the top 3 Boons face up. These will only be obtainable with the Druid. Any other Fate cards in play only draw from the 9 other Boons. Still 12! combinations
@@ -54,8 +54,8 @@ Secondly, there are three special cards in this phase that modify behavior.
 - Obelisk: choose a kingdom supply pile which are Action in the Extra Setup Phase.
 - Cursed: the implied behavior is as the name of the card. It is a Trait, but it also introduces Loot so if not already done, the Loot pile must be added.
 
-This brings a branch: if we enter this phase without Loot, picking Curse and being able to assign it to a kingdom pile
-will add Loot. In this case we also want to know how many Action or Treasure cards we have and if that amount is more or 
+This brings a branch: if we enter this phase without the Loot pile, picking Curse and being able to assign it to a kingdom pile
+will add the Loot pile. In this case we also want to know how many Action or Treasure cards we have and if that amount is more or 
 less than the amount of Traits we picked because Cursed might not be able to be assigned to a pile. If we enter this 
 phase already with the Loot pile, Curse doesn't add anything. This is important to the algorithm and its optimization. 
 
@@ -99,9 +99,9 @@ instead of iterating over all ways ((498 c 10) =~ 2.36e20) to pick kingdom suppl
 
 #### Iterating over Equivalence Class Distributions (ECDs)
 Since the equivalence class sizes are known up front (compile-time) we can also make a compile-time table that can 
-translate an index n in [0, N) to an actual list of amounts for each equivalence class (an ECB) to enable embarrassingly
-parallel work on the GPU. Let this index be called the ECB index. The translation is made such that the last Equivalence
-Classes in the list gets assigned big numbers first and the higher the EDB Index the more the first Equivalence Classes
+translate an index n in [0, N) to an actual list of amounts for each equivalence class (an ECD) to enable embarrassingly
+parallel work on the GPU. Let this index be called the ECD index. The translation is made such that the last Equivalence
+Classes in the list gets assigned big numbers first and the higher the ECD Index the more the first Equivalence Classes
 in the list get assigned high amounts of cards.
 
 #### Obtaining useful data from the ECD
@@ -114,6 +114,47 @@ When the phases have been completed we only need to multiply the result by takin
 over all ECs as this effectively deduplicates for all possible ways to choose which cards in the ECs are in play.
 
 ### Landscape Phase
+We could work and iterated with Equivalence Classes here, distinguishing on the cards that change the downstream 
+behavior:
+- Obelisk: 1 card
+- Way of the Mouse: 1 card
+- Cursed: 1 card
+- Other Traits (not Curse): 14 cards
+- Loot-inducing Events: 5 cards
+- Others: 133 (20 non-Obelisk Landmarks, 19 non-Mouse Ways, 20 Projects, 74 other Events)
+
+There would be only 25 ECDs in this case, but this phase really can only introduce the Loot pile (if not already setup
+by the Kingdom supply), Obelisk and Way of the Mouse as differentiable behavior. So there are only 2^3=8 cases to 
+differentiate. Of course these are dependent whether Loot was already entered by the Kingdom phase, and if not it can be 
+entered either by the Events that introduce Loot, or by the Cursed Trait, which not only needs to be picked, but there 
+will also have to be enough Action or Treasure cards in the Kingdom supply to assign Cursed to. Depending on how many
+Action/Treasure cards the kingdom has the amount of ways to assign the Traits to these vary.
+
+The below tables have the coefficients for each 8 possibilities.
+
+If the kingdom ECD did not introduce Loot.
+
+| Number of A/T cards in Kingdom ECD    | 0     | 1     | N (2+)                  |
+|---------------------------------------|-------|-------|-------------------------|
+| No Loot                               | 11027 | 10984 | 8912 + 1876N + 91N(N-1) |
+| No Loot, Way of the Mouse             | 149   | 148   | 134 + 14N               |
+| No Loot, Obelisk                      | 149   | 148   | 134 + 14N               |
+| No Loot, Obelisk and Way of the Mouse | 1     | 1     | 1                       |
+| Loot                                  | 755   | 903   | 680 + 209N + 14N(N-1)   |
+| Loot, Way of the Mouse                | 5     | 6     | 5 + N                   |
+| Loot, Obelisk                         | 5     | 6     | 5 + N                   |
+
+If the kingdom ECD already introduced Loot:
+
+| Number of A/T cards in Kingdom ECD | 1     | N (2+)                   |
+|------------------------------------|-------|--------------------------|
+| Loot                               | 11887 | 9592 + 2085N + 105N(N-1) |
+| Loot, Way of the Mouse             | 154   | 139 + 15N                |
+| Loot, Obelisk                      | 154   | 139 + 15N                |
+| Loot, Obelisk and Way of the Mouse | 1     | 1                        |
+
+The excel sheet Landscape Coefficients in the repository has the tables as well.
+
 
 ### Extra Setup Phase
 
@@ -126,7 +167,7 @@ The Landscape phase also has one simple branch as describe before.
 
 We choose to put the **Effective Types** of the Equivalence Classes that are linked to the Extra Setup phase to the front:
 Young Witch, Ferryman and Riverboat. Since Approaching Army can only be in play if there is at least one EC with ET=Omen
-that has a nonzero amount, we put the Omen ECs next, and then the Loot ECs to guarantee that the bursts of ECD indices
+that has a nonzero amount, we put the Omen ECs next, and then the GainsLoot ECs to guarantee that the bursts of ECD indices
 containing near-similar behavior for the Extra Setup Phase and subsequently the Landscape Phase are coalesced. The other
 ECs have ETs that don't change the code paths but will once multiply a number to the outcome.
 
