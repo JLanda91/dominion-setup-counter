@@ -1,52 +1,25 @@
-set(OUTPUT_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/card_data")
-set(GENERATOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/generator")
-set(GENERATOR_TEMPLATES_DIR "${GENERATOR_DIR}/templates")
-
-#add_custom_command(
-#        COMMAND
-#        "cogapp"
-#        ARGS
-#        "-d"
-#        "@generated_files.txt"
-#        WORKING_DIRECTORY
-#        "${GENERATOR_DIR}"
-#        DEPENDS
-#        "${GENERATOR_DIR}/generated_files.txt"
-#        "${GENERATOR_DIR}/kingdom_venn_region_data.py"
-#        "${GENERATOR_DIR}/card_list.xlsx"
-#        "${GENERATOR_DIR}/config.json"
-#        "${GENERATOR_DIR}/config.py"
-#        "${GENERATOR_DIR}/util/utils.py"
-#
-#        "${GENERATOR_TEMPLATES_DIR}/kingdom/card_type_major_table.hpp"
-#        "${GENERATOR_TEMPLATES_DIR}/kingdom/card_type_tally.hpp"
-#        "${GENERATOR_TEMPLATES_DIR}/kingdom/membership_mask.hpp"
-#        "${GENERATOR_TEMPLATES_DIR}/kingdom/venn_region.hpp"
-#
-#        "${GENERATOR_DIR}/kingdom/card_type_major_table.py"
-#        "${GENERATOR_DIR}/kingdom/card_type_tally.py"
-#        "${GENERATOR_DIR}/kingdom/membership_mask.py"
-#        "${GENERATOR_DIR}/kingdom/venn_region.py"
-#
-#        OUTPUT
-#        "${OUTPUT_LIB_DIR}/kingdom/card_type_major_table.hpp"
-#        "${OUTPUT_LIB_DIR}/kingdom/card_type_tally.hpp"
-#        "${OUTPUT_LIB_DIR}/kingdom/membership_mask.hpp"
-#        "${OUTPUT_LIB_DIR}/kingdom/venn_region.hpp"
-#        VERBATIM
-#        USES_TERMINAL
-#)
-
-add_library(card_data INTERFACE
-        card_data/kingdom/card_type_major_table.hpp
-        card_data/kingdom/membership_mask.hpp
-        card_data/kingdom/card_type.hpp
+add_library(card_data_headers INTERFACE
+        extra_setup/card.cuh
+        extra_setup/effective_card_type_mask.cuh
+#        extra_setup/state.hpp
+        kingdom/venn_diagram_region_mask.cuh
+        ../data_definitions/kingdom.hpp
+        functional.cuh
 )
+target_include_directories(card_data_headers INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
-target_include_directories(card_data INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+add_library(card_data_format_host
+        format.cu
 )
+target_compile_options(card_data_format_host PRIVATE "-x c++")
+target_include_directories(card_data_format_host INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
+target_link_libraries(card_data_format_host PRIVATE card_data_headers fmt::fmt)
 
-target_link_libraries(card_data INTERFACE
-        fmt::fmt-header-only
+add_library(card_data_functional_host
+        functional.cu
 )
+target_compile_options(card_data_functional_host PRIVATE "-x c++")
+target_include_directories(card_data_functional_host INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
+target_link_libraries(card_data_functional_host PRIVATE card_data_headers)
+
+

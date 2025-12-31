@@ -1,0 +1,254 @@
+ (000000): 1
+        : 1
+YoungWitch (000001): 41
+        YoungWitch: 15
+        YoungWitch -> Riverboat: 11
+        YoungWitch -> Riverboat -> Ferryman: 15
+ApproachingArmy (000010): 56
+        ApproachingArmy -> YoungWitch: 15
+        ApproachingArmy -> YoungWitch -> Riverboat: 11
+        ApproachingArmy -> YoungWitch -> Riverboat -> Ferryman: 15
+        ApproachingArmy: 15
+YoungWitch -> ApproachingArmy (000011): 610
+        YoungWitch -> ApproachingArmy: 225
+        YoungWitch -> ApproachingArmy -> Riverboat -> Ferryman: 223
+        YoungWitch -> ApproachingArmy -> Riverboat: 162
+WayOfTheMouse (000100): 52
+        WayOfTheMouse: 11
+        WayOfTheMouse -> Riverboat: 11
+        WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch: 15
+        WayOfTheMouse -> Riverboat -> Ferryman: 15
+YoungWitch -> WayOfTheMouse (000101): 832
+        YoungWitch -> WayOfTheMouse -> Riverboat: 286
+        YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman: 386
+        YoungWitch -> WayOfTheMouse: 160
+ApproachingArmy -> WayOfTheMouse (000110): 1607
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat: 286
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman: 386
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse: 160
+        ApproachingArmy -> WayOfTheMouse: 165
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch: 225
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman: 223
+        ApproachingArmy -> WayOfTheMouse -> Riverboat: 162
+YoungWitch -> ApproachingArmy -> WayOfTheMouse (000111): 12349
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman: 5738
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat: 4212
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse: 2399
+Ferryman (001000): 52
+        Ferryman -> YoungWitch: 15
+        Ferryman -> YoungWitch -> Riverboat: 11
+        Ferryman -> Riverboat: 11
+        Ferryman: 15
+YoungWitch -> Ferryman (001001): 553
+        YoungWitch -> Ferryman -> Riverboat: 330
+        YoungWitch -> Ferryman: 223
+ApproachingArmy -> Ferryman (001010): 1325
+        ApproachingArmy -> YoungWitch -> Ferryman -> Riverboat: 330
+        ApproachingArmy -> YoungWitch -> Ferryman: 223
+        ApproachingArmy -> Ferryman -> YoungWitch: 225
+        ApproachingArmy -> Ferryman -> YoungWitch -> Riverboat: 162
+        ApproachingArmy -> Ferryman -> Riverboat: 162
+        ApproachingArmy -> Ferryman: 223
+YoungWitch -> ApproachingArmy -> Ferryman (001011): 8153
+        YoungWitch -> ApproachingArmy -> Ferryman -> Riverboat: 4838
+        YoungWitch -> ApproachingArmy -> Ferryman: 3315
+WayOfTheMouse -> Ferryman (001100): 895
+        WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat: 286
+        WayOfTheMouse -> Ferryman -> YoungWitch: 160
+        WayOfTheMouse -> Ferryman -> Riverboat: 286
+        WayOfTheMouse -> Ferryman: 163
+YoungWitch -> WayOfTheMouse -> Ferryman (001101): 8358
+        YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat: 6006
+        YoungWitch -> WayOfTheMouse -> Ferryman: 2352
+ApproachingArmy -> WayOfTheMouse -> Ferryman (001110): 21582
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat: 6006
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Ferryman: 2352
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat: 4212
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> YoungWitch: 2399
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat: 4190
+        ApproachingArmy -> WayOfTheMouse -> Ferryman: 2423
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman (001111): 122814
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat: 87869
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman: 34945
+Riverboat (010000): 41
+        Riverboat: 11
+        Riverboat -> Ferryman -> YoungWitch: 15
+        Riverboat -> Ferryman: 15
+YoungWitch -> Riverboat (010001): 388
+        YoungWitch -> Riverboat: 165
+        YoungWitch -> Riverboat -> Ferryman: 223
+ApproachingArmy -> Riverboat (010010): 998
+        ApproachingArmy -> YoungWitch -> Riverboat: 165
+        ApproachingArmy -> YoungWitch -> Riverboat -> Ferryman: 223
+        ApproachingArmy -> Riverboat -> Ferryman -> YoungWitch: 225
+        ApproachingArmy -> Riverboat -> Ferryman: 223
+        ApproachingArmy -> Riverboat: 162
+YoungWitch -> ApproachingArmy -> Riverboat (010011): 5745
+        YoungWitch -> ApproachingArmy -> Riverboat -> Ferryman: 3315
+        YoungWitch -> ApproachingArmy -> Riverboat: 2430
+WayOfTheMouse -> Riverboat (010100): 444
+        WayOfTheMouse -> Riverboat: 121
+        WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch: 160
+        WayOfTheMouse -> Riverboat -> Ferryman: 163
+YoungWitch -> WayOfTheMouse -> Riverboat (010101): 4112
+        YoungWitch -> WayOfTheMouse -> Riverboat: 1760
+        YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman: 2352
+ApproachingArmy -> WayOfTheMouse -> Riverboat (010110): 10716
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat: 1760
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman: 2352
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch: 2399
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman: 2423
+        ApproachingArmy -> WayOfTheMouse -> Riverboat: 1782
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat (010111): 60854
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman: 34945
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat: 25909
+Ferryman -> Riverboat (011000): 330
+        Ferryman -> YoungWitch -> Riverboat: 165
+        Ferryman -> Riverboat: 165
+YoungWitch -> Ferryman -> Riverboat (011001): 2453
+        YoungWitch -> Ferryman -> Riverboat: 2453
+ApproachingArmy -> Ferryman -> Riverboat (011010): 7291
+        ApproachingArmy -> YoungWitch -> Ferryman -> Riverboat: 2453
+        ApproachingArmy -> Ferryman -> YoungWitch -> Riverboat: 2430
+        ApproachingArmy -> Ferryman -> Riverboat: 2408
+YoungWitch -> ApproachingArmy -> Ferryman -> Riverboat (011011): 35796
+        YoungWitch -> ApproachingArmy -> Ferryman -> Riverboat: 35796
+WayOfTheMouse -> Ferryman -> Riverboat (011100): 3553
+        WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat: 1760
+        WayOfTheMouse -> Ferryman -> Riverboat: 1793
+YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat (011101): 25872
+        YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat: 25872
+ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat (011110): 77945
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat: 25872
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat: 25909
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat: 26164
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat (011111): 377339
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat: 377339
+Obelisk (100000): 16
+        Obelisk: 16
+YoungWitch -> Obelisk (100001): 651
+        YoungWitch -> Obelisk: 238
+        YoungWitch -> Riverboat -> Obelisk: 174
+        YoungWitch -> Riverboat -> Ferryman -> Obelisk: 239
+ApproachingArmy -> Obelisk (100010): 889
+        ApproachingArmy -> YoungWitch -> Obelisk: 238
+        ApproachingArmy -> YoungWitch -> Riverboat -> Obelisk: 174
+        ApproachingArmy -> YoungWitch -> Riverboat -> Ferryman -> Obelisk: 239
+        ApproachingArmy -> Obelisk: 238
+YoungWitch -> ApproachingArmy -> Obelisk (100011): 9605
+        YoungWitch -> ApproachingArmy -> Obelisk: 3541
+        YoungWitch -> ApproachingArmy -> Riverboat -> Ferryman -> Obelisk: 3523
+        YoungWitch -> ApproachingArmy -> Riverboat -> Obelisk: 2541
+WayOfTheMouse -> Obelisk (100100): 825
+        WayOfTheMouse -> Obelisk: 174
+        WayOfTheMouse -> Riverboat -> Obelisk: 174
+        WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch -> Obelisk: 238
+        WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 239
+YoungWitch -> WayOfTheMouse -> Obelisk (100101): 13077
+        YoungWitch -> WayOfTheMouse -> Riverboat -> Obelisk: 4480
+        YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 6088
+        YoungWitch -> WayOfTheMouse -> Obelisk: 2509
+ApproachingArmy -> WayOfTheMouse -> Obelisk (100110): 25271
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat -> Obelisk: 4480
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 6088
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Obelisk: 2509
+        ApproachingArmy -> WayOfTheMouse -> Obelisk: 2589
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch -> Obelisk: 3541
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 3523
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Obelisk: 2541
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Obelisk (100111): 192519
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 89754
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Obelisk: 65440
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Obelisk: 37325
+Ferryman -> Obelisk (101000): 825
+        Ferryman -> YoungWitch -> Obelisk: 238
+        Ferryman -> YoungWitch -> Riverboat -> Obelisk: 174
+        Ferryman -> Riverboat -> Obelisk: 174
+        Ferryman -> Obelisk: 239
+YoungWitch -> Ferryman -> Obelisk (101001): 8709
+        YoungWitch -> Ferryman -> Riverboat -> Obelisk: 5187
+        YoungWitch -> Ferryman -> Obelisk: 3522
+ApproachingArmy -> Ferryman -> Obelisk (101010): 20855
+        ApproachingArmy -> YoungWitch -> Ferryman -> Riverboat -> Obelisk: 5187
+        ApproachingArmy -> YoungWitch -> Ferryman -> Obelisk: 3522
+        ApproachingArmy -> Ferryman -> YoungWitch -> Obelisk: 3541
+        ApproachingArmy -> Ferryman -> YoungWitch -> Riverboat -> Obelisk: 2541
+        ApproachingArmy -> Ferryman -> Riverboat -> Obelisk: 2541
+        ApproachingArmy -> Ferryman -> Obelisk: 3523
+YoungWitch -> ApproachingArmy -> Ferryman -> Obelisk (101011): 127330
+        YoungWitch -> ApproachingArmy -> Ferryman -> Riverboat -> Obelisk: 75407
+        YoungWitch -> ApproachingArmy -> Ferryman -> Obelisk: 51923
+WayOfTheMouse -> Ferryman -> Obelisk (101100): 14046
+        WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat -> Obelisk: 4480
+        WayOfTheMouse -> Ferryman -> YoungWitch -> Obelisk: 2509
+        WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 4491
+        WayOfTheMouse -> Ferryman -> Obelisk: 2566
+YoungWitch -> WayOfTheMouse -> Ferryman -> Obelisk (101101): 130166
+        YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 93475
+        YoungWitch -> WayOfTheMouse -> Ferryman -> Obelisk: 36691
+ApproachingArmy -> WayOfTheMouse -> Ferryman -> Obelisk (101110): 336005
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 93475
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Ferryman -> Obelisk: 36691
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat -> Obelisk: 65440
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> YoungWitch -> Obelisk: 37325
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 65243
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> Obelisk: 37831
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Obelisk (101111): 1897140
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 1356350
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Obelisk: 540790
+Riverboat -> Obelisk (110000): 651
+        Riverboat -> Obelisk: 174
+        Riverboat -> Ferryman -> YoungWitch -> Obelisk: 238
+        Riverboat -> Ferryman -> Obelisk: 239
+YoungWitch -> Riverboat -> Obelisk (110001): 6110
+        YoungWitch -> Riverboat -> Obelisk: 2588
+        YoungWitch -> Riverboat -> Ferryman -> Obelisk: 3522
+ApproachingArmy -> Riverboat -> Obelisk (110010): 15715
+        ApproachingArmy -> YoungWitch -> Riverboat -> Obelisk: 2588
+        ApproachingArmy -> YoungWitch -> Riverboat -> Ferryman -> Obelisk: 3522
+        ApproachingArmy -> Riverboat -> Ferryman -> YoungWitch -> Obelisk: 3541
+        ApproachingArmy -> Riverboat -> Ferryman -> Obelisk: 3523
+        ApproachingArmy -> Riverboat -> Obelisk: 2541
+YoungWitch -> ApproachingArmy -> Riverboat -> Obelisk (110011): 89725
+        YoungWitch -> ApproachingArmy -> Riverboat -> Ferryman -> Obelisk: 51923
+        YoungWitch -> ApproachingArmy -> Riverboat -> Obelisk: 37802
+WayOfTheMouse -> Riverboat -> Obelisk (110100): 6967
+        WayOfTheMouse -> Riverboat -> Obelisk: 1892
+        WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch -> Obelisk: 2509
+        WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 2566
+YoungWitch -> WayOfTheMouse -> Riverboat -> Obelisk (110101): 63970
+        YoungWitch -> WayOfTheMouse -> Riverboat -> Obelisk: 27279
+        YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 36691
+ApproachingArmy -> WayOfTheMouse -> Riverboat -> Obelisk (110110): 166764
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat -> Obelisk: 27279
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 36691
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> YoungWitch -> Obelisk: 37325
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 37831
+        ApproachingArmy -> WayOfTheMouse -> Riverboat -> Obelisk: 27638
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Obelisk (110111): 939200
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Ferryman -> Obelisk: 540790
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Riverboat -> Obelisk: 398410
+Ferryman -> Riverboat -> Obelisk (111000): 5187
+        Ferryman -> YoungWitch -> Riverboat -> Obelisk: 2588
+        Ferryman -> Riverboat -> Obelisk: 2599
+YoungWitch -> Ferryman -> Riverboat -> Obelisk (111001): 38296
+        YoungWitch -> Ferryman -> Riverboat -> Obelisk: 38296
+ApproachingArmy -> Ferryman -> Riverboat -> Obelisk (111010): 113703
+        ApproachingArmy -> YoungWitch -> Ferryman -> Riverboat -> Obelisk: 38296
+        ApproachingArmy -> Ferryman -> YoungWitch -> Riverboat -> Obelisk: 37802
+        ApproachingArmy -> Ferryman -> Riverboat -> Obelisk: 37605
+YoungWitch -> ApproachingArmy -> Ferryman -> Riverboat -> Obelisk (111011): 554180
+        YoungWitch -> ApproachingArmy -> Ferryman -> Riverboat -> Obelisk: 554180
+WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk (111100): 55179
+        WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat -> Obelisk: 27279
+        WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 27900
+YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk (111101): 398897
+        YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 398897
+ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk (111110): 1201067
+        ApproachingArmy -> YoungWitch -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 398897
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> YoungWitch -> Riverboat -> Obelisk: 398410
+        ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 403760
+YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk (111111): 5771079
+        YoungWitch -> ApproachingArmy -> WayOfTheMouse -> Ferryman -> Riverboat -> Obelisk: 5771079
+
+Total: 12997776

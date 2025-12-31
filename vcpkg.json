@@ -1,8 +1,6 @@
 {
   "dependencies": [
-    "boost-multiprecision",
-    "boost-functional",
-    "tbb",
-    "fmt"
+    "fmt",
+    "zstd"
   ]
 }

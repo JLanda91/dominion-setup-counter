@@ -2,7 +2,7 @@
   "version": 6,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 27,
+    "minor": 30,
     "patch": 0
   },
   "configurePresets": [
@@ -13,7 +13,8 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "toolchainFile": "/home/jasper/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_VERBOSE_MAKEFILE": "OFF",
+        "CMAKE_VERBOSE_MAKEFILE": "ON",
+        "CMAKE_CUDA_ARCHITECTURES": "86",
         "VCPKG_MANIFEST_INSTALL": "OFF"
       },
       "hidden": true
@@ -22,13 +23,8 @@
       "name": "gcc-14",
       "displayName": "GCC 14",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/gcc-14",
-        "CMAKE_CXX_COMPILER": "/usr/bin/g++-14",
         "CMAKE_CXX_STANDARD": "23",
-        "CMAKE_CUDA_STANDARD": "23",
-        "CMAKE_CUDA_ARCHITECTURES": "86",
-        "CMAKE_CUDA_COMPILER": "$env{NVIDIA_HPC_SDK}/compilers/bin/nvcc",
-        "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-14"
+        "CMAKE_CUDA_STANDARD": "23"
       },
       "environment": {
         "NVIDIA_HPC_SDK": "/opt/nvidia/hpc_sdk/Linux_x86_64/25.3",
@@ -67,7 +63,7 @@
       "inherits": ["vcpkg", "gcc-14", "release"],
       "cacheVariables": {
         "CMAKE_CXX_FLAGS": "-O3 -DNDEBUG -Wall -Wextra -Werror",
-        "CMAKE_CUDA_FLAGS": "-O3 --use_fast_math -dopt=on"
+        "CMAKE_CUDA_FLAGS": "-Xptxas -v -O3 --use_fast_math -dopt=on"
       }
     }
   ]

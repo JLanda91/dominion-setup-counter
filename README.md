@@ -29,15 +29,16 @@ therefore introduce the **Effective Type (ET)**:
 - Ferryman: add an *unused* kingdom card costing 3 or 4. This is *not* added to the supply.
 - Riverboat: add an *unused* kingdom card of Action but not Duration type costing 5. This is *not* added to the supply.
 
-You might wonder why there is no Action or Duration in this list. This is completely taken caren of by the next equivalence class property.
-
-Secondly, the Extra Setup phase requires to pick some extra cards which could trigger more special setup 
-behavior. We therefore create a Venn Diagram and divide the cards into regions, each uniquely determined by which 
-special setup cards they can possibly be chosen. There are 7 predicates determining a region. For a total of 2^7 = 128
-possible regions. However only a few of them actually contain the cards. We can encode the region by setting 7 bits in a
+Secondly, the Extra Setup phase requires to pick some extra cards which could trigger more special setup
+behavior. We therefore create a Venn Diagram and divide the cards into regions, each uniquely determined by which
+special setup cards they can possibly be chosen. There are 6 predicates determining a region. For a total of 2^6 = 64
+possible regions. However, only 15 of them actually contain the cards. We can encode the region by setting 6 bits in a
 number to 0 or 1, each corresponding to the predicate outcome. Denote this as the **Venn Diagram Region Mask (VDRM)**.
 
-These two properties, **Effective Type** and **VDRM** will uniquely determine an equivalence class. The equivalence class has a size, denoting how many of the 498 cards belong to that equivalence class.
+These two labels, **Effective Type** and **VDRM** will uniquely determine an equivalence class. 
+The equivalence class has a size, denoting how many of the 498 cards belong to that equivalence class.
+The equivalence class also has an amount not greater than the size, denoting the number of action or treasure cards.
+This is needed for the Landscape Phase.
 
 ### Landscape Phase
 We choose not more than two cards from the joint set of Events, Landmarks, Projects, Ways and Traits. This would be an 
@@ -73,14 +74,13 @@ according to the order above. That new extra setup card might be handled before 
 waiting to be handled. For example if Riverboat and Obelisk are handled and Riverboat chooses Ferryman, Ferryman is 
 handled before Obelisk.
 
-The VDRM of a kingdom card is determined by the following 7 predicates. Is it: 
+The VDRM of a kingdom card is determined by the following 6 predicates. Is it: 
 1. Pickable by Young Witch (if unused and added to supply): costing 2 or 3?
 2. Pickable by Approaching Army (if unused and added to supply): is Action?
 3. Pickable by Way of the Mouse (if unused): non-Duration (erratum) Action and costing 2 or 3?
 4. Pickable by Ferryman (if unused): costing 3 or 4?
 5. Pickable by Riverboat (if unused): non-Duration Action card costing 5?
 6. Pickable by Obelisk (if in supply): is Action?
-7. Action or Treasure (or both)? (used for Cursed, see Landscape Phase)
 
 You can see that some predicates have overlap with, are identical to, or are a subset of other predicates. For example
 the predicate for Obelisk and Approaching Army is the same, but their choices will never overlap as the former picks a supply
@@ -93,8 +93,9 @@ also the Boons are added.
 ## The algorithm
 
 ### Kingdom Phase
-Given the current card data, there are 53 equivalence classes. The sum over the equivalence class sizes is of course 498.
-This way we only have to iterate over all the ways to distribute 10 cards over these equivalence classes (N =~ 4.9e10 ways)
+Given the current card data, there are 48 equivalence classes. The sum over the equivalence class sizes is of course 498.
+The sum over the equivalence classes number of action or treasure cards is 475.
+This way we only have to iterate over all the ways to distribute 10 cards over these equivalence classes (N =~ 1.7e10 ways)
 instead of iterating over all ways ((498 c 10) =~ 2.36e20) to pick kingdom supplies.
 
 #### Iterating over Equivalence Class Distributions (ECDs)
@@ -105,13 +106,9 @@ Classes in the list gets assigned big numbers first and the higher the ECD Index
 in the list get assigned high amounts of cards.
 
 #### Obtaining useful data from the ECD
-For subsequent phases it is handy to derive from the ECD at least for each ET if it is already in play at that point.
-For the Landscape phase we also want to sum the EC sizes for ECs that are Action or Treasure cards (Predicate 7 of the
-VDRM). We take this information along to the next phase.
-
-#### Ending the phase
-When the phases have been completed we only need to multiply the result by taking the product of (MaxAmount c Amount)
-over all ECs as this effectively deduplicates for all possible ways to choose which cards in the ECs are in play.
+For subsequent phases it is handy to derive from the ECD:
+- For each ET if it is already in play at that point (12-bit mask).
+- How many ways we can obtain 0 through 10 Action or Treasure cards with this ECD. The sum of this array must equal the binomial product of (Size c Amount) over the EC
 
 ### Landscape Phase
 We could work and iterated with Equivalence Classes here, distinguishing on the cards that change the downstream 
@@ -123,6 +120,7 @@ behavior:
 - Loot-inducing Events: 5 cards
 - Others: 133 (20 non-Obelisk Landmarks, 19 non-Mouse Ways, 20 Projects, 74 other Events)
 
+#### Something more optimal than iterating over all ECDs
 There would be only 25 ECDs in this case, but this phase really can only introduce the Loot pile (if not already setup
 by the Kingdom supply), Obelisk and Way of the Mouse as differentiable behavior. So there are only 2^3=8 cases to 
 differentiate. Of course these are dependent whether Loot was already entered by the Kingdom phase, and if not it can be 
@@ -130,33 +128,93 @@ entered either by the Events that introduce Loot, or by the Cursed Trait, which 
 will also have to be enough Action or Treasure cards in the Kingdom supply to assign Cursed to. Depending on how many
 Action/Treasure cards the kingdom has the amount of ways to assign the Traits to these vary.
 
-The below tables have the coefficients for each 8 possibilities.
+The below tables have the coefficients for each 8 possibilities. The coefficents denote how many ways there are to
+deal a maximum of 2 landscape cards for the given mutation, the mutation being: Loot pile, Way of the Mouse and Obelisk
+in play after this phase.
 
 If the kingdom ECD did not introduce Loot.
 
-| Number of A/T cards in Kingdom ECD    | 0     | 1     | N (2+)                  |
+| Number of A/T cards in Kingdom ECD    | 0     | 1     | K (2+)                  |
 |---------------------------------------|-------|-------|-------------------------|
-| No Loot                               | 11027 | 10984 | 8912 + 1876N + 91N(N-1) |
-| No Loot, Way of the Mouse             | 149   | 148   | 134 + 14N               |
-| No Loot, Obelisk                      | 149   | 148   | 134 + 14N               |
+| No Loot                               | 11027 | 10984 | 8912 + 1876K + 91K(K-1) |
+| No Loot, Way of the Mouse             | 149   | 148   | 134 + 14K               |
+| No Loot, Obelisk                      | 149   | 148   | 134 + 14K               |
 | No Loot, Obelisk and Way of the Mouse | 1     | 1     | 1                       |
-| Loot                                  | 755   | 903   | 680 + 209N + 14N(N-1)   |
-| Loot, Way of the Mouse                | 5     | 6     | 5 + N                   |
-| Loot, Obelisk                         | 5     | 6     | 5 + N                   |
+| Loot                                  | 755   | 903   | 680 + 209K + 14K(K-1)   |
+| Loot, Way of the Mouse                | 5     | 6     | 5 + K                   |
+| Loot, Obelisk                         | 5     | 6     | 5 + K                   |
 
 If the kingdom ECD already introduced Loot:
 
-| Number of A/T cards in Kingdom ECD | 1     | N (2+)                   |
+| Number of A/T cards in Kingdom ECD | 1     | K (2+)                   |
 |------------------------------------|-------|--------------------------|
-| Loot                               | 11887 | 9592 + 2085N + 105N(N-1) |
-| Loot, Way of the Mouse             | 154   | 139 + 15N                |
-| Loot, Obelisk                      | 154   | 139 + 15N                |
+| Loot                               | 11887 | 9592 + 2085K + 105K(K-1) |
+| Loot, Way of the Mouse             | 154   | 139 + 15K                |
+| Loot, Obelisk                      | 154   | 139 + 15K                |
 | Loot, Obelisk and Way of the Mouse | 1     | 1                        |
 
-The excel sheet Landscape Coefficients in the repository has the tables as well.
+The Excel sheet 'Landscape Coefficients' in the repository has the tables as well.
+For the keen observer: the coefficients are symmetric when there is either Obelisk or Way of the Mouse.
+It is impossible to have 0 number of Action or Treasure cards already in de kingdom ECD and also having introduced the
+Loot pile at this point as all GainsLoot cards are Action or Treasure cards.
 
+To optimize this phase, we should use the size 11 array from the Kingdom Phase containing the amount of ways to 
+obtaining K Action or Treasure cards from the ECD. We then inner product these values with the row in the table to get
+one coefficient for a specific mutation.
+
+**Example**: given an ECD the amount of ways to get K Action/Treasure cards from the ECD is denoted by the K-indexed array
+
+{12, 49, 2490, 12540, 9350, 2359, 219354, 9235, 38, 39210, 92}. 
+
+Assume the ECD already introduced the Loot pile and 
+assume we are interested in how many ways we enter the Extra Setup Phase with only the Loot mutation.
+This coefficient will equal the dot product of the aforementioned array with the array 
+
+{0, 11887, 13972, 16477, 19192, 22117, 25252, 28597, 32152, 35917, 39892}
+
+which equals 7690031439. In short: the amount of ways, given the ECD, to get a specific mutation in the Landscape Phase
+can be calculated up front. This saves calls to the Extra Setup Phase.
+
+Doing this for all mutations gives a small matrix-vector product of size 5 x 11 for ECDs without GainsLoot cards,
+and 3 x 11 for ECDs with GainsLoot cards.
+
+#### Returning from this phase
+This phase is, all concluded, fairly easy. Given if the kingdom ECD has the Loot pile already set up, and given the
+amount of Action/Treasure cards in it, the only data this phase should return is the inner product for each mutation. There are
+5 unique coefficients for the No-Loot-In-Kingdom-ECD table and 3 for the others. And there will be
+7 and 4 calls to the extra setup phase respectively.
 
 ### Extra Setup Phase
+Since this phase can introduce other cards, we need to know exactly:
+- The kingdom ECD (returned from the Kingdom phase).
+- Which Kingdom Effective Types are already in play.
+- Which Extra Setup cards are already in play. 
+
+This phase is, algorithmically the most complex part as it contains recursive logic. After all we need to handle the Extra Setup 
+Card Handling Order (ESCHO) Because in general the outline is:
+- Determine the first Extra Setup card to handle from the ESCHO.
+- For all ECs in the ECD that have a VDRM matching this card:
+  - mark the index of this EC for this extra setup card,
+  - multiply the amount of ways there are to choose a card from this EC Amount (from supply) or from EC MaxAmount - Amount (unused),
+  - multiply possible factors (for example if Fate is introduced, multiply an extra 12!)
+  - Add a possible extra added Extra Setup Card to the order
+- Recurse.
+
+There is a nasty edge case where we enter Omen in this phase, because then there are two branches to take:
+- 14 * the path without Approaching Army
+- 1 * the path with Approaching Army added to the handling order.
+
+which adds to the runtime complexity.
+
+The GPU, however, cannot handle recursion well so we will hand-roll a stack-based while-loop approach.
+We will have to hand-roll a stack of static capacity 6 (after all there are not more than 6 Extra Setup Cards), that
+will hold the recursion context, which will have to contain:
+- The current Extra Setup card (as bit index of the VDRM). Values: 0-5 (1 byte).
+- The mask of the remaining ESCHO (6-bit mask, 1 byte). This is needed if an extra setup card is chosen in this phase, to preserve the knowledge of the mutated order.
+- The EC index marking the choice for this extra setup cards (1 byte).
+- The return value for this sub-tree (32 bytes)
+
+which together is aligned to 64 bytes. The ContextStack therefore is 384 bytes.
 
 ## Code Optimizations
 ### Optimally ordering the list of ECs

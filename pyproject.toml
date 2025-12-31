@@ -1,0 +1,9 @@
+[project]
+name = "dominion-setup-counter"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.4.0",
+    "zstandard>=0.25.0",
+]
