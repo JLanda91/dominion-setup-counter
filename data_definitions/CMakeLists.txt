@@ -1,8 +1,5 @@
 add_library(data_definitions_big_uint INTERFACE
         big_uint.cuh
-        kingdom.hpp
-        reduce_type_and_is_action_or_treasure.cuh
-        reduce_mask_and_num_action_or_treasure.hpp
 )
 target_include_directories(data_definitions_big_uint INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
