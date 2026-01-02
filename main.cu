@@ -11,7 +11,7 @@
 #include "kernels/aggregate_by_type_mask_and_num_action_or_treasure.cuh"
 
 
-[[maybe_unused]] static constexpr size_t NUM_SM = 38;
+[[maybe_unused]] static constexpr int NUM_SM = 38;
 
 
 void ec53() {
@@ -29,15 +29,23 @@ void ec53() {
         std::begin(data::kECSegmentDistributions),
         std::end(data::kECSegmentDistributions));
 
-    constexpr auto num_blocks = NUM_SM * 11;
-    constexpr auto block_size = 128;
-    constexpr auto num_work_items_per_block = 8250;
-    constexpr auto total_work_items = num_work_items_per_block * num_blocks;
+    for (auto block_size = 32; block_size <= 128; block_size*=2) {
+        constexpr auto num_work_items_per_block = 25000;
 
-    const auto kernel_time_ms = aggregate_by_type_mask_and_num_action_or_treasure.Launch(num_blocks, block_size);
-    fmt::println("Kernel block size: {}", 128);
-    fmt::println("Blocks per SM: {}", 11);
-    fmt::println("Kernel time: {} ms for {} work items ({} work items per second)", kernel_time_ms , total_work_items, 1000.0 * total_work_items / kernel_time_ms);
+        const auto num_blocks_per_sm = 64*1024/(block_size * 43);
+        const auto total_work_items = num_work_items_per_block * num_blocks_per_sm * NUM_SM;
+
+        const auto num_blocks = num_blocks_per_sm * NUM_SM;
+        const auto kernel_time_ms = aggregate_by_type_mask_and_num_action_or_treasure.Launch(num_blocks, block_size);
+        const auto work_item_throughput_rate = static_cast<size_t>(1000.0 * static_cast<float>(total_work_items) / kernel_time_ms);
+        fmt::println("Kernel block size: {}", block_size);
+        fmt::println("Blocks per SM: {}", num_blocks_per_sm);
+        fmt::println("Kernel time: {} ms for {} work items ({} work items per second)", kernel_time_ms , total_work_items, work_item_throughput_rate);
+        fmt::println("");
+    }
+
+
+
 
     // h_intra_result = d_intra_result;
     // // h_type_subset_result = d_type_subset_result;

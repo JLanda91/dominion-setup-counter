@@ -47,7 +47,7 @@ __global__ void aggregate_by_type_mask_and_num_action_or_treasure() {
     auto* prev_reduction_result = &sReduce.reduce_type_and_is_action_or_treasure.reduction_row1;
     auto* next_reduction_result = &sReduce.reduce_type_and_is_action_or_treasure.reduction_row2;
 
-    for (auto xx = 0; xx < 8250; ++xx)
+    for (auto xx = 0; xx < 25000; ++xx)
     // for all ec segments (type, is_at, begin offset, end offset)
     for (auto ec_segment_i = 0; ec_segment_i < data::kNumECSegments; ec_segment_i ++) {
         // set prev reduction result to 1,0,0,0,0,0,...
