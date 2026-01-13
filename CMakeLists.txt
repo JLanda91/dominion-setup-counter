@@ -26,7 +26,8 @@ target_link_libraries(main PRIVATE
         fmt::fmt
         sparkplug::sparkplug
         aggregate_by_type_mask_and_num_action_or_treasure
-        data_mask_num_at_reduction)
+        data_mask_num_at_reduction
+        data_definitions_big_uint_format)
 
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

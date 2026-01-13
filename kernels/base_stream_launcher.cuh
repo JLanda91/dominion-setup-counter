@@ -5,6 +5,7 @@ namespace kernels {
     class BaseStreamLauncher {
     public:
         explicit BaseStreamLauncher(cudaStream_t stream);
+        virtual ~BaseStreamLauncher() = default;
 
     protected:
         cudaStream_t stream_;

@@ -3,6 +3,12 @@ add_library(data_definitions_big_uint INTERFACE
 )
 target_include_directories(data_definitions_big_uint INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
+add_library(data_definitions_big_uint_format INTERFACE
+        big_uint_format.cuh
+)
+target_include_directories(data_definitions_big_uint_format INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
+target_link_libraries(data_definitions_big_uint_format INTERFACE data_definitions_big_uint)
+
 add_library(data_definitions_kingdom INTERFACE
         kingdom.hpp
 )
