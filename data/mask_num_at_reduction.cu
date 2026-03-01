@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <filesystem>
 
-#include "mask_num_at_reduction.hpp"
+#include "mask_num_at_reduction.cuh"
 
 
 
@@ -78,17 +78,4 @@ namespace {
 namespace data {
 
     const reduce_mask_and_num_action_or_treasure::host_type kECSegmentDistributions = unpack_distributions(read_from_zstd());
-
-    const ec_segment_continuations::host_type kECSegmentContinuations = {
-        1,  1,  2,  2,  1,  2,  2,  2,  1,  2,  2,  2,  1,  2,  2,  2,  1,  2,  2,  3,  2,  2,  2,  3,  1,  2,  2,  3,
-        2,  1,  2,  2,  2,  2,  2,  5,  2,  2,  2,  4,  2,  2,  2,  4,  2,  2,  2,  3,  2,  3,  3,  7,  2,  3,  3,  5,
-        2,  3,  3,  4,  2,  3,  2,  3,  2,  3,  3,  6,  2,  3,  3,  5,  2,  3,  3,  6,  2,  2,  2,  4,  2,  5,  5, 10,
-        2,  4,  4,  7,  2,  4,  5,  6,  2,  3,  3,  4,  3,  7,  7, 11,  3,  5,  5,  7,  3,  6,  6,  7,  2,  4,  4,  4,
-        6, 10, 10, 12,  4,  6,  6,  7,  4,  6,  7,  6,  3,  4,  4,  3,  2,  2,  2,  4,  2,  2,  2,  3,  2,  2,  2,  4,
-        2,  2,  2,  3,  2,  3,  3,  7,  2,  3,  3,  5,  2,  3,  3,  4,  2,  3,  2,  3,  2,  4,  4,  8,  2,  4,  3,  5,
-        2,  4,  4,  5,  2,  2,  2,  3,  3,  6,  7,  8,  3,  4,  4,  5,  3,  4,  4,  5,  2,  3,  3,  2,  3,  7,  7, 11,
-        3,  5,  5,  7,  3,  6,  6,  7,  3,  4,  4,  4,  6, 10, 10, 12,  4,  6,  6,  7,  4,  6,  7,  6,  3,  4,  4,  3,
-        7, 11, 12, 13,  5,  7,  7,  6,  5,  7,  7,  7,  4,  4,  4,  3, 10, 12, 12, 10,  6,  7,  6,  5,  6,  7,  6,  4,
-        4,  4,  4,  2
-    };
 }

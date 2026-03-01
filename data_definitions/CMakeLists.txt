@@ -20,7 +20,7 @@ add_library(data_definitions_reduce_type_and_is_action_or_treasure INTERFACE
 target_include_directories(data_definitions_reduce_type_and_is_action_or_treasure INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
 add_library(data_definitions_reduce_mask_and_num_action_or_treasure INTERFACE
-        reduce_mask_and_num_action_or_treasure.hpp
+        reduce_mask_and_num_action_or_treasure.cuh
 )
 target_include_directories(data_definitions_reduce_mask_and_num_action_or_treasure INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 

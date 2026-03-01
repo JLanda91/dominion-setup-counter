@@ -17,8 +17,8 @@ target_include_directories(data_type_at_reduction_pairs INTERFACE $<BUILD_INTERF
 target_link_libraries(data_type_at_reduction_pairs PRIVATE data_definitions_reduce_type_and_is_action_or_treasure)
 
 add_library(data_mask_num_at_reduction
-        mask_num_at_reduction.cpp
-        mask_num_at_reduction.hpp
+        mask_num_at_reduction.cu
+        mask_num_at_reduction.cuh
         array_type.hpp
 )
 target_include_directories(data_mask_num_at_reduction INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)

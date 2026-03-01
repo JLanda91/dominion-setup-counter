@@ -18,4 +18,9 @@ namespace kernels {
         cudaEvent_t stop_{};
         bool is_started_ = false;
     };
+
+    enum class NumThreads : int {
+        ThirtyTwo = 32,
+        SixtyFour = 64,
+    };
 }

@@ -25,4 +25,5 @@ target_link_libraries(aggregate_by_type_mask_and_num_action_or_treasure PRIVATE
         base_launcher
         constant_memory
         data_definitions_big_uint
+        fmt::fmt
 )

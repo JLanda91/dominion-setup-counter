@@ -3,9 +3,9 @@
 #include "constant_memory.cuh"
 
 namespace data {
-    __constant__ kingdom_equivalence_classes::device_type cECData{};
-    __constant__ kingdom_equivalence_class_segments::device_type cECSegments{};
-    __constant__ reduce_type_and_is_action_or_treasure::device_type cIndexPairs{};
+    __device__ __constant__ kingdom_equivalence_classes::device_type cECData{};
+    __device__ __constant__ kingdom_equivalence_class_segments::device_type cECSegments{};
+    __device__ __constant__ reduce_type_and_is_action_or_treasure::device_type cIndexPairs{};
 }
 
 namespace kernels {

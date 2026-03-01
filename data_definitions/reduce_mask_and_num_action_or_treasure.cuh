@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
+
+#include "big_uint.cuh"
 
 namespace data_definitions::reduce_mask_and_num_action_or_treasure {
     struct alignas(8) EquivalenceClassSegmentDistribution {
@@ -24,4 +25,8 @@ namespace data_definitions::reduce_mask_and_num_action_or_treasure {
     static_assert(std::is_trivially_copyable_v<EquivalenceClassSegmentDistribution>);
     static_assert(std::is_trivially_constructible_v<EquivalenceClassSegmentDistribution>);
     static_assert(alignof(EquivalenceClassSegmentDistribution) == 8);
+
+    struct MultiplierTypeMaskAndNumActionTreasureTable {
+        data_definitions::u128_t data[256][11];
+    };
 }
